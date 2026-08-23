@@ -1,0 +1,23 @@
+# HorizontalPodAutoscaler = automatic scaling. When average CPU across the
+# pods goes above 70% of their *requested* CPU, Kubernetes adds pods
+# (up to 5); when load drops, it scales back down (never below 2).
+# Requires the metrics-server add-on in the cluster.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: school-api
+  namespace: school
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: school-api
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

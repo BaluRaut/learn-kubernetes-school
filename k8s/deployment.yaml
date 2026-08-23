@@ -1,0 +1,65 @@
+# Deployment = the desired state for your app: which image, how many copies,
+# how to check health, how much CPU/RAM. Kubernetes works non-stop to make
+# reality match this file (self-healing: a crashed pod is replaced automatically).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-api
+  namespace: school
+  labels:
+    app: school-api
+spec:
+  replicas: 2                      # run 2 identical pods for availability
+  selector:
+    matchLabels:
+      app: school-api              # "my pods are the ones with this label"
+  strategy:
+    type: RollingUpdate            # replace pods one by one -> zero downtime
+    rollingUpdate:
+      maxUnavailable: 0            # never drop below the desired replica count
+      maxSurge: 1                  # allowed to create 1 extra pod during rollout
+  template:                        # the pod blueprint
+    metadata:
+      labels:
+        app: school-api
+    spec:
+      containers:
+        - name: school-api
+          # CircleCI replaces IMAGE_PLACEHOLDER with the real ECR image tag
+          # during deploy (see .circleci/config.yml).
+          image: IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: school-api-config     # non-secret config
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: school-api-secrets  # secret config
+                  key: DATABASE_URL
+                  optional: true            # app falls back to in-memory mode
+          # Liveness: restart the container if it hangs.
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          # Readiness: only send traffic when the app (and its DB) respond.
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # Requests = guaranteed reservation (used for scheduling).
+          # Limits = hard cap. Also what the HPA percentage is based on.
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

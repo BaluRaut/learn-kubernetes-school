@@ -1,0 +1,27 @@
+# Ingress = HTTP routing from the internet into the cluster.
+# On EKS with the AWS Load Balancer Controller installed, this manifest
+# provisions a real AWS Application Load Balancer (ALB) automatically.
+#
+# NOTE: the controller is an add-on, not part of a bare EKS cluster:
+#   https://kubernetes-sigs.github.io/aws-load-balancer-controller/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: school-api
+  namespace: school
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing   # public ALB
+    alb.ingress.kubernetes.io/target-type: ip           # route straight to pod IPs
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: school-api
+                port:
+                  number: 80

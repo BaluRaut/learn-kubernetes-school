@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="120" y="150" font-size="96" font-weight="bold" fill="#0f172a">School Platform — The Big Picture</text>
+  <text x="120" y="240" font-size="48" fill="#475569">From a git push on your laptop to a running app on AWS — every tool in this repo in one flow</text>
+
+  <!-- ===================== 1. Developer ===================== -->
+  <rect x="120" y="480" width="420" height="380" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="120" y="480" width="420" height="90" rx="24" fill="#0f172a"/>
+  <text x="330" y="542" font-size="52" font-weight="bold" fill="#ffffff" text-anchor="middle">Developer</text>
+  <text x="330" y="660" font-size="42" fill="#334155" text-anchor="middle">You, on your laptop</text>
+  <text x="330" y="730" font-size="42" fill="#334155" text-anchor="middle">write code, then:</text>
+  <text x="330" y="805" font-size="44" font-weight="bold" fill="#0f172a" text-anchor="middle">git push</text>
+  <circle cx="120" cy="480" r="48" fill="#dc2626"/>
+  <text x="120" y="500" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+
+  <!-- arrow dev -> github -->
+  <line x1="540" y1="670" x2="660" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 2. GitHub ===================== -->
+  <rect x="680" y="480" width="420" height="380" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="680" y="480" width="420" height="90" rx="24" fill="#24292f"/>
+  <text x="890" y="542" font-size="52" font-weight="bold" fill="#ffffff" text-anchor="middle">GitHub</text>
+  <text x="890" y="660" font-size="42" fill="#334155" text-anchor="middle">Monorepo lives here:</text>
+  <text x="890" y="725" font-size="40" fill="#334155" text-anchor="middle">app + k8s/ + terraform/</text>
+  <text x="890" y="790" font-size="40" fill="#334155" text-anchor="middle">+ .circleci/</text>
+  <circle cx="680" cy="480" r="48" fill="#dc2626"/>
+  <text x="680" y="500" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+
+  <!-- arrow github -> circleci -->
+  <line x1="1100" y1="670" x2="1220" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="1160" y="620" font-size="36" fill="#64748b" text-anchor="middle">webhook</text>
+
+  <!-- ===================== 3. CircleCI ===================== -->
+  <rect x="1240" y="420" width="640" height="640" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="1240" y="420" width="640" height="90" rx="24" fill="#343434"/>
+  <text x="1560" y="482" font-size="52" font-weight="bold" fill="#ffffff" text-anchor="middle">CircleCI  (CI/CD)</text>
+  <rect x="1290" y="560" width="540" height="90" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+  <text x="1560" y="620" font-size="42" fill="#0f172a" text-anchor="middle">1. npm test</text>
+  <rect x="1290" y="680" width="540" height="90" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+  <text x="1560" y="740" font-size="42" fill="#0f172a" text-anchor="middle">2. docker build</text>
+  <rect x="1290" y="800" width="540" height="90" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+  <text x="1560" y="860" font-size="42" fill="#0f172a" text-anchor="middle">3. push image → ECR</text>
+  <rect x="1290" y="920" width="540" height="90" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+  <text x="1560" y="980" font-size="42" fill="#0f172a" text-anchor="middle">4. approve → deploy</text>
+  <circle cx="1240" cy="420" r="48" fill="#dc2626"/>
+  <text x="1240" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+
+  <!-- AWS boundary (dashed) -->
+  <rect x="1980" y="330" width="1740" height="1420" rx="32" fill="#fffbeb" stroke="#FF9900" stroke-width="6" stroke-dasharray="24 18"/>
+  <text x="2020" y="410" font-size="54" font-weight="bold" fill="#b45309">AWS Cloud</text>
+
+  <!-- arrow circleci -> ecr -->
+  <line x1="1880" y1="670" x2="2080" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="1980" y="620" font-size="36" fill="#64748b" text-anchor="middle">docker push</text>
+
+  <!-- ===================== 4. ECR ===================== -->
+  <rect x="2100" y="480" width="460" height="380" rx="24" fill="#ffffff" stroke="#FF9900" stroke-width="5"/>
+  <rect x="2100" y="480" width="460" height="90" rx="24" fill="#FF9900"/>
+  <text x="2330" y="542" font-size="52" font-weight="bold" fill="#ffffff" text-anchor="middle">Amazon ECR</text>
+  <text x="2330" y="660" font-size="42" fill="#334155" text-anchor="middle">Private Docker registry</text>
+  <text x="2330" y="725" font-size="40" fill="#334155" text-anchor="middle">stores image versions</text>
+  <text x="2330" y="790" font-size="40" font-weight="bold" fill="#0f172a" text-anchor="middle">school-api:&lt;git-sha&gt;</text>
+  <circle cx="2100" cy="480" r="48" fill="#dc2626"/>
+  <text x="2100" y="500" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+
+  <!-- arrow ecr -> eks -->
+  <line x1="2560" y1="670" x2="2760" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="2660" y="620" font-size="36" fill="#64748b" text-anchor="middle">nodes pull</text>
+
+  <!-- ===================== 6. EKS cluster ===================== -->
+  <rect x="2780" y="440" width="860" height="1000" rx="24" fill="#eff6ff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="2780" y="440" width="860" height="90" rx="24" fill="#326CE5"/>
+  <text x="3210" y="502" font-size="52" font-weight="bold" fill="#ffffff" text-anchor="middle">Amazon EKS (Kubernetes)</text>
+  <!-- pods -->
+  <rect x="2840" y="590" width="230" height="160" rx="16" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="2955" y="655" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">Pod</text>
+  <text x="2955" y="710" font-size="34" fill="#334155" text-anchor="middle">school-api</text>
+  <rect x="3095" y="590" width="230" height="160" rx="16" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="3210" y="655" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">Pod</text>
+  <text x="3210" y="710" font-size="34" fill="#334155" text-anchor="middle">school-api</text>
+  <rect x="3350" y="590" width="230" height="160" rx="16" fill="#ffffff" stroke="#94a3b8" stroke-width="4" stroke-dasharray="14 10"/>
+  <text x="3465" y="655" font-size="38" font-weight="bold" fill="#64748b" text-anchor="middle">Pod</text>
+  <text x="3465" y="710" font-size="34" fill="#64748b" text-anchor="middle">(auto-scale)</text>
+  <circle cx="2780" cy="440" r="48" fill="#dc2626"/>
+  <text x="2780" y="460" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+
+  <!-- service -->
+  <line x1="3210" y1="900" x2="3210" y2="770" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2940" y="910" width="540" height="130" rx="16" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="3210" y="965" font-size="40" font-weight="bold" fill="#0f172a" text-anchor="middle">Service (ClusterIP)</text>
+  <text x="3210" y="1015" font-size="34" fill="#334155" text-anchor="middle">stable address, load balances pods</text>
+
+  <!-- ingress / ALB -->
+  <line x1="3210" y1="1180" x2="3210" y2="1050" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2940" y="1190" width="540" height="130" rx="16" fill="#ffffff" stroke="#FF9900" stroke-width="4"/>
+  <text x="3210" y="1245" font-size="40" font-weight="bold" fill="#0f172a" text-anchor="middle">Ingress → AWS ALB</text>
+  <text x="3210" y="1295" font-size="34" fill="#334155" text-anchor="middle">public entry point (HTTP)</text>
+  <circle cx="2940" cy="1190" r="48" fill="#dc2626"/>
+  <text x="2940" y="1210" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+
+  <!-- ===================== 5. deploy arrow circleci -> eks ===================== -->
+  <polyline points="1560,1060 1560,1560 2780,1560 2780,1440" fill="none" stroke="#16a34a" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>
+  <text x="2170" y="1530" font-size="40" font-weight="bold" fill="#16a34a" text-anchor="middle">kubectl apply — deploy the new version</text>
+  <circle cx="1560" cy="1160" r="48" fill="#dc2626"/>
+  <text x="1560" y="1180" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+
+  <!-- ===================== Users ===================== -->
+  <rect x="3460" y="1560" width="300" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <text x="3610" y="1650" font-size="44" font-weight="bold" fill="#0f172a" text-anchor="middle">Users</text>
+  <text x="3610" y="1710" font-size="34" fill="#334155" text-anchor="middle">school staff,</text>
+  <text x="3610" y="1755" font-size="34" fill="#334155" text-anchor="middle">parents, apps</text>
+  <polyline points="3560,1560 3400,1330" fill="none" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 8. Terraform ===================== -->
+  <rect x="120" y="1680" width="1600" height="360" rx="24" fill="#ffffff" stroke="#7B42BC" stroke-width="5"/>
+  <rect x="120" y="1680" width="1600" height="90" rx="24" fill="#7B42BC"/>
+  <text x="920" y="1742" font-size="52" font-weight="bold" fill="#ffffff" text-anchor="middle">Terraform — Infrastructure as Code</text>
+  <text x="920" y="1860" font-size="42" fill="#334155" text-anchor="middle">terraform apply  →  creates everything inside the dashed AWS box:</text>
+  <text x="920" y="1930" font-size="42" font-weight="bold" fill="#0f172a" text-anchor="middle">VPC + subnets   ·   EKS cluster + nodes   ·   ECR registry   ·   (optional RDS)</text>
+  <circle cx="120" cy="1680" r="48" fill="#dc2626"/>
+  <text x="120" y="1700" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <polyline points="1720,1860 2100,1860 2100,1755" fill="none" stroke="#7B42BC" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>
+  <text x="1910" y="1820" font-size="38" fill="#7B42BC" text-anchor="middle">provisions</text>
+</svg>

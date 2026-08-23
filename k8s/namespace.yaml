@@ -1,0 +1,6 @@
+# A namespace is a "folder" inside the cluster — it isolates this project's
+# resources from everything else. Apply first:  kubectl apply -f k8s/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: school

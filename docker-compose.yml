@@ -1,0 +1,37 @@
+# Local development stack — lets you learn multi-container Docker before
+# touching Kubernetes. Run with:  docker compose up --build
+#
+# What you get:
+#   api -> the school-api container, built from apps/school-api/Dockerfile
+#   db  -> PostgreSQL, with a named volume so data survives restarts
+services:
+  api:
+    build: ./apps/school-api
+    ports:
+      - "3000:3000"           # host:container — open http://localhost:3000
+    environment:
+      # "db" works as a hostname because Compose puts both containers on the
+      # same private network and gives each service a DNS name.
+      DATABASE_URL: postgres://school:school@db:5432/school
+      APP_VERSION: compose-local
+    depends_on:
+      db:
+        condition: service_healthy   # wait until Postgres is actually ready
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: school
+      POSTGRES_PASSWORD: school     # fine locally; NEVER commit real passwords
+      POSTGRES_DB: school
+    volumes:
+      - school-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U school"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  school-data:   # named volume — survives `docker compose down` (without -v)

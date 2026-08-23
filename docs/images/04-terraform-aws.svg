@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+
+  <text x="120" y="150" font-size="96" font-weight="bold" fill="#0f172a">Terraform — Infrastructure as Code on AWS</text>
+  <text x="120" y="240" font-size="48" fill="#475569">Left: the Terraform workflow  ·  Right: the AWS network and services it creates for this project</text>
+
+  <!-- ===================== LEFT: terraform workflow ===================== -->
+
+  <!-- 1. .tf files -->
+  <rect x="120" y="420" width="820" height="360" rx="24" fill="#ffffff" stroke="#7B42BC" stroke-width="5"/>
+  <rect x="120" y="420" width="820" height="90" rx="24" fill="#7B42BC"/>
+  <text x="530" y="482" font-size="50" font-weight="bold" fill="#ffffff" text-anchor="middle">terraform/ *.tf files</text>
+  <text x="530" y="590" font-size="40" fill="#334155" text-anchor="middle">the DESIRED infrastructure, written as code:</text>
+  <text x="530" y="660" font-size="38" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">vpc.tf · eks.tf · ecr.tf · rds.tf</text>
+  <text x="530" y="730" font-size="38" fill="#334155" text-anchor="middle">reviewable, versioned, repeatable</text>
+  <circle cx="120" cy="420" r="48" fill="#dc2626"/>
+  <text x="120" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+
+  <!-- 2. init -->
+  <line x1="530" y1="780" x2="530" y2="870" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="120" y="890" width="820" height="240" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <text x="530" y="975" font-size="44" font-weight="bold" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">terraform init</text>
+  <text x="530" y="1045" font-size="38" fill="#334155" text-anchor="middle">downloads the AWS provider and the</text>
+  <text x="530" y="1095" font-size="38" fill="#334155" text-anchor="middle">vpc / eks modules this repo uses</text>
+  <circle cx="120" cy="890" r="48" fill="#dc2626"/>
+  <text x="120" y="910" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+
+  <!-- 3. plan -->
+  <line x1="530" y1="1130" x2="530" y2="1220" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="120" y="1240" width="820" height="240" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <text x="530" y="1325" font-size="44" font-weight="bold" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">terraform plan</text>
+  <text x="530" y="1395" font-size="38" fill="#334155" text-anchor="middle">a safe preview: "I will ADD 45 resources,</text>
+  <text x="530" y="1445" font-size="38" fill="#334155" text-anchor="middle">change 0, destroy 0" — nothing happens yet</text>
+  <circle cx="120" cy="1240" r="48" fill="#dc2626"/>
+  <text x="120" y="1260" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+
+  <!-- 4. apply -->
+  <line x1="530" y1="1480" x2="530" y2="1570" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="120" y="1590" width="820" height="240" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <text x="530" y="1675" font-size="44" font-weight="bold" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">terraform apply</text>
+  <text x="530" y="1745" font-size="38" fill="#334155" text-anchor="middle">actually calls the AWS APIs and builds</text>
+  <text x="530" y="1795" font-size="38" fill="#334155" text-anchor="middle">everything on the right (~15 min for EKS)</text>
+  <circle cx="120" cy="1590" r="48" fill="#dc2626"/>
+  <text x="120" y="1610" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+
+  <!-- 5. state -->
+  <rect x="120" y="1900" width="820" height="160" rx="24" fill="#f1f5f9" stroke="#94a3b8" stroke-width="4"/>
+  <text x="530" y="1965" font-size="40" font-weight="bold" fill="#0f172a" text-anchor="middle">terraform.tfstate</text>
+  <text x="530" y="2025" font-size="36" fill="#334155" text-anchor="middle">Terraform's memory of what it built — never edit by hand</text>
+  <circle cx="120" cy="1900" r="48" fill="#dc2626"/>
+  <text x="120" y="1920" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+
+  <!-- apply -> AWS arrow -->
+  <line x1="940" y1="1710" x2="1180" y2="1710" stroke="#16a34a" stroke-width="10" marker-end="url(#arrow)"/>
+  <text x="1060" y="1660" font-size="38" font-weight="bold" fill="#16a34a" text-anchor="middle">AWS API</text>
+
+  <!-- ===================== RIGHT: AWS ===================== -->
+
+  <!-- AWS boundary -->
+  <rect x="1200" y="360" width="2520" height="1700" rx="32" fill="#fffbeb" stroke="#FF9900" stroke-width="6" stroke-dasharray="24 18"/>
+  <text x="1250" y="450" font-size="54" font-weight="bold" fill="#b45309">AWS Cloud — region ap-south-1</text>
+
+  <!-- 6. VPC -->
+  <rect x="1280" y="520" width="1900" height="1460" rx="28" fill="#ffffff" stroke="#0f172a" stroke-width="5"/>
+  <text x="1330" y="600" font-size="48" font-weight="bold" fill="#0f172a">VPC 10.0.0.0/16 — your private network</text>
+  <circle cx="1280" cy="520" r="48" fill="#dc2626"/>
+  <text x="1280" y="540" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+
+  <!-- public subnets -->
+  <rect x="1340" y="660" width="1780" height="380" rx="20" fill="#ecfdf5" stroke="#16a34a" stroke-width="4"/>
+  <text x="1390" y="730" font-size="42" font-weight="bold" fill="#166534">Public subnets  (reachable from the internet)</text>
+  <rect x="1400" y="780" width="560" height="200" rx="16" fill="#ffffff" stroke="#16a34a" stroke-width="4"/>
+  <text x="1680" y="860" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">ALB (load balancer)</text>
+  <text x="1680" y="920" font-size="34" fill="#334155" text-anchor="middle">created later by k8s Ingress</text>
+  <rect x="2040" y="780" width="560" height="200" rx="16" fill="#ffffff" stroke="#16a34a" stroke-width="4"/>
+  <text x="2320" y="860" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">NAT gateway</text>
+  <text x="2320" y="920" font-size="34" fill="#334155" text-anchor="middle">lets private subnets go OUT</text>
+
+  <!-- private subnets -->
+  <rect x="1340" y="1100" width="1780" height="820" rx="20" fill="#eff6ff" stroke="#326CE5" stroke-width="4"/>
+  <text x="1390" y="1170" font-size="42" font-weight="bold" fill="#1d4ed8">Private subnets  (NOT reachable from the internet)</text>
+
+  <!-- 7. EKS -->
+  <rect x="1400" y="1230" width="1040" height="620" rx="20" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="1400" y="1230" width="1040" height="84" rx="20" fill="#326CE5"/>
+  <text x="1920" y="1288" font-size="44" font-weight="bold" fill="#ffffff" text-anchor="middle">EKS cluster: school-eks</text>
+  <text x="1920" y="1390" font-size="36" fill="#334155" text-anchor="middle">control plane managed by AWS (~$73/month!)</text>
+  <rect x="1460" y="1450" width="430" height="330" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="4"/>
+  <text x="1675" y="1530" font-size="36" font-weight="bold" fill="#0f172a" text-anchor="middle">Node 1 (EC2)</text>
+  <text x="1675" y="1590" font-size="32" fill="#334155" text-anchor="middle">t3.small</text>
+  <text x="1675" y="1650" font-size="32" fill="#334155" text-anchor="middle">runs your pods</text>
+  <rect x="1950" y="1450" width="430" height="330" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="4"/>
+  <text x="2165" y="1530" font-size="36" font-weight="bold" fill="#0f172a" text-anchor="middle">Node 2 (EC2)</text>
+  <text x="2165" y="1590" font-size="32" fill="#334155" text-anchor="middle">t3.small</text>
+  <text x="2165" y="1650" font-size="32" fill="#334155" text-anchor="middle">runs your pods</text>
+  <circle cx="1400" cy="1230" r="48" fill="#dc2626"/>
+  <text x="1400" y="1250" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+
+  <!-- RDS optional -->
+  <rect x="2520" y="1230" width="540" height="620" rx="20" fill="#ffffff" stroke="#336791" stroke-width="5" stroke-dasharray="18 12"/>
+  <text x="2790" y="1330" font-size="42" font-weight="bold" fill="#336791" text-anchor="middle">RDS Postgres</text>
+  <text x="2790" y="1400" font-size="36" fill="#334155" text-anchor="middle">(optional —</text>
+  <text x="2790" y="1455" font-size="36" fill="#334155" text-anchor="middle">create_rds = true)</text>
+  <text x="2790" y="1550" font-size="34" fill="#334155" text-anchor="middle">only reachable from</text>
+  <text x="2790" y="1600" font-size="34" fill="#334155" text-anchor="middle">inside the VPC</text>
+  <text x="2790" y="1690" font-size="34" fill="#334155" text-anchor="middle">db.t4g.micro</text>
+
+  <!-- 8. ECR outside VPC -->
+  <rect x="3260" y="660" width="400" height="500" rx="20" fill="#ffffff" stroke="#FF9900" stroke-width="5"/>
+  <rect x="3260" y="660" width="400" height="84" rx="20" fill="#FF9900"/>
+  <text x="3460" y="718" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">ECR</text>
+  <text x="3460" y="810" font-size="34" fill="#334155" text-anchor="middle">Docker registry</text>
+  <text x="3460" y="870" font-size="34" fill="#334155" text-anchor="middle">school-api</text>
+  <text x="3460" y="960" font-size="32" fill="#334155" text-anchor="middle">scan on push,</text>
+  <text x="3460" y="1010" font-size="32" fill="#334155" text-anchor="middle">keep last 10</text>
+  <text x="3460" y="1060" font-size="32" fill="#334155" text-anchor="middle">images</text>
+  <circle cx="3260" cy="660" r="48" fill="#dc2626"/>
+  <text x="3260" y="680" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+
+  <!-- nodes pull from ECR -->
+  <line x1="3260" y1="950" x2="2460" y2="1235" stroke="#FF9900" stroke-width="8" stroke-dasharray="18 12" marker-end="url(#arrow)"/>
+  <text x="2960" y="1210" font-size="34" fill="#b45309" text-anchor="middle">nodes pull images (via NAT)</text>
+
+  <!-- internet arrow -->
+</svg>

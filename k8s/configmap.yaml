@@ -1,0 +1,10 @@
+# ConfigMap = NON-secret configuration, kept outside the container image so
+# the same image can run in dev/staging/prod with different settings.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: school-api-config
+  namespace: school
+data:
+  PORT: "3000"
+  APP_VERSION: "k8s"

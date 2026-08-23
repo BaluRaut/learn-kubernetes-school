@@ -1,0 +1,124 @@
+# CircleCI pipeline: Test -> Build & Push to ECR -> (manual approval) -> Deploy to EKS
+#
+# IMPORTANT — contexts:
+#   Every job below uses `context: aws`. If your CircleCI context has a
+#   different name (Organization Settings -> Contexts), change `aws` to match.
+#   The context must provide:
+#     AWS_ACCESS_KEY_ID
+#     AWS_SECRET_ACCESS_KEY
+#     AWS_ACCOUNT_ID        (12-digit account number)
+#     AWS_DEFAULT_REGION    (e.g. ap-south-1 — must match terraform/variables.tf)
+version: 2.1
+
+jobs:
+  # -------------------------------------------------------------------------
+  # 1) TEST — runs on every push to every branch.
+  # -------------------------------------------------------------------------
+  test:
+    docker:
+      - image: cimg/node:20.18
+    working_directory: ~/repo/apps/school-api
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+            - npm-deps-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save_cache:
+          key: npm-deps-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+      - run:
+          name: Run unit tests
+          command: npm test
+
+  # -------------------------------------------------------------------------
+  # 2) BUILD & PUSH — builds the Docker image, pushes it to ECR.
+  #    Tagged with the git commit SHA so every deploy is traceable.
+  # -------------------------------------------------------------------------
+  build-and-push:
+    docker:
+      - image: cimg/aws:2024.03   # has AWS CLI + Docker CLI preinstalled
+    steps:
+      - checkout
+      - setup_remote_docker       # gives the job a Docker engine to build with
+      - run:
+          name: Log in to Amazon ECR
+          command: |
+            aws ecr get-login-password --region "$AWS_DEFAULT_REGION" \
+              | docker login --username AWS --password-stdin \
+                "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+      - run:
+          name: Build image
+          command: |
+            docker build \
+              -t "school-api:${CIRCLE_SHA1}" \
+              apps/school-api
+      - run:
+          name: Tag and push to ECR
+          command: |
+            IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/school-api"
+            docker tag "school-api:${CIRCLE_SHA1}" "${IMAGE}:${CIRCLE_SHA1}"
+            docker tag "school-api:${CIRCLE_SHA1}" "${IMAGE}:latest"
+            docker push "${IMAGE}:${CIRCLE_SHA1}"
+            docker push "${IMAGE}:latest"
+
+  # -------------------------------------------------------------------------
+  # 3) DEPLOY — points kubectl at the EKS cluster, swaps the image
+  #    placeholder in the manifest for the freshly pushed tag, applies
+  #    everything, and waits for the rollout to finish.
+  # -------------------------------------------------------------------------
+  deploy-to-eks:
+    docker:
+      - image: cimg/aws:2024.03
+    steps:
+      - checkout
+      - run:
+          name: Install kubectl
+          command: |
+            curl -sLO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            sudo install kubectl /usr/local/bin/kubectl
+      - run:
+          name: Configure kubectl for EKS
+          command: |
+            aws eks update-kubeconfig \
+              --region "$AWS_DEFAULT_REGION" \
+              --name school-eks
+      - run:
+          name: Deploy manifests
+          command: |
+            IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/school-api:${CIRCLE_SHA1}"
+            # Replace the placeholder with the exact image built in this pipeline.
+            sed -i "s|IMAGE_PLACEHOLDER|${IMAGE}|" k8s/deployment.yaml
+            kubectl apply -f k8s/namespace.yaml
+            kubectl apply -f k8s/configmap.yaml
+            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f k8s/service.yaml
+            kubectl apply -f k8s/hpa.yaml
+            # ingress.yaml requires the AWS Load Balancer Controller add-on;
+            # uncomment once you have installed it:
+            # kubectl apply -f k8s/ingress.yaml
+      - run:
+          name: Wait for rollout
+          command: kubectl rollout status deployment/school-api -n school --timeout=180s
+
+workflows:
+  test-build-deploy:
+    jobs:
+      - test:
+          context: aws
+      - build-and-push:
+          context: aws
+          requires: [test]
+          filters:
+            branches:
+              only: main          # only main gets built and pushed
+      - hold-for-approval:        # manual gate: click "Approve" in CircleCI UI
+          type: approval
+          requires: [build-and-push]
+      - deploy-to-eks:
+          context: aws
+          requires: [hold-for-approval]
