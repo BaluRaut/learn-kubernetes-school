@@ -1,0 +1,14 @@
+# Stable internal address for the analytics pods:
+#   http://school-analytics.school.svc.cluster.local
+apiVersion: v1
+kind: Service
+metadata:
+  name: school-analytics
+  namespace: school
+spec:
+  type: ClusterIP
+  selector:
+    app: school-analytics
+  ports:
+    - port: 80
+      targetPort: 8000

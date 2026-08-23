@@ -18,6 +18,17 @@ spec:
   rules:
     - http:
         paths:
+          # Path-based routing on ONE load balancer:
+          #   /analytics/* -> the Python service
+          #   everything else -> the Node service
+          # (More specific paths must come first.)
+          - path: /analytics
+            pathType: Prefix
+            backend:
+              service:
+                name: school-analytics
+                port:
+                  number: 80
           - path: /
             pathType: Prefix
             backend:

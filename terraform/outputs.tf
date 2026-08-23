@@ -1,9 +1,9 @@
 # Outputs = values printed after `terraform apply` (and readable any time
 # with `terraform output`). You will need these for CircleCI and kubectl.
 
-output "ecr_repository_url" {
-  description = "Push Docker images here (CircleCI env var AWS_ECR_REGISTRY_ID uses the account part)"
-  value       = aws_ecr_repository.school_api.repository_url
+output "ecr_repository_urls" {
+  description = "Push Docker images here — one repo per service"
+  value       = { for key, repo in aws_ecr_repository.service : key => repo.repository_url }
 }
 
 output "eks_cluster_name" {

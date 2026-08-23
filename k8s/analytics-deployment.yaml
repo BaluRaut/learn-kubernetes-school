@@ -1,0 +1,56 @@
+# Second Deployment in the same cluster/namespace — the Python analytics
+# service. Same patterns as deployment.yaml (probes, resources, rolling
+# updates); the interesting part is SCHOOL_API_URL: it points at the *Service*
+# name of the Node API, which Kubernetes DNS resolves inside the cluster.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-analytics
+  namespace: school
+  labels:
+    app: school-analytics
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: school-analytics
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: school-analytics
+    spec:
+      containers:
+        - name: school-analytics
+          # CircleCI replaces this with the real ECR image tag during deploy.
+          image: ANALYTICS_IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SCHOOL_API_URL
+              # school-api = the Service in service.yaml, port 80.
+              # Full form: http://school-api.school.svc.cluster.local
+              value: http://school-api
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz          # checks the school-api upstream too
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

@@ -1,7 +1,18 @@
 # ECR = AWS's private Docker registry. CircleCI pushes images here;
 # EKS worker nodes pull them from here.
-resource "aws_ecr_repository" "school_api" {
-  name = "${var.project}-api"
+#
+# One repository per service. `for_each` creates both from one block —
+# a small taste of Terraform loops.
+locals {
+  ecr_repos = {
+    api       = "${var.project}-api"       # Node.js school-api
+    analytics = "${var.project}-analytics" # Python school-analytics
+  }
+}
+
+resource "aws_ecr_repository" "service" {
+  for_each = local.ecr_repos
+  name     = each.value
 
   image_scanning_configuration {
     scan_on_push = true # free vulnerability scan on every push
@@ -11,9 +22,10 @@ resource "aws_ecr_repository" "school_api" {
   force_delete = true
 }
 
-# Keep only the last 10 images so the registry doesn't grow forever.
-resource "aws_ecr_lifecycle_policy" "school_api" {
-  repository = aws_ecr_repository.school_api.name
+# Keep only the last 10 images so the registries don't grow forever.
+resource "aws_ecr_lifecycle_policy" "service" {
+  for_each   = aws_ecr_repository.service
+  repository = each.value.name
 
   policy = jsonencode({
     rules = [{

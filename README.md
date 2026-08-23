@@ -1,7 +1,8 @@
 # 🏫 School Platform — Learn Docker, Kubernetes, Terraform, AWS & CircleCI
 
-A **learning monorepo** built around one simple use case — a **School Management API**
-(students & teachers) — so that every DevOps tool has a real job to do:
+A **learning monorepo** built around one simple use case — a school management system
+with **two services** (a Node.js REST API + a Python analytics API) — so that every
+DevOps tool has a real job to do:
 
 | Tool | What it does here | Folder |
 |---|---|---|
@@ -26,16 +27,34 @@ each step with a caption while a voice explains it. (Open the file on GitHub and
 ```
 cloud-real/
 ├── apps/
-│   └── school-api/          # Node.js/Express REST API (students, teachers)
-│       ├── src/             # server.js + db.js (Postgres OR in-memory)
-│       ├── test/            # tests CircleCI runs
-│       └── Dockerfile       # multi-stage image build
-├── docker-compose.yml       # local: API + Postgres in one command
-├── k8s/                     # Kubernetes manifests (deployment, service, ...)
-├── terraform/               # AWS infrastructure as code (VPC, EKS, ECR, RDS)
+│   ├── school-api/          # Node.js/Express REST API (students, teachers)
+│   │   ├── src/             # server.js + db.js (Postgres OR in-memory)
+│   │   ├── test/            # tests CircleCI runs
+│   │   └── Dockerfile       # multi-stage image build
+│   └── school-analytics/    # Python/FastAPI service — aggregates data
+│       ├── app/main.py      # calls school-api over the cluster network
+│       ├── test/            # pytest suite (mocks the upstream)
+│       └── Dockerfile       # python:3.12-slim, non-root
+├── docker-compose.yml       # local: both APIs + Postgres in one command
+├── k8s/                     # Kubernetes manifests (2 deployments, 2 services)
+├── terraform/               # AWS infrastructure as code (VPC, EKS, 2× ECR, RDS)
 ├── .circleci/config.yml     # CI/CD pipeline (uses your AWS context)
 └── docs/images/             # the numbered diagrams below (SVG + 4K PNG)
 ```
+
+### The two services
+
+| | school-api (Node.js) | school-analytics (Python) |
+|---|---|---|
+| Framework | Express | FastAPI |
+| Owns data? | yes (Postgres or in-memory) | no — calls school-api |
+| Cluster address | `http://school-api` | `http://school-analytics` |
+| Public route (via ALB) | `/*` | `/analytics/*` |
+| Example | `GET /students` | `GET /analytics/stats/students` |
+
+`school-analytics` demonstrates **service-to-service communication**: it reaches the
+Node API through its Kubernetes Service DNS name (`SCHOOL_API_URL=http://school-api`),
+and the Ingress routes the public paths to the right service from one load balancer.
 
 ## Suggested learning path
 
@@ -81,9 +100,10 @@ cloud-real/
 **Try it:**
 
 ```bash
-docker compose up --build          # start API + Postgres
-curl localhost:3000/students       # seeded data
-docker compose down                # stop (add -v to also wipe the data volume)
+docker compose up --build               # start both APIs + Postgres
+curl localhost:3000/students            # Node API (seeded data)
+curl localhost:8000/analytics/summary   # Python API, aggregating from the Node API
+docker compose down                     # stop (add -v to also wipe the data volume)
 ```
 
 ---
@@ -107,12 +127,17 @@ docker compose down                # stop (add -v to also wipe the data volume)
 
 ```bash
 docker build -t school-api:local apps/school-api
-# point the deployment at the local image instead of ECR:
+docker build -t school-analytics:local apps/school-analytics
+kubectl apply -f k8s/namespace.yaml -f k8s/configmap.yaml
+# point the deployments at the local images instead of ECR:
 sed 's|IMAGE_PLACEHOLDER|school-api:local|' k8s/deployment.yaml | kubectl apply -f -
-kubectl apply -f k8s/namespace.yaml -f k8s/configmap.yaml -f k8s/service.yaml
+sed 's|ANALYTICS_IMAGE_PLACEHOLDER|school-analytics:local|' k8s/analytics-deployment.yaml | kubectl apply -f -
+kubectl apply -f k8s/service.yaml -f k8s/analytics-service.yaml
 kubectl -n school get pods -w                      # watch pods come up
-kubectl -n school port-forward svc/school-api 8080:80
+kubectl -n school port-forward svc/school-api 8080:80 &
+kubectl -n school port-forward svc/school-analytics 8081:80 &
 curl localhost:8080/students
+curl localhost:8081/analytics/summary              # Python calling Node, inside the cluster
 ```
 
 ---
@@ -156,7 +181,7 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 1. **`git push`** — the only manual action. Any branch runs tests; only `main` continues to build and deploy (see `filters` in [.circleci/config.yml](.circleci/config.yml)).
 2. **Webhook** — GitHub tells CircleCI about the push; CircleCI reads `.circleci/config.yml` from the repo and starts the pipeline.
 3. **Context `balu-cicd`** — your CircleCI **context** (Organization Settings → Contexts) injects the AWS credentials into every job as environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ACCOUNT_ID`, `AWS_DEFAULT_REGION`. Secrets stay in CircleCI — never in the repo. The config references it as `context: balu-cicd`.
-4. **`test` job** — installs dependencies with `npm ci` and runs the tests in [apps/school-api/test/](apps/school-api/test/). If they fail, the pipeline stops here — broken code can't reach production.
+4. **Test jobs** — `test-node` (`npm ci` + `npm test`) and `test-python` (`pip install` + `pytest`) run **in parallel**, one per service. If either fails, the pipeline stops here — broken code can't reach production.
 5. **`build-and-push` job** — logs in to ECR using the context credentials, builds the Docker image and pushes it tagged with the **git commit SHA** plus `latest`.
 6. **`hold`** — a manual approval gate. The pipeline pauses until a human clicks **Approve** in the CircleCI UI — a common pattern for production deploys.
 7. **`deploy-to-eks` job** — runs `aws eks update-kubeconfig` to authenticate to the cluster, replaces `IMAGE_PLACEHOLDER` in [k8s/deployment.yaml](k8s/deployment.yaml) with the exact image just built, runs `kubectl apply`, and waits for `kubectl rollout status` to confirm the new pods are live.
@@ -180,9 +205,22 @@ Each diagram exists twice in [docs/images/](docs/images/):
 
 ## API quick reference
 
+**school-api (Node, port 3000):**
+
 ```
 GET    /            service info        GET    /healthz     liveness
 GET    /students    list students       GET    /readyz      readiness (checks DB)
 POST   /students    {name, grade}       GET    /teachers    list teachers
 DELETE /students/1                      POST   /teachers    {name, subject}
+```
+
+**school-analytics (Python, port 8000):**
+
+```
+GET /analytics/                  service info
+GET /analytics/stats/students    student count per grade
+GET /analytics/stats/teachers    teacher count per subject
+GET /analytics/summary           totals + students-per-teacher ratio
+GET /healthz  /readyz            probes (readyz checks the school-api upstream)
+GET /docs                        FastAPI's built-in interactive API docs (Swagger UI)
 ```

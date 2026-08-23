@@ -1,4 +1,5 @@
-# CircleCI pipeline: Test -> Build & Push to ECR -> (manual approval) -> Deploy to EKS
+# CircleCI pipeline: Test (Node + Python) -> Build & Push both images to ECR
+#                    -> (manual approval) -> Deploy both to EKS
 #
 # IMPORTANT — contexts:
 #   Every job below uses `context: balu-cicd` — your context in CircleCI
@@ -11,9 +12,9 @@ version: 2.1
 
 jobs:
   # -------------------------------------------------------------------------
-  # 1) TEST — runs on every push to every branch.
+  # 1a) TEST NODE — the school-api. Runs on every push to every branch.
   # -------------------------------------------------------------------------
-  test:
+  test-node:
     docker:
       - image: cimg/node:20.18
     working_directory: ~/repo/apps/school-api
@@ -35,7 +36,31 @@ jobs:
           command: npm test
 
   # -------------------------------------------------------------------------
-  # 2) BUILD & PUSH — builds the Docker image, pushes it to ECR.
+  # 1b) TEST PYTHON — the school-analytics service. Runs in parallel with 1a.
+  # -------------------------------------------------------------------------
+  test-python:
+    docker:
+      - image: cimg/python:3.12
+    working_directory: ~/repo/apps/school-analytics
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+            - pip-deps-{{ checksum "requirements.txt" }}
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt pytest
+      - save_cache:
+          key: pip-deps-{{ checksum "requirements.txt" }}
+          paths:
+            - ~/.cache/pip
+      - run:
+          name: Run tests
+          command: pytest test/ -v
+
+  # -------------------------------------------------------------------------
+  # 2) BUILD & PUSH — builds BOTH Docker images, pushes them to ECR.
   #    Tagged with the git commit SHA so every deploy is traceable.
   # -------------------------------------------------------------------------
   build-and-push:
@@ -51,24 +76,26 @@ jobs:
               | docker login --username AWS --password-stdin \
                 "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
       - run:
-          name: Build image
-          command: |
-            docker build \
-              -t "school-api:${CIRCLE_SHA1}" \
-              apps/school-api
-      - run:
-          name: Tag and push to ECR
+          name: Build and push school-api (Node)
           command: |
             IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/school-api"
-            docker tag "school-api:${CIRCLE_SHA1}" "${IMAGE}:${CIRCLE_SHA1}"
-            docker tag "school-api:${CIRCLE_SHA1}" "${IMAGE}:latest"
+            docker build -t "${IMAGE}:${CIRCLE_SHA1}" apps/school-api
+            docker tag "${IMAGE}:${CIRCLE_SHA1}" "${IMAGE}:latest"
+            docker push "${IMAGE}:${CIRCLE_SHA1}"
+            docker push "${IMAGE}:latest"
+      - run:
+          name: Build and push school-analytics (Python)
+          command: |
+            IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/school-analytics"
+            docker build -t "${IMAGE}:${CIRCLE_SHA1}" apps/school-analytics
+            docker tag "${IMAGE}:${CIRCLE_SHA1}" "${IMAGE}:latest"
             docker push "${IMAGE}:${CIRCLE_SHA1}"
             docker push "${IMAGE}:latest"
 
   # -------------------------------------------------------------------------
-  # 3) DEPLOY — points kubectl at the EKS cluster, swaps the image
-  #    placeholder in the manifest for the freshly pushed tag, applies
-  #    everything, and waits for the rollout to finish.
+  # 3) DEPLOY — points kubectl at the EKS cluster, swaps BOTH image
+  #    placeholders for the freshly pushed tags, applies everything,
+  #    and waits for both rollouts to finish.
   # -------------------------------------------------------------------------
   deploy-to-eks:
     docker:
@@ -89,29 +116,36 @@ jobs:
       - run:
           name: Deploy manifests
           command: |
-            IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/school-api:${CIRCLE_SHA1}"
-            # Replace the placeholder with the exact image built in this pipeline.
-            sed -i "s|IMAGE_PLACEHOLDER|${IMAGE}|" k8s/deployment.yaml
+            REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+            # Replace the placeholders with the exact images built in this pipeline.
+            sed -i "s|IMAGE_PLACEHOLDER|${REGISTRY}/school-api:${CIRCLE_SHA1}|" k8s/deployment.yaml
+            sed -i "s|ANALYTICS_IMAGE_PLACEHOLDER|${REGISTRY}/school-analytics:${CIRCLE_SHA1}|" k8s/analytics-deployment.yaml
             kubectl apply -f k8s/namespace.yaml
             kubectl apply -f k8s/configmap.yaml
             kubectl apply -f k8s/deployment.yaml
             kubectl apply -f k8s/service.yaml
+            kubectl apply -f k8s/analytics-deployment.yaml
+            kubectl apply -f k8s/analytics-service.yaml
             kubectl apply -f k8s/hpa.yaml
             # ingress.yaml requires the AWS Load Balancer Controller add-on;
             # uncomment once you have installed it:
             # kubectl apply -f k8s/ingress.yaml
       - run:
-          name: Wait for rollout
-          command: kubectl rollout status deployment/school-api -n school --timeout=180s
+          name: Wait for rollouts
+          command: |
+            kubectl rollout status deployment/school-api -n school --timeout=180s
+            kubectl rollout status deployment/school-analytics -n school --timeout=180s
 
 workflows:
   test-build-deploy:
     jobs:
-      - test:
+      - test-node:
+          context: balu-cicd
+      - test-python:
           context: balu-cicd
       - build-and-push:
           context: balu-cicd
-          requires: [test]
+          requires: [test-node, test-python]
           filters:
             branches:
               only: main          # only main gets built and pushed
