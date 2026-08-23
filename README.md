@@ -161,7 +161,7 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 **Setup checklist:**
 
 1. Push this repo to GitHub and connect the project in CircleCI.
-2. Make sure your AWS context provides the 4 variables above (rename `context: aws` in the config if needed).
+2. Make sure your `balu-cicd` context provides the 4 variables above.
 3. Run `terraform apply` first — the pipeline needs the ECR repo and EKS cluster to exist.
 4. Push to `main`, watch the pipeline, click **Approve**, then:
    `kubectl -n school get pods` 🎉
