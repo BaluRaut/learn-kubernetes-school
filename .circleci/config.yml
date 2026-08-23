@@ -1,9 +1,8 @@
 # CircleCI pipeline: Test -> Build & Push to ECR -> (manual approval) -> Deploy to EKS
 #
 # IMPORTANT — contexts:
-#   Every job below uses `context: aws`. If your CircleCI context has a
-#   different name (Organization Settings -> Contexts), change `aws` to match.
-#   The context must provide:
+#   Every job below uses `context: balu-cicd` — your context in CircleCI
+#   (Organization Settings -> Contexts). The context must provide:
 #     AWS_ACCESS_KEY_ID
 #     AWS_SECRET_ACCESS_KEY
 #     AWS_ACCOUNT_ID        (12-digit account number)
@@ -109,9 +108,9 @@ workflows:
   test-build-deploy:
     jobs:
       - test:
-          context: aws
+          context: balu-cicd
       - build-and-push:
-          context: aws
+          context: balu-cicd
           requires: [test]
           filters:
             branches:
@@ -120,5 +119,5 @@ workflows:
           type: approval
           requires: [build-and-push]
       - deploy-to-eks:
-          context: aws
+          context: balu-cicd
           requires: [hold-for-approval]

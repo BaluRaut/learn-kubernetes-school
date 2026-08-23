@@ -151,7 +151,7 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 
 1. **`git push`** — the only manual action. Any branch runs tests; only `main` continues to build and deploy (see `filters` in [.circleci/config.yml](.circleci/config.yml)).
 2. **Webhook** — GitHub tells CircleCI about the push; CircleCI reads `.circleci/config.yml` from the repo and starts the pipeline.
-3. **Context `aws`** — your CircleCI **context** (Organization Settings → Contexts) injects the AWS credentials into every job as environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ACCOUNT_ID`, `AWS_DEFAULT_REGION`. Secrets stay in CircleCI — never in the repo. **If your context has a different name, edit `context: aws` in the config.**
+3. **Context `balu-cicd`** — your CircleCI **context** (Organization Settings → Contexts) injects the AWS credentials into every job as environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ACCOUNT_ID`, `AWS_DEFAULT_REGION`. Secrets stay in CircleCI — never in the repo. The config references it as `context: balu-cicd`.
 4. **`test` job** — installs dependencies with `npm ci` and runs the tests in [apps/school-api/test/](apps/school-api/test/). If they fail, the pipeline stops here — broken code can't reach production.
 5. **`build-and-push` job** — logs in to ECR using the context credentials, builds the Docker image and pushes it tagged with the **git commit SHA** plus `latest`.
 6. **`hold`** — a manual approval gate. The pipeline pauses until a human clicks **Approve** in the CircleCI UI — a common pattern for production deploys.
