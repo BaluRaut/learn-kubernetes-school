@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+
+  <text x="120" y="150" font-size="96" font-weight="bold" fill="#0f172a">Multi-Tenancy — 100 Schools, Zero Mix-Ups</text>
+  <text x="120" y="240" font-size="48" fill="#475569">One shared app fleet · one database per school · per-school secrets and backups · dedicated instances only when needed</text>
+
+  <!-- ===================== 1. Requests with school identity ===================== -->
+  <rect x="100" y="380" width="640" height="600" rx="28" fill="#ffffff" stroke="#cbd5e1" stroke-width="5" stroke-dasharray="20 14"/>
+  <text x="420" y="460" font-size="44" font-weight="bold" fill="#0f172a" text-anchor="middle">Every request says</text>
+  <text x="420" y="515" font-size="44" font-weight="bold" fill="#0f172a" text-anchor="middle">which school it is</text>
+  <rect x="150" y="560" width="540" height="110" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+  <text x="420" y="615" font-size="34" fill="#0f172a" text-anchor="middle">School A staff</text>
+  <text x="420" y="655" font-size="30" font-family="Menlo, monospace" fill="#334155" text-anchor="middle">dps-pune.yourapp.com</text>
+  <rect x="150" y="690" width="540" height="110" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+  <text x="420" y="745" font-size="34" fill="#0f172a" text-anchor="middle">School B staff</text>
+  <text x="420" y="785" font-size="30" font-family="Menlo, monospace" fill="#334155" text-anchor="middle">svm-mumbai.yourapp.com</text>
+  <rect x="150" y="820" width="540" height="110" rx="16" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3" stroke-dasharray="12 8"/>
+  <text x="420" y="885" font-size="34" fill="#64748b" text-anchor="middle">… school #100</text>
+  <circle cx="100" cy="380" r="48" fill="#dc2626"/>
+  <text x="100" y="400" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+
+  <!-- arrow to ALB -->
+  <line x1="740" y1="680" x2="880" y2="680" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+
+  <!-- ALB -->
+  <rect x="900" y="570" width="420" height="220" rx="24" fill="#ffffff" stroke="#FF9900" stroke-width="5"/>
+  <rect x="900" y="570" width="420" height="80" rx="24" fill="#FF9900"/>
+  <text x="1110" y="625" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">ALB + Ingress</text>
+  <text x="1110" y="700" font-size="34" fill="#334155" text-anchor="middle">one public entry point</text>
+  <text x="1110" y="750" font-size="34" fill="#334155" text-anchor="middle">for all schools</text>
+
+  <!-- arrow to app fleet -->
+  <line x1="1320" y1="680" x2="1460" y2="680" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 2. Shared app fleet ===================== -->
+  <rect x="1480" y="440" width="700" height="480" rx="24" fill="#eff6ff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="1480" y="440" width="700" height="90" rx="24" fill="#326CE5"/>
+  <text x="1830" y="502" font-size="44" font-weight="bold" fill="#ffffff" text-anchor="middle">school-api — ONE shared fleet</text>
+  <rect x="1530" y="570" width="180" height="120" rx="16" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="1620" y="640" font-size="34" font-weight="bold" fill="#0f172a" text-anchor="middle">Pod</text>
+  <rect x="1740" y="570" width="180" height="120" rx="16" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="1830" y="640" font-size="34" font-weight="bold" fill="#0f172a" text-anchor="middle">Pod</text>
+  <rect x="1950" y="570" width="180" height="120" rx="16" fill="#ffffff" stroke="#94a3b8" stroke-width="4" stroke-dasharray="12 8"/>
+  <text x="2040" y="640" font-size="34" fill="#64748b" text-anchor="middle">HPA…</text>
+  <text x="1830" y="760" font-size="34" fill="#334155" text-anchor="middle">same code for every school —</text>
+  <text x="1830" y="810" font-size="34" fill="#334155" text-anchor="middle">per request it resolves the tenant,</text>
+  <text x="1830" y="860" font-size="34" fill="#334155" text-anchor="middle">then talks ONLY to that school's DB</text>
+  <circle cx="1480" cy="440" r="48" fill="#dc2626"/>
+  <text x="1480" y="460" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+
+  <!-- ===================== 3. Tenant catalog ===================== -->
+  <rect x="1480" y="1020" width="700" height="280" rx="24" fill="#ffffff" stroke="#d97706" stroke-width="5"/>
+  <rect x="1480" y="1020" width="700" height="80" rx="24" fill="#d97706"/>
+  <text x="1830" y="1075" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Tenant catalog</text>
+  <text x="1830" y="1155" font-size="32" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">dps-pune  → server A / school_001</text>
+  <text x="1830" y="1205" font-size="32" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">svm-mumbai→ server A / school_002</text>
+  <text x="1830" y="1255" font-size="32" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">big-school→ dedicated RDS</text>
+  <circle cx="1480" cy="1020" r="48" fill="#dc2626"/>
+  <text x="1480" y="1040" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+  <line x1="1830" y1="920" x2="1830" y2="1010" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="1990" y="975" font-size="32" fill="#64748b" text-anchor="middle">which DB is yours?</text>
+
+  <!-- ===================== 4. Per-school secrets ===================== -->
+  <rect x="1480" y="1380" width="700" height="260" rx="24" fill="#ffffff" stroke="#7c3aed" stroke-width="5"/>
+  <rect x="1480" y="1380" width="700" height="80" rx="24" fill="#7c3aed"/>
+  <text x="1830" y="1435" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Per-school credentials</text>
+  <text x="1830" y="1515" font-size="34" fill="#334155" text-anchor="middle">one Secret per school</text>
+  <text x="1830" y="1565" font-size="34" fill="#334155" text-anchor="middle">(AWS Secrets Manager / k8s Secret)</text>
+  <text x="1830" y="1615" font-size="34" font-weight="bold" fill="#7c3aed" text-anchor="middle">one leak = one school, not all 100</text>
+  <circle cx="1480" cy="1380" r="48" fill="#dc2626"/>
+  <text x="1480" y="1400" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+
+  <!-- ===================== 5. Shared Postgres servers, DB per school ===================== -->
+  <rect x="2340" y="400" width="680" height="620" rx="24" fill="#ffffff" stroke="#336791" stroke-width="5"/>
+  <rect x="2340" y="400" width="680" height="90" rx="24" fill="#336791"/>
+  <text x="2680" y="462" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Postgres server A (shared)</text>
+  <rect x="2400" y="530" width="260" height="90" rx="14" fill="#eff6ff" stroke="#336791" stroke-width="3"/>
+  <text x="2530" y="587" font-size="30" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">db: school_001</text>
+  <rect x="2700" y="530" width="260" height="90" rx="14" fill="#eff6ff" stroke="#336791" stroke-width="3"/>
+  <text x="2830" y="587" font-size="30" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">db: school_002</text>
+  <rect x="2400" y="640" width="260" height="90" rx="14" fill="#eff6ff" stroke="#336791" stroke-width="3"/>
+  <text x="2530" y="697" font-size="30" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">db: school_003</text>
+  <rect x="2700" y="640" width="260" height="90" rx="14" fill="#eff6ff" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="2830" y="697" font-size="30" fill="#64748b" text-anchor="middle">… school_050</text>
+  <text x="2680" y="810" font-size="33" fill="#334155" text-anchor="middle">separate databases = a connection to</text>
+  <text x="2680" y="858" font-size="33" fill="#334155" text-anchor="middle">school_001 physically CANNOT read</text>
+  <text x="2680" y="906" font-size="33" fill="#334155" text-anchor="middle">school_002 — isolation by construction</text>
+  <text x="2680" y="975" font-size="33" font-weight="bold" fill="#336791" text-anchor="middle">server B holds school_051 … school_100</text>
+  <circle cx="2340" cy="400" r="48" fill="#dc2626"/>
+  <text x="2340" y="420" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+
+  <!-- arrows app -> postgres -->
+  <line x1="2180" y1="680" x2="2320" y2="680" stroke="#16a34a" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="2250" y="640" font-size="30" fill="#16a34a" text-anchor="middle">connect</text>
+
+  <!-- ===================== 6. Dedicated instance (promotion) ===================== -->
+  <rect x="3120" y="400" width="600" height="620" rx="24" fill="#ffffff" stroke="#FF9900" stroke-width="5" stroke-dasharray="18 12"/>
+  <rect x="3120" y="400" width="600" height="90" rx="24" fill="#FF9900"/>
+  <text x="3420" y="462" font-size="40" font-weight="bold" fill="#ffffff" text-anchor="middle">Dedicated RDS</text>
+  <text x="3420" y="580" font-size="34" fill="#334155" text-anchor="middle">for a premium school or</text>
+  <text x="3420" y="630" font-size="34" fill="#334155" text-anchor="middle">strict-compliance school:</text>
+  <text x="3420" y="710" font-size="34" fill="#334155" text-anchor="middle">its OWN instance, snapshots,</text>
+  <text x="3420" y="760" font-size="34" fill="#334155" text-anchor="middle">KMS key and failover</text>
+  <text x="3420" y="860" font-size="34" font-weight="bold" fill="#b45309" text-anchor="middle">upgrade = just a new</text>
+  <text x="3420" y="910" font-size="34" font-weight="bold" fill="#b45309" text-anchor="middle">connection string in the catalog</text>
+  <circle cx="3120" cy="400" r="48" fill="#dc2626"/>
+  <text x="3120" y="420" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+  <line x1="3020" y1="700" x2="3100" y2="700" stroke="#FF9900" stroke-width="8" stroke-dasharray="16 12" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 7. Per-school backups ===================== -->
+  <rect x="2340" y="1120" width="1380" height="520" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="2340" y="1120" width="1380" height="90" rx="24" fill="#16a34a"/>
+  <text x="3030" y="1182" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Per-school backups (CronJob)</text>
+  <text x="3030" y="1290" font-size="36" fill="#334155" text-anchor="middle">a nightly Kubernetes CronJob runs pg_dump per school and uploads to S3:</text>
+  <text x="3030" y="1370" font-size="34" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">s3://school-backups/school_001/2026-08-23.sql.gz</text>
+  <text x="3030" y="1425" font-size="34" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">s3://school-backups/school_002/2026-08-23.sql.gz</text>
+  <text x="3030" y="1520" font-size="36" font-weight="bold" fill="#16a34a" text-anchor="middle">restore ONE school without touching the other 99</text>
+  <circle cx="2340" cy="1120" r="48" fill="#dc2626"/>
+  <text x="2340" y="1140" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+  <line x1="2680" y1="1020" x2="2680" y2="1110" stroke="#16a34a" stroke-width="8" stroke-dasharray="16 12" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 8. Onboarding automation ===================== -->
+  <rect x="100" y="1760" width="2080" height="300" rx="24" fill="#ffffff" stroke="#7B42BC" stroke-width="5"/>
+  <rect x="100" y="1760" width="2080" height="80" rx="24" fill="#7B42BC"/>
+  <text x="1140" y="1815" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Onboarding automation — "add school #101" is one command</text>
+  <text x="1140" y="1910" font-size="36" fill="#334155" text-anchor="middle">Terraform / job:  create database  →  create user + password  →  run migrations</text>
+  <text x="1140" y="1975" font-size="36" fill="#334155" text-anchor="middle">→  store the Secret  →  add the catalog entry  →  school is live</text>
+  <circle cx="100" cy="1760" r="48" fill="#dc2626"/>
+  <text x="100" y="1780" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <line x1="1830" y1="1760" x2="1830" y2="1650" stroke="#7B42BC" stroke-width="8" stroke-dasharray="18 12" marker-end="url(#arrow)"/>
+  <text x="1990" y="1720" font-size="32" fill="#7B42BC" text-anchor="middle">creates DB + secret + entry</text>
+</svg>

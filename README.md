@@ -197,6 +197,31 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 
 ---
 
+# 6️⃣ Multi-Tenancy — 100 Schools, Zero Mix-Ups
+
+*The scaling plan: how this platform serves many schools with **one database per school**, so no
+school's data can ever mix with another's — each with its own credentials and its own backups.*
+
+![Multi-tenancy architecture](docs/images/06-multi-tenancy-4k.png)
+
+**What each number does:**
+
+1. **Tenant identity on every request** — each school gets its own subdomain (`dps-pune.yourapp.com`). The subdomain (or a JWT claim) tells the platform *which school* every single request belongs to. Nothing is ever ambiguous.
+2. **One shared app fleet** — you do **not** run 100 copies of the app. The same `school-api` pods serve every school; per request they resolve the tenant and then talk *only* to that school's database. One deploy updates all 100 schools.
+3. **Tenant catalog** — a small control-plane table mapping each school to its database location (`dps-pune → server A / school_001`). Moving a school to a bigger server is just an update here.
+4. **Per-school credentials** — every school's database user + password lives in its own Secret (AWS Secrets Manager or a k8s Secret). If one credential ever leaks, one school is affected — not all 100.
+5. **Database-per-school on shared Postgres servers** — the sweet spot: each school gets its **own database** (`school_001`, `school_002`, …) on a shared Postgres instance. A connection to one database *physically cannot* read another — isolation by construction, without paying for 100 idle servers. Server B takes schools 51–100; add servers as you grow.
+6. **Dedicated instance when needed** — a premium school or one with strict compliance needs gets promoted to its **own RDS instance** with its own snapshots, KMS encryption key and failover. The app doesn't change — it's just a new connection string in the catalog.
+7. **Per-school backups** — a nightly CronJob runs `pg_dump` *per school* and uploads to S3 under that school's prefix. "School #42 deleted everything, please restore" touches school #42 only.
+8. **Onboarding automation** — "add school #101" is one command: create the database → create the user → run migrations → store the Secret → add the catalog entry. At 100 schools, this automation *is* the product.
+
+> **Why not the alternatives?** One shared database with a `school_id` column is cheaper but one
+> buggy query can leak data across schools. One RDS instance *per* school is the strongest isolation
+> but costs $1,500+/month at 100 schools while most sit idle. Database-per-school on shared servers
+> gives real isolation at a fraction of the cost — and lane 6 exists for the schools that need more.
+
+---
+
 ## The images
 
 Each diagram exists twice in [docs/images/](docs/images/):
