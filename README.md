@@ -11,9 +11,9 @@ A **learning monorepo** built around one simple use case — a **School Manageme
 | **AWS** | Hosts everything: VPC, EKS, ECR, (optional) RDS | created by Terraform |
 | **CircleCI** | Tests → builds → pushes → deploys on every push to `main` | [.circleci/config.yml](.circleci/config.yml) |
 
-🎬 **Video walkthrough:** [docs/video/walkthrough-4k.mp4](docs/video/walkthrough-4k.mp4) — a 3-minute
-4K guided tour that steps through every numbered diagram below, highlighting each step with a caption.
-(Open the file on GitHub and it plays right in the browser.)
+🎬 **Video walkthrough (with narration):** [docs/video/walkthrough-4k.mp4](docs/video/walkthrough-4k.mp4) —
+a 6-minute narrated 4K guided tour that steps through every numbered diagram below, highlighting
+each step with a caption while a voice explains it. (Open the file on GitHub and it plays right in the browser.)
 
 > ⚠️ **This repo is for learning.** The AWS pieces cost real money while they exist
 > (EKS ≈ $73/month + EC2 nodes + NAT gateway). Create them, play, and run
