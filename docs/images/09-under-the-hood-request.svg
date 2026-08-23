@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+  <text x="120" y="150" font-size="88" font-weight="bold" fill="#0f172a">Under the Hood — One HTTP Request, End to End</text>
+  <text x="120" y="240" font-size="46" fill="#475569">What happens in the ~30 milliseconds between a teacher pressing Enter and seeing the student list.</text>
+  <rect x="120" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="120" y="420" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="545" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">DNS lookup</text>
+  <text x="545" y="580" font-size="36" fill="#334155" text-anchor="middle">The browser asks DNS:</text>
+  <text x="545" y="638" font-size="36" fill="#334155" text-anchor="middle">"where is dps-pune.yourapp.com?"</text>
+  <text x="545" y="696" font-size="36" fill="#334155" text-anchor="middle">Answer: the public IP addresses</text>
+  <text x="545" y="754" font-size="36" fill="#334155" text-anchor="middle">of your ALB.</text>
+  <circle cx="120" cy="420" r="48" fill="#dc2626"/>
+  <text x="120" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+  <line x1="970" y1="650" x2="1066" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="1070" y="420" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="1495" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Request hits the ALB</text>
+  <text x="1495" y="580" font-size="36" fill="#334155" text-anchor="middle">In the PUBLIC subnet. TLS ends</text>
+  <text x="1495" y="638" font-size="36" fill="#334155" text-anchor="middle">here. The ALB looks at its target</text>
+  <text x="1495" y="696" font-size="36" fill="#334155" text-anchor="middle">group and picks one healthy,</text>
+  <text x="1495" y="754" font-size="36" fill="#334155" text-anchor="middle">ready pod to forward to.</text>
+  <circle cx="1070" cy="420" r="48" fill="#dc2626"/>
+  <text x="1070" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+  <line x1="1920" y1="650" x2="2016" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="2020" y="420" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="2445" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Into the private subnet</text>
+  <text x="2445" y="580" font-size="36" fill="#334155" text-anchor="middle">target-type: ip → the ALB sends</text>
+  <text x="2445" y="638" font-size="36" fill="#334155" text-anchor="middle">the request straight to a pod IP.</text>
+  <text x="2445" y="696" font-size="36" fill="#334155" text-anchor="middle">Pods are never directly exposed</text>
+  <text x="2445" y="754" font-size="36" fill="#334155" text-anchor="middle">to the internet.</text>
+  <circle cx="2020" cy="420" r="48" fill="#dc2626"/>
+  <text x="2020" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+  <line x1="2870" y1="650" x2="2966" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="2970" y="420" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="3395" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Onto the node</text>
+  <text x="3395" y="580" font-size="36" fill="#334155" text-anchor="middle">The packet arrives at the EC2</text>
+  <text x="3395" y="638" font-size="36" fill="#334155" text-anchor="middle">node's network card, and the node</text>
+  <text x="3395" y="696" font-size="36" fill="#334155" text-anchor="middle">delivers it into the pod through</text>
+  <text x="3395" y="754" font-size="36" fill="#334155" text-anchor="middle">its virtual cable (veth).</text>
+  <circle cx="2970" cy="420" r="48" fill="#dc2626"/>
+  <text x="2970" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+  <rect x="120" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="120" y="1180" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="545" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Inside the container</text>
+  <text x="545" y="1340" font-size="36" fill="#334155" text-anchor="middle">Express, listening on port 3000,</text>
+  <text x="545" y="1398" font-size="36" fill="#334155" text-anchor="middle">parses the request and runs your</text>
+  <text x="545" y="1456" font-size="36" fill="#334155" text-anchor="middle">route handler — plain JavaScript,</text>
+  <text x="545" y="1514" font-size="36" fill="#334155" text-anchor="middle">nothing cloud-specific.</text>
+  <circle cx="120" cy="1180" r="48" fill="#dc2626"/>
+  <text x="120" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+  <line x1="970" y1="1410" x2="1066" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="1070" y="1180" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="1495" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Database query</text>
+  <text x="1495" y="1340" font-size="36" fill="#334155" text-anchor="middle">The handler queries Postgres.</text>
+  <text x="1495" y="1398" font-size="36" fill="#334155" text-anchor="middle">For /analytics/* the Python pod</text>
+  <text x="1495" y="1456" font-size="36" fill="#334155" text-anchor="middle">would first call the Node Service —</text>
+  <text x="1495" y="1514" font-size="36" fill="#334155" text-anchor="middle">pod-to-pod, inside the cluster.</text>
+  <circle cx="1070" cy="1180" r="48" fill="#dc2626"/>
+  <text x="1070" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+  <line x1="1920" y1="1410" x2="2016" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="2020" y="1180" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="2445" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Response walks back</text>
+  <text x="2445" y="1340" font-size="36" fill="#334155" text-anchor="middle">Handler → pod → ALB → browser.</text>
+  <text x="2445" y="1398" font-size="36" fill="#334155" text-anchor="middle">The whole round trip is typically</text>
+  <text x="2445" y="1456" font-size="36" fill="#334155" text-anchor="middle">tens of milliseconds. The teacher</text>
+  <text x="2445" y="1514" font-size="36" fill="#334155" text-anchor="middle">just sees the student list.</text>
+  <circle cx="2020" cy="1180" r="48" fill="#dc2626"/>
+  <text x="2020" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+  <line x1="2870" y1="1410" x2="2966" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="2970" y="1180" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="3395" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">If a pod dies mid-flight?</text>
+  <text x="3395" y="1340" font-size="36" fill="#334155" text-anchor="middle">readyz fails → Service removes it →</text>
+  <text x="3395" y="1398" font-size="36" fill="#334155" text-anchor="middle">ALB retries a healthy pod. Users</text>
+  <text x="3395" y="1456" font-size="36" fill="#334155" text-anchor="middle">mostly never notice. That is the</text>
+  <text x="3395" y="1514" font-size="36" fill="#334155" text-anchor="middle">payoff of the whole design.</text>
+  <circle cx="2970" cy="1180" r="48" fill="#dc2626"/>
+  <text x="2970" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <polyline points="3395,880 3395,970 545,970 545,1170" fill="none" stroke="#475569" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>
+  <text x="1920" y="2080" font-size="38" fill="#64748b" text-anchor="middle">School Platform learning repo · step-by-step internals for beginners · diagram 09 of 9</text>
+</svg>

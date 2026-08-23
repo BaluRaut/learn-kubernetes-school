@@ -16,6 +16,10 @@ DevOps tool has a real job to do:
 a 6-minute narrated 4K guided tour that steps through every numbered diagram below, highlighting
 each step with a caption while a voice explains it. (Open the file on GitHub and it plays right in the browser.)
 
+🔬 **New to all of this?** Read [docs/under-the-hood.md](docs/under-the-hood.md) — three more 4K
+step-by-step diagrams explaining what *really* happens underneath: what `docker run` actually does,
+how `kubectl apply` becomes a running pod, and the life of one HTTP request.
+
 > ⚠️ **This repo is for learning.** The AWS pieces cost real money while they exist
 > (EKS ≈ $73/month + EC2 nodes + NAT gateway). Create them, play, and run
 > `terraform destroy` the same day.
@@ -227,6 +231,9 @@ school's data can ever mix with another's — each with its own credentials and 
 Each diagram exists twice in [docs/images/](docs/images/):
 - `*-4k.png` — 3840×2160 (4K) renders, embedded above
 - `*.svg` — the vector originals; infinitely zoomable if you want even more detail
+
+Diagrams 07–09 (the beginner "under the hood" series — docker run internals, the kubectl→pod
+chain, and the life of one HTTP request) live in [docs/under-the-hood.md](docs/under-the-hood.md).
 
 ## API quick reference
 

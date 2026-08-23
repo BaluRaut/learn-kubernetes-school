@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+  <text x="120" y="150" font-size="88" font-weight="bold" fill="#0f172a">Under the Hood — What docker run Actually Does</text>
+  <text x="120" y="240" font-size="46" fill="#475569">A container is not a virtual machine — it is a normal Linux process with walls around it. Here is how the walls get built.</text>
+  <rect x="120" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="120" y="420" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="545" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">You type: docker run</text>
+  <text x="545" y="580" font-size="36" fill="#334155" text-anchor="middle">The docker CLI is just a client.</text>
+  <text x="545" y="638" font-size="36" fill="#334155" text-anchor="middle">It sends an HTTP request to the</text>
+  <text x="545" y="696" font-size="36" fill="#334155" text-anchor="middle">Docker daemon over a Unix socket —</text>
+  <text x="545" y="754" font-size="36" fill="#334155" text-anchor="middle">the daemon does all the real work.</text>
+  <circle cx="120" cy="420" r="48" fill="#dc2626"/>
+  <text x="120" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+  <line x1="970" y1="650" x2="1066" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="1070" y="420" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="1495" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Daemon finds the image</text>
+  <text x="1495" y="580" font-size="36" fill="#334155" text-anchor="middle">Local cache is checked first.</text>
+  <text x="1495" y="638" font-size="36" fill="#334155" text-anchor="middle">Missing layers are downloaded from</text>
+  <text x="1495" y="696" font-size="36" fill="#334155" text-anchor="middle">the registry (ECR / Docker Hub).</text>
+  <text x="1495" y="754" font-size="36" fill="#334155" text-anchor="middle">Each layer is stored only once.</text>
+  <circle cx="1070" cy="420" r="48" fill="#dc2626"/>
+  <text x="1070" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+  <line x1="1920" y1="650" x2="2016" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="2020" y="420" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="2445" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Filesystem assembled</text>
+  <text x="2445" y="580" font-size="36" fill="#334155" text-anchor="middle">overlayfs stacks the read-only</text>
+  <text x="2445" y="638" font-size="36" fill="#334155" text-anchor="middle">layers + ONE thin writable layer</text>
+  <text x="2445" y="696" font-size="36" fill="#334155" text-anchor="middle">on top. Deleting the container</text>
+  <text x="2445" y="754" font-size="36" fill="#334155" text-anchor="middle">deletes only that thin layer.</text>
+  <circle cx="2020" cy="420" r="48" fill="#dc2626"/>
+  <text x="2020" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+  <line x1="2870" y1="650" x2="2966" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="2970" y="420" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="3395" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Namespaces = the walls</text>
+  <text x="3395" y="580" font-size="36" fill="#334155" text-anchor="middle">The kernel gives the process its</text>
+  <text x="3395" y="638" font-size="36" fill="#334155" text-anchor="middle">own view of the world: own PIDs,</text>
+  <text x="3395" y="696" font-size="36" fill="#334155" text-anchor="middle">own network, own mounts, own</text>
+  <text x="3395" y="754" font-size="36" fill="#334155" text-anchor="middle">hostname. It can't see outside.</text>
+  <circle cx="2970" cy="420" r="48" fill="#dc2626"/>
+  <text x="2970" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+  <rect x="120" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="120" y="1180" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="545" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">cgroups = the ration card</text>
+  <text x="545" y="1340" font-size="36" fill="#334155" text-anchor="middle">The kernel enforces the limits:</text>
+  <text x="545" y="1398" font-size="36" fill="#334155" text-anchor="middle">how much CPU, how much memory.</text>
+  <text x="545" y="1456" font-size="36" fill="#334155" text-anchor="middle">Your Kubernetes resources: block</text>
+  <text x="545" y="1514" font-size="36" fill="#334155" text-anchor="middle">ends up exactly here.</text>
+  <circle cx="120" cy="1180" r="48" fill="#dc2626"/>
+  <text x="120" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+  <line x1="970" y1="1410" x2="1066" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="1070" y="1180" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="1495" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Networking plugged in</text>
+  <text x="1495" y="1340" font-size="36" fill="#334155" text-anchor="middle">The container gets its own IP on</text>
+  <text x="1495" y="1398" font-size="36" fill="#334155" text-anchor="middle">a virtual cable (veth) into a bridge.</text>
+  <text x="1495" y="1456" font-size="36" fill="#334155" text-anchor="middle">-p 3000:3000 is simply a NAT rule:</text>
+  <text x="1495" y="1514" font-size="36" fill="#334155" text-anchor="middle">host port → container port.</text>
+  <circle cx="1070" cy="1180" r="48" fill="#dc2626"/>
+  <text x="1070" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+  <line x1="1920" y1="1410" x2="2016" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="2020" y="1180" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="2445" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">The process starts</text>
+  <text x="2445" y="1340" font-size="36" fill="#334155" text-anchor="middle">node src/server.js becomes PID 1</text>
+  <text x="2445" y="1398" font-size="36" fill="#334155" text-anchor="middle">inside the container. Run ps on</text>
+  <text x="2445" y="1456" font-size="36" fill="#334155" text-anchor="middle">the host — you can see it there.</text>
+  <text x="2445" y="1514" font-size="36" fill="#334155" text-anchor="middle">It IS just a Linux process.</text>
+  <circle cx="2020" cy="1180" r="48" fill="#dc2626"/>
+  <text x="2020" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+  <line x1="2870" y1="1410" x2="2966" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#2496ED" stroke-width="5"/>
+  <rect x="2970" y="1180" width="850" height="84" rx="24" fill="#2496ED"/>
+  <text x="3395" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">The big realization</text>
+  <text x="3395" y="1340" font-size="36" fill="#334155" text-anchor="middle">No guest OS. No booting.</text>
+  <text x="3395" y="1398" font-size="36" fill="#334155" text-anchor="middle">Start time = process start time:</text>
+  <text x="3395" y="1456" font-size="36" fill="#334155" text-anchor="middle">milliseconds. THIS is why</text>
+  <text x="3395" y="1514" font-size="36" fill="#334155" text-anchor="middle">Kubernetes can heal so fast.</text>
+  <circle cx="2970" cy="1180" r="48" fill="#dc2626"/>
+  <text x="2970" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <polyline points="3395,880 3395,970 545,970 545,1170" fill="none" stroke="#475569" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>
+  <text x="1920" y="2080" font-size="38" fill="#64748b" text-anchor="middle">School Platform learning repo · step-by-step internals for beginners · diagram 07 of 9</text>
+</svg>

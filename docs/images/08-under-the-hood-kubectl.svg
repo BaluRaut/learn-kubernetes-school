@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+  <text x="120" y="150" font-size="88" font-weight="bold" fill="#0f172a">Under the Hood — From kubectl apply to a Running Pod</text>
+  <text x="120" y="240" font-size="46" fill="#475569">kubectl does not start anything. It files a wish — and a chain of little robots makes the wish come true.</text>
+  <rect x="120" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="120" y="420" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="545" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">kubectl apply -f k8s/</text>
+  <text x="545" y="580" font-size="36" fill="#334155" text-anchor="middle">kubectl POSTs your YAML to the</text>
+  <text x="545" y="638" font-size="36" fill="#334155" text-anchor="middle">cluster's API server. Authentication,</text>
+  <text x="545" y="696" font-size="36" fill="#334155" text-anchor="middle">authorization and validation</text>
+  <text x="545" y="754" font-size="36" fill="#334155" text-anchor="middle">all happen at this front door.</text>
+  <circle cx="120" cy="420" r="48" fill="#dc2626"/>
+  <text x="120" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+  <line x1="970" y1="650" x2="1066" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="1070" y="420" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="1495" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">etcd stores the wish</text>
+  <text x="1495" y="580" font-size="36" fill="#334155" text-anchor="middle">The API server writes the Deployment</text>
+  <text x="1495" y="638" font-size="36" fill="#334155" text-anchor="middle">record into etcd — the cluster's only</text>
+  <text x="1495" y="696" font-size="36" fill="#334155" text-anchor="middle">source of truth. Note: NOTHING</text>
+  <text x="1495" y="754" font-size="36" fill="#334155" text-anchor="middle">is actually running yet!</text>
+  <circle cx="1070" cy="420" r="48" fill="#dc2626"/>
+  <text x="1070" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+  <line x1="1920" y1="650" x2="2016" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="2020" y="420" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="2445" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Controllers notice</text>
+  <text x="2445" y="580" font-size="36" fill="#334155" text-anchor="middle">The Deployment controller sees</text>
+  <text x="2445" y="638" font-size="36" fill="#334155" text-anchor="middle">desired 2 ≠ actual 0, and creates</text>
+  <text x="2445" y="696" font-size="36" fill="#334155" text-anchor="middle">ReplicaSet + 2 Pod records.</text>
+  <text x="2445" y="754" font-size="36" fill="#334155" text-anchor="middle">Still just database entries.</text>
+  <circle cx="2020" cy="420" r="48" fill="#dc2626"/>
+  <text x="2020" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+  <line x1="2870" y1="650" x2="2966" y2="650" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="420" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="2970" y="420" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="3395" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Scheduler picks nodes</text>
+  <text x="3395" y="580" font-size="36" fill="#334155" text-anchor="middle">For each Pending pod: which node</text>
+  <text x="3395" y="638" font-size="36" fill="#334155" text-anchor="middle">has enough free CPU and memory</text>
+  <text x="3395" y="696" font-size="36" fill="#334155" text-anchor="middle">(your requests: values)? It writes</text>
+  <text x="3395" y="754" font-size="36" fill="#334155" text-anchor="middle">the decision onto the pod.</text>
+  <circle cx="2970" cy="420" r="48" fill="#dc2626"/>
+  <text x="2970" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+  <rect x="120" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="120" y="1180" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="545" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">kubelet takes over</text>
+  <text x="545" y="1340" font-size="36" fill="#334155" text-anchor="middle">The agent on the chosen node</text>
+  <text x="545" y="1398" font-size="36" fill="#334155" text-anchor="middle">watches the API server, sees</text>
+  <text x="545" y="1456" font-size="36" fill="#334155" text-anchor="middle">"this pod is assigned to ME",</text>
+  <text x="545" y="1514" font-size="36" fill="#334155" text-anchor="middle">and starts working.</text>
+  <circle cx="120" cy="1180" r="48" fill="#dc2626"/>
+  <text x="120" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+  <line x1="970" y1="1410" x2="1066" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="1070" y="1180" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="1495" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">containerd runs it</text>
+  <text x="1495" y="1340" font-size="36" fill="#334155" text-anchor="middle">kubelet tells containerd: pull</text>
+  <text x="1495" y="1398" font-size="36" fill="#334155" text-anchor="middle">school-api:&lt;sha&gt; from ECR and</text>
+  <text x="1495" y="1456" font-size="36" fill="#334155" text-anchor="middle">create the container — exactly the</text>
+  <text x="1495" y="1514" font-size="36" fill="#334155" text-anchor="middle">docker steps from diagram 7.</text>
+  <circle cx="1070" cy="1180" r="48" fill="#dc2626"/>
+  <text x="1070" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+  <line x1="1920" y1="1410" x2="2016" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="2020" y="1180" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="2445" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Probes and status</text>
+  <text x="2445" y="1340" font-size="36" fill="#334155" text-anchor="middle">kubelet calls /healthz and /readyz</text>
+  <text x="2445" y="1398" font-size="36" fill="#334155" text-anchor="middle">and reports back. The pod becomes</text>
+  <text x="2445" y="1456" font-size="36" fill="#334155" text-anchor="middle">Ready only when readyz passes —</text>
+  <text x="2445" y="1514" font-size="36" fill="#334155" text-anchor="middle">before that, no traffic.</text>
+  <circle cx="2020" cy="1180" r="48" fill="#dc2626"/>
+  <text x="2020" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+  <line x1="2870" y1="1410" x2="2966" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="1180" width="850" height="460" rx="24" fill="#ffffff" stroke="#326CE5" stroke-width="5"/>
+  <rect x="2970" y="1180" width="850" height="84" rx="24" fill="#326CE5"/>
+  <text x="3395" y="1238" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Service starts routing</text>
+  <text x="3395" y="1340" font-size="36" fill="#334155" text-anchor="middle">The new pod IP joins the Service's</text>
+  <text x="3395" y="1398" font-size="36" fill="#334155" text-anchor="middle">endpoint list; kube-proxy programs</text>
+  <text x="3395" y="1456" font-size="36" fill="#334155" text-anchor="middle">every node. Self-healing = this</text>
+  <text x="3395" y="1514" font-size="36" fill="#334155" text-anchor="middle">whole loop simply never stops.</text>
+  <circle cx="2970" cy="1180" r="48" fill="#dc2626"/>
+  <text x="2970" y="1200" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <polyline points="3395,880 3395,970 545,970 545,1170" fill="none" stroke="#475569" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>
+  <text x="1920" y="2080" font-size="38" fill="#64748b" text-anchor="middle">School Platform learning repo · step-by-step internals for beginners · diagram 08 of 9</text>
+</svg>
