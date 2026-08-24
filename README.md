@@ -68,6 +68,10 @@ and the Ingress routes the public paths to the right service from one load balan
 4. **Terraform + AWS** — create ECR + EKS for real (section 4)
 5. **CircleCI** — wire up the pipeline and ship on `git push` (section 5)
 
+💻 **Steps 1–3 in full detail:** [docs/local-setup.md](docs/local-setup.md) — a complete local
+setup guide (prerequisites, three levels with ✅ checks after each, ports table, troubleshooting).
+Everything local, zero AWS cost.
+
 ---
 
 # 1️⃣ The Big Picture
