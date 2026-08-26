@@ -20,6 +20,11 @@ each step with a caption while a voice explains it. (Open the file on GitHub and
 step-by-step diagrams explaining what *really* happens underneath: what `docker run` actually does,
 how `kubectl apply` becomes a running pod, and the life of one HTTP request.
 
+🎒 **Completely new to programming/DevOps?** Start with
+[docs/before-you-start.md](docs/before-you-start.md) — the 7 foundations to learn *before* this
+project (terminal, git, HTTP, YAML, …), each with a self-check and free resources. If the
+self-checks pass, come straight back here.
+
 > ⚠️ **This repo is for learning.** The AWS pieces cost real money while they exist
 > (EKS ≈ $73/month + EC2 nodes + NAT gateway). Create them, play, and run
 > `terraform destroy` the same day.

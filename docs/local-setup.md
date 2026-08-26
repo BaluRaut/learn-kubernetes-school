@@ -4,6 +4,9 @@ This guide takes you from a fresh machine to the **whole platform running locall
 levels. Each level builds on the previous one, and each ends with a ✅ check so you know it
 worked before moving on. Nothing here touches AWS or costs money.
 
+> Completely new to the terminal, git or HTTP? Do the self-checks in
+> [before-you-start.md](before-you-start.md) first — this guide assumes those basics.
+
 | Level | What runs | What you learn |
 |---|---|---|
 | [Level 1](#level-1--plain-processes-5-min) | Node + Python APIs as plain processes | the apps themselves |
