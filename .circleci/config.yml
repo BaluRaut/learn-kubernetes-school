@@ -139,10 +139,10 @@ jobs:
 workflows:
   test-build-deploy:
     jobs:
-      - test-node:
-          context: balu-cicd
-      - test-python:
-          context: balu-cicd
+      # Test jobs deliberately get NO context — they don't need AWS credentials.
+      # Least privilege: only the jobs that talk to AWS receive the secrets.
+      - test-node
+      - test-python
       - build-and-push:
           context: balu-cicd
           requires: [test-node, test-python]
