@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Platform — Before You Start</title>
+<meta name="description" content="The 7 foundations to learn before diving into the School Platform learning repo (Docker, Kubernetes, Terraform, AWS, CircleCI).">
+<style>
+  :root {
+    --bg: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted: #475569;
+    --line: #e2e8f0; --accent: #dc2626; --ok: #16a34a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1220; --card: #131c2e; --ink: #e2e8f0; --muted: #94a3b8; --line: #253349; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+  header.hero { text-align: center; padding: 56px 16px 32px; }
+  .hero h1 { font-size: clamp(1.8rem, 4.5vw, 3.2rem); letter-spacing: -0.02em; }
+  .hero .sub { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); max-width: 720px; margin: 12px auto 0; }
+  .hero .chips { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: .85rem; color: var(--muted); }
+
+  .diagram { margin: 24px 0 8px; }
+  .diagram img { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); display: block; }
+  .diagram .cap { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 8px; }
+  .diagram .cap a { color: inherit; }
+
+  .progress-box { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 12px 0; }
+  .progress-inner { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 16px; }
+  .bar { flex: 1; height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, #dc2626, #ea580c, #ca8a04, #16a34a); border-radius: 999px; transition: width .4s ease; }
+  #progress-label { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  section.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin: 24px 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-top: 6px solid var(--c, var(--accent)); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .card h2 { font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+  .num { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--c, var(--accent)); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; }
+  .time { margin-left: auto; font-size: .75rem; font-weight: 700; color: var(--c); border: 1.5px solid var(--c); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .card p { color: var(--muted); font-size: .95rem; }
+  .check { margin-top: auto; display: flex; gap: 10px; align-items: flex-start; background: color-mix(in srgb, var(--c) 7%, transparent); border: 1px dashed var(--c); border-radius: 12px; padding: 12px; cursor: pointer; }
+  .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--ok); cursor: pointer; flex: none; }
+  .check span { font-size: .9rem; }
+  .check b { color: var(--ink); }
+  .card.done { border-top-color: var(--ok); }
+  .card.done .check { border-style: solid; border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+  .res { font-size: .85rem; color: var(--muted); }
+  .res a { color: var(--c); font-weight: 600; text-decoration: none; }
+  .res a:hover { text-decoration: underline; }
+
+  #ready { display: none; text-align: center; background: var(--card); border: 2px solid var(--ok); border-radius: 20px; padding: 36px 24px; margin: 8px 0 24px; }
+  #ready.show { display: block; animation: pop .5s ease; }
+  @keyframes pop { 0% { transform: scale(.96); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  #ready h2 { color: var(--ok); font-size: 1.6rem; }
+  #ready p { color: var(--muted); margin: 10px auto 18px; max-width: 560px; }
+  .btn { display: inline-block; background: var(--ok); color: #fff; font-weight: 700; padding: 12px 24px; border-radius: 12px; text-decoration: none; margin: 4px; }
+  .btn.alt { background: var(--ink); }
+
+  .next { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-bottom: 32px; }
+  .next h2 { margin-bottom: 12px; font-size: 1.2rem; }
+  .next ol { padding-left: 22px; color: var(--muted); }
+  .next a { color: #2563eb; font-weight: 600; text-decoration: none; }
+  .next a:hover { text-decoration: underline; }
+
+  footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 0 48px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>🎒 Before You Start</h1>
+    <p class="sub">The 7 foundations to learn <b>before</b> diving into the
+      <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform" style="color:inherit">School Platform</a>
+      learning repo. Tick a box when its self-check is honestly a "yes" — your progress is saved in this browser.</p>
+    <div class="chips">
+      <span class="chip">🐳 Docker</span><span class="chip">☸️ Kubernetes</span>
+      <span class="chip">🏗️ Terraform</span><span class="chip">☁️ AWS</span>
+      <span class="chip">🔄 CircleCI</span><span class="chip">— taught by the repo, not required here</span>
+    </div>
+  </header>
+
+  <div class="diagram">
+    <img src="images/10-before-you-start-4k.png" alt="The 7 foundations to learn before starting, as numbered cards: terminal, git, how the web works, JavaScript or Python, networking words, YAML, what a server is — then you're ready.">
+    <p class="cap">4K diagram — also in the repo as an <a href="images/10-before-you-start.svg">infinitely zoomable SVG</a></p>
+  </div>
+
+  <div class="progress-box">
+    <div class="progress-inner">
+      <span id="progress-label">0 / 7 ready</span>
+      <div class="bar"><div id="progress-fill"></div></div>
+    </div>
+  </div>
+
+  <section class="cards" id="cards"><!-- cards injected by JS --></section>
+
+  <div id="ready">
+    <h2>🚀 All 7 checked — you're ready!</h2>
+    <p>Don't study Docker, Kubernetes, Terraform or AWS in advance — the repo teaches them
+       with 4K diagrams, a narrated video and a zero-cost local path.</p>
+    <a class="btn" href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform#readme">Open the README</a>
+    <a class="btn alt" href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/local-setup.md">Local setup guide</a>
+  </div>
+
+  <div class="next">
+    <h2>📚 The path after this page</h2>
+    <ol>
+      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform#readme">Main README</a> — the big picture + 6 numbered 4K architecture diagrams</li>
+      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/local-setup.md">local-setup.md</a> — run everything on your machine in 3 levels, zero AWS cost</li>
+      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — what <i>really</i> happens beneath docker run, kubectl apply, and one HTTP request</li>
+      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/video/walkthrough-4k.mp4">walkthrough-4k.mp4</a> — 6-minute narrated video tour</li>
+    </ol>
+  </div>
+
+  <footer>
+    School Platform learning monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI ·
+    <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform">github.com/BaluRaut/claod-2026-eks-docker-terraform</a>
+  </footer>
+</div>
+
+<script>
+const FOUNDATIONS = [
+  { n: 1, c: "#0f172a", title: "The terminal", time: "1–2 evenings",
+    what: "Navigate folders, run commands, stop them with Ctrl+C, read error messages calmly, use environment variables.",
+    check: "I can open a terminal, cd into a folder, run an unfamiliar command and read its error without panicking.",
+    res: [["MIT Missing Semester — the shell", "https://missing.csail.mit.edu/2020/course-shell/"],
+          ["Ubuntu command line tutorial", "https://ubuntu.com/tutorials/command-line-for-beginners"]] },
+  { n: 2, c: "#ea580c", title: "Git & GitHub", time: "1–2 evenings",
+    what: "The daily loop: edit → status → add → commit → push. What GitHub is vs git. Roughly what a branch is.",
+    check: "I can clone a repo, change a file, commit with a sensible message, and push it.",
+    res: [["Pro Git book, ch. 1–2", "https://git-scm.com/book/en/v2"],
+          ["learngitbranching.js.org", "https://learngitbranching.js.org/"]] },
+  { n: 3, c: "#2563eb", title: "How the web works", time: "1 evening",
+    what: "Request/response, URLs, GET/POST/DELETE, status codes (200/201/404/500), JSON, ports, curl.",
+    check: "I can explain what happens when I run curl -X POST localhost:3000/students — machine, port, method, and what 201 vs 404 means.",
+    res: [["MDN — How the web works", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works"],
+          ["MDN — HTTP overview", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"]] },
+  { n: 4, c: "#ca8a04", title: "JavaScript OR Python", time: "ongoing",
+    what: "Enough to READ ~150 lines: variables, functions, if/else, loops, objects/dicts, and roughly what async/await means. One language is enough.",
+    check: "I can open the repo's server.js or main.py and roughly follow what each block does.",
+    res: [["javascript.info (part 1)", "https://javascript.info/"],
+          ["Official Python tutorial, ch. 1–5", "https://docs.python.org/3/tutorial/"]] },
+  { n: 5, c: "#0891b2", title: "Networking words", time: "1 evening",
+    what: "Eight words: IP, localhost, port, DNS, client/server, firewall, public vs private network, load balancer.",
+    check: "In postgres://…@db:5432 I can say what db is, what 5432 is, and why it only works inside the private network.",
+    res: [["Cloudflare — What is DNS?", "https://www.cloudflare.com/learning/dns/what-is-dns/"]] },
+  { n: 6, c: "#7c3aed", title: "YAML", time: "1 hour",
+    what: "key: value, nesting by indentation (spaces, never tabs), lists with dashes, # comments. That's ~90% of it.",
+    check: "Looking at k8s/deployment.yaml I can tell whether containers: is a list or a map, and what replicas: 2 is nested under.",
+    res: [["Learn X in Y minutes — YAML", "https://learnxinyminutes.com/docs/yaml/"]] },
+  { n: 7, c: "#16a34a", title: "What a server actually is", time: "1 hour",
+    what: "A server is a rented Linux computer without a screen. EC2 instance, EKS node, RDS — all just computers; the difference is who maintains them.",
+    check: "When a diagram says 'EKS node = EC2 = t3.small', I understand that's a small rented Linux computer running my containers.",
+    res: [["roadmap.sh/devops (orientation only)", "https://roadmap.sh/devops"]] },
+];
+
+const KEY = "school-platform-foundations";
+const state = JSON.parse(localStorage.getItem(KEY) || "{}");
+const cardsEl = document.getElementById("cards");
+
+for (const f of FOUNDATIONS) {
+  const el = document.createElement("article");
+  el.className = "card" + (state[f.n] ? " done" : "");
+  el.style.setProperty("--c", f.c);
+  el.innerHTML = `
+    <h2><span class="num">${f.n}</span> ${f.title} <span class="time">${f.time}</span></h2>
+    <p>${f.what}</p>
+    <p class="res">Free: ${f.res.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}</p>
+    <label class="check">
+      <input type="checkbox" data-n="${f.n}" ${state[f.n] ? "checked" : ""}>
+      <span><b>Self-check:</b> “${f.check}”</span>
+    </label>`;
+  cardsEl.appendChild(el);
+}
+
+function refresh() {
+  const done = FOUNDATIONS.filter(f => state[f.n]).length;
+  document.getElementById("progress-label").textContent = `${done} / 7 ready`;
+  document.getElementById("progress-fill").style.width = (done / 7 * 100) + "%";
+  document.getElementById("ready").classList.toggle("show", done === 7);
+}
+
+cardsEl.addEventListener("change", (e) => {
+  const n = e.target.dataset.n;
+  if (!n) return;
+  state[n] = e.target.checked;
+  if (!e.target.checked) delete state[n];
+  localStorage.setItem(KEY, JSON.stringify(state));
+  e.target.closest(".card").classList.toggle("done", e.target.checked);
+  refresh();
+});
+
+refresh();
+</script>
+</body>
+</html>

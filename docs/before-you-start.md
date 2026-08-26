@@ -10,6 +10,12 @@ and the rest of the repo will feel much easier.
 **The rule of thumb:** for each topic below, read the *self-check*. If you can honestly say
 "yes, I can do that", skip the topic. You don't need mastery — you need "comfortable enough".
 
+![The 7 foundations to learn first](images/10-before-you-start-4k.png)
+
+> 🌐 **Prefer an interactive version?** This guide also exists as a web page with tick-off
+> self-checks and a progress bar: [docs/index.html](index.html) — deployable on GitHub Pages
+> (see the README).
+
 | # | Topic | Time if new | You need it for |
 |---|---|---|---|
 | 1 | [The terminal](#1-the-terminal-command-line) | 1–2 evenings | literally everything |

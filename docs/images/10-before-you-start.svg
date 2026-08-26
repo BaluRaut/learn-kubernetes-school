@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+  <text x="120" y="150" font-size="88" font-weight="bold" fill="#0f172a">Before You Start — The 7 Foundations</text>
+  <text x="120" y="240" font-size="46" fill="#475569">Learn these first (about 1–2 weeks of evenings if all are new) — then Docker, Kubernetes, Terraform and AWS get MUCH easier</text>
+  <rect x="120" y="420" width="850" height="500" rx="24" fill="#ffffff" stroke="#0f172a" stroke-width="5"/>
+  <rect x="120" y="420" width="850" height="84" rx="24" fill="#0f172a"/>
+  <text x="545" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">The terminal</text>
+  <text x="545" y="580" font-size="36" fill="#334155" text-anchor="middle">Navigate folders, run commands,</text>
+  <text x="545" y="638" font-size="36" fill="#334155" text-anchor="middle">stop them with Ctrl+C, and read</text>
+  <text x="545" y="696" font-size="36" fill="#334155" text-anchor="middle">error messages calmly. Every tool</text>
+  <text x="545" y="754" font-size="36" fill="#334155" text-anchor="middle">here lives in the terminal.</text>
+  <rect x="415" y="840" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#0f172a" stroke-width="3"/>
+  <text x="545" y="878" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">1–2 evenings</text>
+  <circle cx="120" cy="420" r="48" fill="#dc2626"/>
+  <text x="120" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+  <line x1="970" y1="670" x2="1066" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="420" width="850" height="500" rx="24" fill="#ffffff" stroke="#ea580c" stroke-width="5"/>
+  <rect x="1070" y="420" width="850" height="84" rx="24" fill="#ea580c"/>
+  <text x="1495" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Git &amp; GitHub</text>
+  <text x="1495" y="580" font-size="36" fill="#334155" text-anchor="middle">The daily loop: edit → add →</text>
+  <text x="1495" y="638" font-size="36" fill="#334155" text-anchor="middle">commit → push. The entire CI/CD</text>
+  <text x="1495" y="696" font-size="36" fill="#334155" text-anchor="middle">story in this repo starts with</text>
+  <text x="1495" y="754" font-size="36" fill="#334155" text-anchor="middle">a single git push.</text>
+  <rect x="1365" y="840" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#ea580c" stroke-width="3"/>
+  <text x="1495" y="878" font-size="30" font-weight="bold" fill="#ea580c" text-anchor="middle">1–2 evenings</text>
+  <circle cx="1070" cy="420" r="48" fill="#dc2626"/>
+  <text x="1070" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+  <line x1="1920" y1="670" x2="2016" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="420" width="850" height="500" rx="24" fill="#ffffff" stroke="#2563eb" stroke-width="5"/>
+  <rect x="2020" y="420" width="850" height="84" rx="24" fill="#2563eb"/>
+  <text x="2445" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">How the web works</text>
+  <text x="2445" y="580" font-size="36" fill="#334155" text-anchor="middle">Request &amp; response, JSON, ports,</text>
+  <text x="2445" y="638" font-size="36" fill="#334155" text-anchor="middle">status codes, and curl. The apps</text>
+  <text x="2445" y="696" font-size="36" fill="#334155" text-anchor="middle">are HTTP APIs — everything else</text>
+  <text x="2445" y="754" font-size="36" fill="#334155" text-anchor="middle">wraps around them.</text>
+  <rect x="2315" y="840" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#2563eb" stroke-width="3"/>
+  <text x="2445" y="878" font-size="30" font-weight="bold" fill="#2563eb" text-anchor="middle">1 evening</text>
+  <circle cx="2020" cy="420" r="48" fill="#dc2626"/>
+  <text x="2020" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+  <line x1="2870" y1="670" x2="2966" y2="670" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="420" width="850" height="500" rx="24" fill="#ffffff" stroke="#ca8a04" stroke-width="5"/>
+  <rect x="2970" y="420" width="850" height="84" rx="24" fill="#ca8a04"/>
+  <text x="3395" y="478" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">JavaScript OR Python</text>
+  <text x="3395" y="580" font-size="36" fill="#334155" text-anchor="middle">Just enough to READ ~150 lines:</text>
+  <text x="3395" y="638" font-size="36" fill="#334155" text-anchor="middle">variables, functions, if, loops,</text>
+  <text x="3395" y="696" font-size="36" fill="#334155" text-anchor="middle">objects. Pick one language,</text>
+  <text x="3395" y="754" font-size="36" fill="#334155" text-anchor="middle">not both.</text>
+  <rect x="3265" y="840" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#ca8a04" stroke-width="3"/>
+  <text x="3395" y="878" font-size="30" font-weight="bold" fill="#ca8a04" text-anchor="middle">ongoing</text>
+  <circle cx="2970" cy="420" r="48" fill="#dc2626"/>
+  <text x="2970" y="440" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+  <rect x="120" y="1160" width="850" height="500" rx="24" fill="#ffffff" stroke="#0891b2" stroke-width="5"/>
+  <rect x="120" y="1160" width="850" height="84" rx="24" fill="#0891b2"/>
+  <text x="545" y="1218" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Networking words</text>
+  <text x="545" y="1320" font-size="36" fill="#334155" text-anchor="middle">IP, localhost, port, DNS, client/</text>
+  <text x="545" y="1378" font-size="36" fill="#334155" text-anchor="middle">server, firewall, public vs private,</text>
+  <text x="545" y="1436" font-size="36" fill="#334155" text-anchor="middle">load balancer. Eight words that</text>
+  <text x="545" y="1494" font-size="36" fill="#334155" text-anchor="middle">unlock every diagram.</text>
+  <rect x="415" y="1580" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#0891b2" stroke-width="3"/>
+  <text x="545" y="1618" font-size="30" font-weight="bold" fill="#0891b2" text-anchor="middle">1 evening</text>
+  <circle cx="120" cy="1160" r="48" fill="#dc2626"/>
+  <text x="120" y="1180" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+  <line x1="970" y1="1410" x2="1066" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="1070" y="1160" width="850" height="500" rx="24" fill="#ffffff" stroke="#7c3aed" stroke-width="5"/>
+  <rect x="1070" y="1160" width="850" height="84" rx="24" fill="#7c3aed"/>
+  <text x="1495" y="1218" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">YAML</text>
+  <text x="1495" y="1320" font-size="36" fill="#334155" text-anchor="middle">Key: value, nesting by spaces,</text>
+  <text x="1495" y="1378" font-size="36" fill="#334155" text-anchor="middle">lists with dashes. One brutal rule:</text>
+  <text x="1495" y="1436" font-size="36" fill="#334155" text-anchor="middle">indentation is meaning — spaces,</text>
+  <text x="1495" y="1494" font-size="36" fill="#334155" text-anchor="middle">never tabs.</text>
+  <rect x="1365" y="1580" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#7c3aed" stroke-width="3"/>
+  <text x="1495" y="1618" font-size="30" font-weight="bold" fill="#7c3aed" text-anchor="middle">1 hour</text>
+  <circle cx="1070" cy="1160" r="48" fill="#dc2626"/>
+  <text x="1070" y="1180" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+  <line x1="1920" y1="1410" x2="2016" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2020" y="1160" width="850" height="500" rx="24" fill="#ffffff" stroke="#16a34a" stroke-width="5"/>
+  <rect x="2020" y="1160" width="850" height="84" rx="24" fill="#16a34a"/>
+  <text x="2445" y="1218" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">What a server is</text>
+  <text x="2445" y="1320" font-size="36" fill="#334155" text-anchor="middle">Just a rented Linux computer</text>
+  <text x="2445" y="1378" font-size="36" fill="#334155" text-anchor="middle">without a screen. EC2, EKS node,</text>
+  <text x="2445" y="1436" font-size="36" fill="#334155" text-anchor="middle">RDS — all computers. The cloud</text>
+  <text x="2445" y="1494" font-size="36" fill="#334155" text-anchor="middle">stops being magic here.</text>
+  <rect x="2315" y="1580" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#16a34a" stroke-width="3"/>
+  <text x="2445" y="1618" font-size="30" font-weight="bold" fill="#16a34a" text-anchor="middle">1 hour</text>
+  <circle cx="2020" cy="1160" r="48" fill="#dc2626"/>
+  <text x="2020" y="1180" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+  <line x1="2870" y1="1410" x2="2966" y2="1410" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <rect x="2970" y="1160" width="850" height="500" rx="24" fill="#ffffff" stroke="#dc2626" stroke-width="5"/>
+  <rect x="2970" y="1160" width="850" height="84" rx="24" fill="#dc2626"/>
+  <text x="3395" y="1218" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">You're ready — start!</text>
+  <text x="3395" y="1320" font-size="36" fill="#334155" text-anchor="middle">Do NOT pre-study Docker, K8s,</text>
+  <text x="3395" y="1378" font-size="36" fill="#334155" text-anchor="middle">Terraform or AWS — this repo</text>
+  <text x="3395" y="1436" font-size="36" fill="#334155" text-anchor="middle">teaches them. Open the README,</text>
+  <text x="3395" y="1494" font-size="36" fill="#334155" text-anchor="middle">then local-setup, and begin.</text>
+  <rect x="3265" y="1580" width="260" height="54" rx="27" fill="#f1f5f9" stroke="#dc2626" stroke-width="3"/>
+  <text x="3395" y="1618" font-size="30" font-weight="bold" fill="#dc2626" text-anchor="middle">🚀</text>
+  <circle cx="2970" cy="1160" r="48" fill="#dc2626"/>
+  <text x="2970" y="1180" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <polyline points="3395,920 3395,1000 545,1000 545,1150" fill="none" stroke="#475569" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#arrow)"/>
+  <text x="1920" y="2080" font-size="38" fill="#64748b" text-anchor="middle">School Platform learning repo · docs/before-you-start.md has a self-check and free resources for every card</text>
+</svg>

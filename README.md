@@ -25,6 +25,13 @@ how `kubectl apply` becomes a running pod, and the life of one HTTP request.
 project (terminal, git, HTTP, YAML, …), each with a self-check and free resources. If the
 self-checks pass, come straight back here.
 
+> 🌐 **Interactive version on GitHub Pages:** the same guide exists as a web page with
+> tick-off self-checks and a progress bar ([docs/index.html](docs/index.html)). To publish it:
+> repo **Settings → Pages → Source: Deploy from a branch → Branch: `main`, folder: `/docs`** →
+> Save. It then appears at `https://baluraut.github.io/claod-2026-eks-docker-terraform/`.
+> (Note: GitHub Pages on a **private** repo requires a paid GitHub plan — either upgrade or
+> make the repo public.)
+
 > ⚠️ **This repo is for learning.** The AWS pieces cost real money while they exist
 > (EKS ≈ $73/month + EC2 nodes + NAT gateway). Create them, play, and run
 > `terraform destroy` the same day.
