@@ -68,6 +68,16 @@
   ul.check li b { color:var(--ink); }
   ul.check li small { color:var(--muted); display:block; }
 
+  .diag { width:100%; height:auto; display:block; margin:12px 0; }
+  .diag .box { fill:var(--card); stroke:var(--line); stroke-width:1.4; }
+  .diag .zone { fill:none; stroke:var(--muted); stroke-width:1.2; stroke-dasharray:6 5; opacity:.7; }
+  .diag .t { font:700 13px -apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:var(--ink); }
+  .diag .s { font:11px -apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:var(--muted); }
+  .diag .z { font:700 11px -apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:var(--muted); letter-spacing:.05em; }
+  .diag .ln { stroke:var(--muted); stroke-width:1.6; fill:none; }
+  .diag .lnd { stroke:var(--muted); stroke-width:1.4; fill:none; stroke-dasharray:4 4; opacity:.85; }
+  h3.subhead { margin:22px 0 4px; font-size:1.1rem; }
+
   .callout { border-left:5px solid var(--amber); background:color-mix(in srgb,var(--amber) 8%,transparent); border-radius:10px; padding:12px 16px; margin:12px 0; font-size:.93rem; }
   .callout.green { border-color:var(--green); background:color-mix(in srgb,var(--green) 8%,transparent); }
   footer { text-align:center; color:var(--muted); font-size:.85rem; padding:30px 0 50px; }
@@ -106,7 +116,7 @@
   <a href="#multi">3 Multi-school users</a> <a href="#nest">4 NestJS blueprint</a>
   <a href="#apisec">5 API security</a> <a href="#dbsec">6 DB security</a>
   <a href="#backup">7 Backups</a> <a href="#dr">8 DR plan</a> <a href="#admin">9 Admin panels</a>
-  <a href="#roadmap">10 Roadmap</a>
+  <a href="#roadmap">10 Roadmap</a> <a href="#devops">11 DevOps &amp; cost</a> <a href="#compute">12 Compute compared</a>
 </nav>
 
 <section id="arch">
@@ -389,6 +399,277 @@ rule "monthly-cold"  { prefix = "monthly/"
   </ul></div>
 </section>
 
+<section id="devops">
+  <h2><span class="secnum">11</span> Architecture diagram, DevOps &amp; cost</h2>
+  <p class="lead">The whole system in one picture, the pipeline that ships it, and what it costs
+  per month at three sizes — pilot, production and scale.</p>
+
+  <div class="panel">
+    <b>Architecture at a glance</b>
+    <svg class="diag" viewBox="0 0 960 530" role="img" aria-label="Architecture diagram: users reach NestJS pods on EKS through Route 53 and an ALB with WAF; pods use the control-plane DB and per-school RDS silos; CronJobs back up to S3; a CI/CD pipeline deploys; a DR region holds replicas">
+      <defs><marker id="arr-en" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+
+      <!-- top row -->
+      <rect class="box" x="40" y="16" width="170" height="54" rx="10"/>
+      <text class="t" x="125" y="38" text-anchor="middle">👨‍🏫 Users</text>
+      <text class="s" x="125" y="56" text-anchor="middle">teachers · admins · staff</text>
+      <rect class="box" x="250" y="16" width="200" height="54" rx="10"/>
+      <text class="t" x="350" y="38" text-anchor="middle">Route 53 (DNS)</text>
+      <text class="s" x="350" y="56" text-anchor="middle">app.yourschools.com — one domain</text>
+      <rect class="box" x="490" y="16" width="200" height="54" rx="10"/>
+      <text class="t" x="590" y="38" text-anchor="middle">External auth service</text>
+      <text class="s" x="590" y="56" text-anchor="middle">hosted login → JWT (JWKS)</text>
+
+      <!-- CI/CD column -->
+      <rect class="zone" x="730" y="16" width="210" height="290" rx="12"/>
+      <text class="z" x="835" y="38" text-anchor="middle">CI/CD — GITHUB ACTIONS</text>
+      <rect class="box" x="745" y="50" width="180" height="30" rx="7"/><text class="s" x="835" y="69" text-anchor="middle">git push / pull request</text>
+      <rect class="box" x="745" y="88" width="180" height="30" rx="7"/><text class="s" x="835" y="107" text-anchor="middle">lint · unit tests · audit</text>
+      <rect class="box" x="745" y="126" width="180" height="30" rx="7"/><text class="s" x="835" y="145" text-anchor="middle">docker build — SHA tag</text>
+      <rect class="box" x="745" y="164" width="180" height="30" rx="7"/><text class="s" x="835" y="183" text-anchor="middle">push to ECR (scan)</text>
+      <rect class="box" x="745" y="202" width="180" height="30" rx="7"/><text class="s" x="835" y="221" text-anchor="middle">staging deploy + smoke</text>
+      <rect class="box" x="745" y="240" width="180" height="30" rx="7"/><text class="s" x="835" y="259" text-anchor="middle">approve → prod rollout</text>
+      <path class="ln" d="M835 80 V85" marker-end="url(#arr-en)"/><path class="ln" d="M835 118 V123" marker-end="url(#arr-en)"/><path class="ln" d="M835 156 V161" marker-end="url(#arr-en)"/><path class="ln" d="M835 194 V199" marker-end="url(#arr-en)"/><path class="ln" d="M835 232 V237" marker-end="url(#arr-en)"/>
+
+      <!-- AWS region -->
+      <rect class="zone" x="40" y="100" width="660" height="410" rx="14"/>
+      <text class="z" x="56" y="122">AWS AP-SOUTH-1 (MUMBAI) — VPC · MULTI-AZ</text>
+      <rect class="box" x="70" y="136" width="250" height="50" rx="10"/>
+      <text class="t" x="195" y="157" text-anchor="middle">AWS WAF + ALB</text>
+      <text class="s" x="195" y="173" text-anchor="middle">public subnets · TLS (ACM)</text>
+      <rect class="box" x="410" y="136" width="260" height="50" rx="10"/>
+      <text class="t" x="540" y="157" text-anchor="middle">Secrets Manager + KMS</text>
+      <text class="s" x="540" y="173" text-anchor="middle">per-school DB creds · rotation</text>
+
+      <rect class="zone" x="70" y="222" width="600" height="112" rx="12"/>
+      <text class="z" x="86" y="242">EKS CLUSTER — PRIVATE SUBNETS</text>
+      <rect class="box" x="90" y="252" width="260" height="64" rx="10"/>
+      <text class="t" x="220" y="277" text-anchor="middle">NestJS pods ×N (HPA)</text>
+      <text class="s" x="220" y="295" text-anchor="middle">TenantGuard · pool per school</text>
+      <rect class="box" x="390" y="252" width="260" height="64" rx="10"/>
+      <text class="t" x="520" y="277" text-anchor="middle">Backup CronJobs</text>
+      <text class="s" x="520" y="295" text-anchor="middle">pg_dump — hourly · daily · monthly</text>
+
+      <rect class="box" x="70" y="400" width="190" height="64" rx="10"/>
+      <text class="t" x="165" y="425" text-anchor="middle">Control-plane DB</text>
+      <text class="s" x="165" y="443" text-anchor="middle">registry · memberships · flags</text>
+      <rect class="box" x="290" y="400" width="210" height="64" rx="10"/>
+      <text class="t" x="395" y="425" text-anchor="middle">RDS Postgres silos</text>
+      <text class="s" x="395" y="443" text-anchor="middle">one database per school (A…N)</text>
+      <rect class="box" x="530" y="400" width="140" height="64" rx="10"/>
+      <text class="t" x="600" y="425" text-anchor="middle">S3 backups</text>
+      <text class="s" x="600" y="443" text-anchor="middle">10 d / 30 d / 12 mo</text>
+
+      <!-- DR region -->
+      <rect class="zone" x="730" y="340" width="210" height="170" rx="14"/>
+      <text class="z" x="835" y="362" text-anchor="middle">DR REGION — AP-SOUTHEAST-1</text>
+      <rect class="box" x="745" y="376" width="180" height="50" rx="10"/>
+      <text class="t" x="835" y="396" text-anchor="middle">ECR + S3 replicas</text>
+      <text class="s" x="835" y="413" text-anchor="middle">cross-region, automatic</text>
+      <rect class="box" x="745" y="440" width="180" height="50" rx="10"/>
+      <text class="t" x="835" y="460" text-anchor="middle">terraform apply</text>
+      <text class="s" x="835" y="477" text-anchor="middle">rebuild in &lt; 4 h (§8)</text>
+
+      <!-- arrows -->
+      <path class="ln" d="M210 43 H244" marker-end="url(#arr-en)"/>
+      <path class="lnd" d="M450 43 H484" marker-end="url(#arr-en)"/>
+      <path class="ln" d="M350 70 V105 H195 V130" marker-end="url(#arr-en)"/>
+      <path class="ln" d="M195 186 V246" marker-end="url(#arr-en)"/>
+      <path class="ln" d="M165 316 V394" marker-end="url(#arr-en)"/>
+      <path class="ln" d="M300 316 V358 H370 V394" marker-end="url(#arr-en)"/>
+      <path class="lnd" d="M460 316 V394" marker-end="url(#arr-en)"/>
+      <path class="ln" d="M580 316 V358 H600 V394" marker-end="url(#arr-en)"/>
+      <path class="lnd" d="M540 186 V246" marker-end="url(#arr-en)"/>
+      <path class="ln" d="M730 278 H676" marker-end="url(#arr-en)"/>
+      <path class="lnd" d="M670 415 H739" marker-end="url(#arr-en)"/>
+    </svg>
+    <span style="color:var(--muted);font-size:.88rem">One request path: user → Route 53 → WAF/ALB →
+    NestJS pods → membership check against the control plane → that school's silo (§2). Identity
+    comes from the external auth service, verified via JWKS. CronJobs read the silos and write
+    per-school dumps to S3 (§7). In a region loss, Route 53 flips the same domain to the DR
+    region's ALB (§8).</span>
+  </div>
+
+  <h3 class="subhead">Compute options compared — why EKS</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Ops load</th><th>Pool-per-school (§4)?</th><th>Pilot base / mo</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>EKS</b> — managed Kubernetes</td>
+        <td>medium–high</td>
+        <td>✔ long-lived pods hold the pools</td>
+        <td>~$175</td>
+        <td><span class="tag g">chosen</span> team, repo, Terraform and the §8 DR runbook are already k8s-shaped; portable off AWS</td>
+      </tr>
+      <tr>
+        <td><b>ECS Fargate</b> — AWS containers, no nodes to manage</td>
+        <td>low</td>
+        <td>✔ tasks are long-lived</td>
+        <td>~$110</td>
+        <td><span class="tag b">closest rival</span> the greenfield pick for a team without k8s skills; no $73 control-plane fee, but AWS-only and our infra code would need a rewrite</td>
+      </tr>
+      <tr>
+        <td><b>Lambda</b> — serverless functions</td>
+        <td>very low</td>
+        <td>✘ needs RDS Proxy + §4 redesign; NestJS cold starts</td>
+        <td>~$40</td>
+        <td><span class="tag a">cheapest at pilot</span> wins on spiky traffic — ours is steady school-hours load, where always-on is cheaper; still right for cron-shaped work later (EventBridge)</td>
+      </tr>
+      <tr>
+        <td><b>App Runner</b> — container PaaS</td>
+        <td>very low</td>
+        <td>~ long-lived, but scale-to-zero reintroduces cold starts</td>
+        <td>~$60</td>
+        <td><span class="tag a">too cramped</span> clunky VPC model, no cron jobs — we'd bolt Lambda on anyway; fine for one small service, not a platform</td>
+      </tr>
+      <tr>
+        <td><b>Elastic Beanstalk</b> — legacy PaaS on EC2</td>
+        <td>medium</td>
+        <td>✔</td>
+        <td>~$90</td>
+        <td><span class="tag r">skip</span> maintenance-mode energy, awkward with Terraform; nothing it does that ECS/EKS don't do better</td>
+      </tr>
+      <tr>
+        <td><b>Plain EC2</b> — VMs + Docker Compose</td>
+        <td>high (patching, SSH deploys)</td>
+        <td>✔</td>
+        <td>~$60</td>
+        <td><span class="tag r">demo only</span> no self-healing, no rolling deploys; the §8 runbook becomes slow and manual</td>
+      </tr>
+      <tr>
+        <td><b>Lightsail</b> — fixed-price bundles</td>
+        <td>low</td>
+        <td>✔</td>
+        <td>~$40</td>
+        <td><span class="tag r">skip</span> weak IAM/VPC integration — can't meet the §6 private-subnet + KMS posture</td>
+      </tr>
+      <tr>
+        <td><b>Outside AWS</b> — Render / Fly / Railway · Nomad</td>
+        <td>low</td>
+        <td>✔</td>
+        <td>varies</td>
+        <td><span class="tag r">skip</span> PaaS options conflict with the VPC/KMS/WAF design; Nomad's ecosystem is too small to bet on</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="callout green"><b>Rule of thumb:</b> greenfield on AWS with no Kubernetes experience →
+  ECS Fargate; existing k8s investment or multi-cloud ambitions → EKS. We are squarely the second
+  case. The decision is per-workload, not all-or-nothing: the API fleet stays on EKS, and the
+  cron-shaped work (backups, freshness checks) can move to EventBridge + Lambda later without
+  touching the core design.</div>
+
+  <h3 class="subhead">DevOps approach</h3>
+  <div class="grid2">
+    <div class="panel">
+      <b>Everything is code</b>
+      <ul class="check">
+        <li><b>Terraform owns all infrastructure</b> — VPC, EKS, RDS, S3 lifecycle, WAF, Route 53. State in S3 with DynamoDB locking; the AWS console is read-only.</li>
+        <li><b>Kubernetes manifests (Helm) live in the same repo</b> — reviewed and versioned like any code.</li>
+        <li><b>School onboarding is a pipeline job</b>, not a checklist: create DB + user + secret, run migrations, insert the catalog row.</li>
+        <li><b>Same modules for prod, staging and the DR region</b> — only tfvars differ. This is what makes the §8 runbook a variable change, not a rebuild-from-memory.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Environments</b>
+      <ul class="check">
+        <li><b>dev</b> — docker-compose (Postgres + app) on the laptop; free.</li>
+        <li><b>staging</b> — scaled-down copy: single-AZ RDS, spot nodes, two demo schools. Auto-deployed on every merge.</li>
+        <li><b>prod</b> — multi-AZ everything; changes arrive only through the pipeline's manual gate.</li>
+        <li><b>DR</b> — no standing environment: code (git) + replicated images (ECR) + replicated backups (S3) are the whole system, so standing cost is near zero.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Push / PR</b><span>lint, unit tests, <code>npm audit</code> run in CI — red blocks the merge.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Build</b><span>Docker image tagged with the git SHA — never <code>latest</code>; rollback needs exact tags.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Publish</b><span>Push to ECR; scan-on-push blocks critical CVEs.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Staging</b><span>Auto-deploy; migrations loop the catalog per school; smoke suite runs.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>Approve</b><span>One-click manual gate — the only human step between merge and prod.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Prod</b><span>Rolling deploy; rollback = <code>kubectl rollout undo</code> (§8).</span></div>
+  </div>
+
+  <div class="panel">
+    <b>Observability &amp; alerts</b>
+    <ul class="check">
+      <li><b>Structured JSON logs</b> with <code>school_id</code> + request id on every line → CloudWatch Logs; one query answers "what happened to school X at 10:04".</li>
+      <li><b>Metrics:</b> p95 latency, 5xx rate, pod restarts, HPA saturation; per-silo RDS CPU / storage / connections.</li>
+      <li><b>Alerts:</b> 5xx spike, p95 breach, backup-freshness per school (§7), RDS storage &gt; 80%, certificate expiry, failed-login spikes.</li>
+      <li><b>Dashboards:</b> one platform overview + a per-school drill-down keyed by <code>school_id</code>.</li>
+    </ul>
+  </div>
+
+  <h3 class="subhead">What it costs (monthly, ap-south-1)</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Pilot — ~5 schools</th><th>Production — ~50 schools</th><th>Scale — ~200 schools</th></tr></thead>
+    <tbody>
+      <tr><td>EKS control plane</td><td>$73</td><td>$73</td><td>$73</td></tr>
+      <tr><td>Worker nodes (EC2)</td><td>2 × t3.medium — $67</td><td>3 × t3.large — $190</td><td>6 × m6g.large — $420</td></tr>
+      <tr><td>RDS Postgres</td><td>db.t4g.micro, 1-AZ — $15</td><td>db.t4g.medium multi-AZ + 100 GB — $145</td><td>2 × r6g.large multi-AZ + 500 GB — $850</td></tr>
+      <tr><td>ALB + WAF</td><td>$25</td><td>$45</td><td>$80</td></tr>
+      <tr><td>NAT gateway</td><td>$36</td><td>$40</td><td>$70</td></tr>
+      <tr><td>S3 backups (+ Glacier)</td><td>$3</td><td>$15</td><td>$50</td></tr>
+      <tr><td>Secrets Manager</td><td>$3</td><td>$25</td><td>$85</td></tr>
+      <tr><td>CloudWatch · Route 53 · ECR</td><td>$10</td><td>$27</td><td>$60</td></tr>
+      <tr><td>Staging environment</td><td>—</td><td>$80</td><td>$120</td></tr>
+      <tr><td><b>Total ≈</b></td><td><b>$230 / mo (~₹19k)</b></td><td><b>$640 / mo (~₹54k)</b></td><td><b>$1,810 / mo (~₹1.5L)</b></td></tr>
+      <tr><td><b>Per school ≈</b></td><td><span class="tag a">$46</span></td><td><span class="tag b">$13</span></td><td><span class="tag g">$9</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid2">
+    <div class="panel">
+      <b>Cost levers (biggest first)</b>
+      <ul class="check">
+        <li><b>Database-per-school ≠ instance-per-school</b> — many silo databases share one RDS instance while keeping option E's isolation (separate DB + separate credentials). Promote heavy schools to their own instance only when they earn it.</li>
+        <li><b>Savings Plans / reserved instances</b> once load is steady — 30–40% off EC2 + RDS.</li>
+        <li><b>Graviton (t4g / m6g / r6g)</b> — already assumed in the table, ~20% cheaper than x86.</li>
+        <li><b>Spot nodes</b> for staging and the backup CronJobs.</li>
+        <li><b>VPC endpoints for S3 / ECR</b> — cuts NAT data-processing charges.</li>
+        <li><b>The §7 lifecycle rules are a cost control too</b> — hourlies die at 10 days, Glacier after 60.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Cost guardrails</b>
+      <ul class="check">
+        <li><b>AWS Budgets</b> — alerts at 80% and 100% of the monthly target; anomaly detection on.</li>
+        <li><b>Cost-allocation tags</b> on everything (<code>env</code>, <code>school_id</code> where possible) — Cost Explorer then shows cost <i>per school</i>.</li>
+        <li><b>Weekly cost review</b> is part of ops, like uptime — the per-school number is the one to watch: it should keep falling as schools grow.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout"><b>Estimates, not quotes:</b> on-demand ap-south-1 prices as of Aug 2026 (~₹84/$),
+  excluding data transfer, domain and support plan. Re-price in the AWS Pricing Calculator before
+  committing.</div>
+</section>
+
+<section id="compute">
+  <h2><span class="secnum">12</span> Compute options compared — why EKS</h2>
+  <p class="lead">Every AWS way to run the NestJS fleet, judged against <i>this</i> design:
+  the pool-per-school connection manager (§4) needs long-lived processes, the security posture (§6)
+  needs real VPC/KMS integration, and the DR runbook (§8) assumes declarative redeploys.
+  Costs are rough pilot-scale on-demand figures per month.</p>
+  <table>
+    <thead><tr><th>Option</th><th>Ops load</th><th>Pool-per-school (§4)?</th><th>Pilot / mo</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td><b>EKS</b> — managed Kubernetes</td><td>medium–high</td><td>✔ long-lived pods hold the pools</td><td>~$175</td><td><span class="tag g">chosen</span> team, repo, Terraform and the §8 DR runbook are already k8s-shaped; portable off AWS</td></tr>
+      <tr><td><b>ECS Fargate</b> — AWS containers, no nodes to manage</td><td>low</td><td>✔ tasks are long-lived</td><td>~$110</td><td><span class="tag b">closest rival</span> the greenfield pick for a team without k8s skills; no $73 control-plane fee, but AWS-only and our infra code would need a rewrite</td></tr>
+      <tr><td><b>Lambda</b> — serverless functions</td><td>very low</td><td>✘ needs RDS Proxy + a §4 redesign; NestJS cold starts</td><td>~$40</td><td><span class="tag a">cheapest at pilot</span> wins on spiky traffic — ours is steady school-hours load, where always-on is cheaper; still right for cron-shaped work later (EventBridge)</td></tr>
+      <tr><td><b>App Runner</b> — container PaaS</td><td>very low</td><td>~ long-lived, but scale-to-zero reintroduces cold starts</td><td>~$60</td><td><span class="tag r">too cramped</span> clunky VPC model, no cron jobs — we'd bolt Lambda on anyway; fine for one small service, not a platform</td></tr>
+      <tr><td><b>Elastic Beanstalk</b> — legacy PaaS on EC2</td><td>medium</td><td>✔</td><td>~$90</td><td><span class="tag r">skip</span> maintenance-mode energy, awkward with Terraform; nothing it does that ECS/EKS don't do better</td></tr>
+      <tr><td><b>Plain EC2</b> — VMs + Docker Compose</td><td>high (patching, SSH deploys)</td><td>✔</td><td>~$60</td><td><span class="tag r">demo only</span> no self-healing, no rolling deploys; the §8 runbook becomes slow and manual</td></tr>
+      <tr><td><b>Lightsail</b> — fixed-price bundles</td><td>low</td><td>✔</td><td>~$40</td><td><span class="tag r">skip</span> weak IAM/VPC integration — can't meet the §6 private-subnet + KMS posture</td></tr>
+      <tr><td><b>Outside AWS</b> — Render / Fly / Railway · Nomad</td><td>low</td><td>✔</td><td>varies</td><td><span class="tag r">skip</span> PaaS options conflict with the VPC/KMS/WAF design; Nomad's ecosystem is too small to bet on</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><b>Reading the table:</b> Lambda's ~$40 looks tempting until the workload
+  shape matters — steady school-hours traffic favors always-on compute, and the §4 connection
+  manager assumes processes that live longer than a request. ECS Fargate is the honest runner-up;
+  EKS wins on what already exists (skills, Terraform, runbooks), not on elegance.
+  <b>Revisit trigger:</b> if cluster upkeep ever consumes &gt;10% of team time, trial ECS Fargate
+  for the API tier before adding more k8s surface.</div>
+</section>
+
 <footer>
   School Platform · design doc · single domain · option E → F ·
   <a href="https://github.com/BaluRaut/cloud-2026-eks-docker-terraform">repo</a>
@@ -418,7 +699,7 @@ rule "monthly-cold"  { prefix = "monthly/"
   <a href="#multi-mr">३ दोन शाळांचे युजर्स</a> <a href="#nest-mr">४ NestJS</a>
   <a href="#apisec-mr">५ API सुरक्षा</a> <a href="#dbsec-mr">६ DB सुरक्षा</a>
   <a href="#backup-mr">७ बॅकअप</a> <a href="#dr-mr">८ DR योजना</a> <a href="#admin-mr">९ ॲडमिन पॅनेल</a>
-  <a href="#roadmap-mr">१० रोडमॅप</a>
+  <a href="#roadmap-mr">१० रोडमॅप</a> <a href="#devops-mr">११ DevOps व खर्च</a> <a href="#compute-mr">१२ Compute तुलना</a>
 </nav>
 
 <section id="arch-mr">
@@ -699,6 +980,276 @@ rule "monthly-cold"  { prefix = "monthly/"
     <li><b>७. पहिली DR drill</b> — एक शाळा restore + region-runbook चा tabletop सराव. यानंतरच platform ला production-ready म्हणा.</li>
     <li><b>८. नंतर:</b> cross-school analytics ची मागणी आल्यावर F चे aggregation gate.</li>
   </ul></div>
+</section>
+
+<section id="devops-mr">
+  <h2><span class="secnum">11</span> आर्किटेक्चर आकृती, DevOps व खर्च</h2>
+  <p class="lead">संपूर्ण system एका चित्रात, ती deploy करणारी pipeline, आणि तीन आकारांवर —
+  pilot, production व scale — दरमहा खर्च किती.</p>
+
+  <div class="panel">
+    <b>आर्किटेक्चर एका दृष्टीत</b>
+    <svg class="diag" viewBox="0 0 960 530" role="img" aria-label="आर्किटेक्चर आकृती: युजर्स Route 53 आणि WAF/ALB मार्गे EKS वरील NestJS pods पर्यंत; pods control-plane DB व प्रति-शाळा RDS silos वापरतात; CronJobs S3 वर बॅकअप लिहितात; CI/CD pipeline deploy करते; DR region मध्ये replicas">
+      <defs><marker id="arr-mr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+
+      <!-- top row -->
+      <rect class="box" x="40" y="16" width="170" height="54" rx="10"/>
+      <text class="t" x="125" y="38" text-anchor="middle">👨‍🏫 युजर्स</text>
+      <text class="s" x="125" y="56" text-anchor="middle">शिक्षक · admin · staff</text>
+      <rect class="box" x="250" y="16" width="200" height="54" rx="10"/>
+      <text class="t" x="350" y="38" text-anchor="middle">Route 53 (DNS)</text>
+      <text class="s" x="350" y="56" text-anchor="middle">app.yourschools.com — एकच डोमेन</text>
+      <rect class="box" x="490" y="16" width="200" height="54" rx="10"/>
+      <text class="t" x="590" y="38" text-anchor="middle">बाहेरील auth service</text>
+      <text class="s" x="590" y="56" text-anchor="middle">hosted login → JWT (JWKS)</text>
+
+      <!-- CI/CD column -->
+      <rect class="zone" x="730" y="16" width="210" height="290" rx="12"/>
+      <text class="z" x="835" y="38" text-anchor="middle">CI/CD — GITHUB ACTIONS</text>
+      <rect class="box" x="745" y="50" width="180" height="30" rx="7"/><text class="s" x="835" y="69" text-anchor="middle">git push / pull request</text>
+      <rect class="box" x="745" y="88" width="180" height="30" rx="7"/><text class="s" x="835" y="107" text-anchor="middle">lint · unit tests · audit</text>
+      <rect class="box" x="745" y="126" width="180" height="30" rx="7"/><text class="s" x="835" y="145" text-anchor="middle">docker build — SHA tag</text>
+      <rect class="box" x="745" y="164" width="180" height="30" rx="7"/><text class="s" x="835" y="183" text-anchor="middle">ECR push (scan)</text>
+      <rect class="box" x="745" y="202" width="180" height="30" rx="7"/><text class="s" x="835" y="221" text-anchor="middle">staging deploy + smoke</text>
+      <rect class="box" x="745" y="240" width="180" height="30" rx="7"/><text class="s" x="835" y="259" text-anchor="middle">मंजुरी → prod rollout</text>
+      <path class="ln" d="M835 80 V85" marker-end="url(#arr-mr)"/><path class="ln" d="M835 118 V123" marker-end="url(#arr-mr)"/><path class="ln" d="M835 156 V161" marker-end="url(#arr-mr)"/><path class="ln" d="M835 194 V199" marker-end="url(#arr-mr)"/><path class="ln" d="M835 232 V237" marker-end="url(#arr-mr)"/>
+
+      <!-- AWS region -->
+      <rect class="zone" x="40" y="100" width="660" height="410" rx="14"/>
+      <text class="z" x="56" y="122">AWS AP-SOUTH-1 (मुंबई) — VPC · MULTI-AZ</text>
+      <rect class="box" x="70" y="136" width="250" height="50" rx="10"/>
+      <text class="t" x="195" y="157" text-anchor="middle">AWS WAF + ALB</text>
+      <text class="s" x="195" y="173" text-anchor="middle">public subnets · TLS (ACM)</text>
+      <rect class="box" x="410" y="136" width="260" height="50" rx="10"/>
+      <text class="t" x="540" y="157" text-anchor="middle">Secrets Manager + KMS</text>
+      <text class="s" x="540" y="173" text-anchor="middle">प्रति-शाळा DB creds · rotation</text>
+
+      <rect class="zone" x="70" y="222" width="600" height="112" rx="12"/>
+      <text class="z" x="86" y="242">EKS CLUSTER — PRIVATE SUBNETS</text>
+      <rect class="box" x="90" y="252" width="260" height="64" rx="10"/>
+      <text class="t" x="220" y="277" text-anchor="middle">NestJS pods ×N (HPA)</text>
+      <text class="s" x="220" y="295" text-anchor="middle">TenantGuard · प्रति-शाळा pool</text>
+      <rect class="box" x="390" y="252" width="260" height="64" rx="10"/>
+      <text class="t" x="520" y="277" text-anchor="middle">Backup CronJobs</text>
+      <text class="s" x="520" y="295" text-anchor="middle">pg_dump — तासागणिक · दैनिक · मासिक</text>
+
+      <rect class="box" x="70" y="400" width="190" height="64" rx="10"/>
+      <text class="t" x="165" y="425" text-anchor="middle">Control-plane DB</text>
+      <text class="s" x="165" y="443" text-anchor="middle">registry · memberships · flags</text>
+      <rect class="box" x="290" y="400" width="210" height="64" rx="10"/>
+      <text class="t" x="395" y="425" text-anchor="middle">RDS Postgres silos</text>
+      <text class="s" x="395" y="443" text-anchor="middle">प्रत्येक शाळेचा स्वतंत्र database</text>
+      <rect class="box" x="530" y="400" width="140" height="64" rx="10"/>
+      <text class="t" x="600" y="425" text-anchor="middle">S3 बॅकअप</text>
+      <text class="s" x="600" y="443" text-anchor="middle">१० दि / ३० दि / १२ महिने</text>
+
+      <!-- DR region -->
+      <rect class="zone" x="730" y="340" width="210" height="170" rx="14"/>
+      <text class="z" x="835" y="362" text-anchor="middle">DR REGION — AP-SOUTHEAST-1</text>
+      <rect class="box" x="745" y="376" width="180" height="50" rx="10"/>
+      <text class="t" x="835" y="396" text-anchor="middle">ECR + S3 replicas</text>
+      <text class="s" x="835" y="413" text-anchor="middle">cross-region, आपोआप</text>
+      <rect class="box" x="745" y="440" width="180" height="50" rx="10"/>
+      <text class="t" x="835" y="460" text-anchor="middle">terraform apply</text>
+      <text class="s" x="835" y="477" text-anchor="middle">&lt; ४ तासांत पुन्हा उभे (§8)</text>
+
+      <!-- arrows -->
+      <path class="ln" d="M210 43 H244" marker-end="url(#arr-mr)"/>
+      <path class="lnd" d="M450 43 H484" marker-end="url(#arr-mr)"/>
+      <path class="ln" d="M350 70 V105 H195 V130" marker-end="url(#arr-mr)"/>
+      <path class="ln" d="M195 186 V246" marker-end="url(#arr-mr)"/>
+      <path class="ln" d="M165 316 V394" marker-end="url(#arr-mr)"/>
+      <path class="ln" d="M300 316 V358 H370 V394" marker-end="url(#arr-mr)"/>
+      <path class="lnd" d="M460 316 V394" marker-end="url(#arr-mr)"/>
+      <path class="ln" d="M580 316 V358 H600 V394" marker-end="url(#arr-mr)"/>
+      <path class="lnd" d="M540 186 V246" marker-end="url(#arr-mr)"/>
+      <path class="ln" d="M730 278 H676" marker-end="url(#arr-mr)"/>
+      <path class="lnd" d="M670 415 H739" marker-end="url(#arr-mr)"/>
+    </svg>
+    <span style="color:var(--muted);font-size:.88rem">एकच request मार्ग: युजर → Route 53 → WAF/ALB →
+    NestJS pods → control plane शी membership तपासणी → त्या शाळेचा silo (§2). ओळख बाहेरील auth
+    service कडून, JWKS ने पडताळलेली. CronJobs silos वाचून प्रति-शाळा dumps S3 वर लिहितात (§7).
+    Region गेल्यास Route 53 तोच डोमेन DR region च्या ALB कडे वळवते (§8).</span>
+  </div>
+
+  <h3 class="subhead">Compute पर्यायांची तुलना — EKS का</h3>
+  <table>
+    <thead><tr><th>पर्याय</th><th>Ops भार</th><th>Pool-per-school (§4)?</th><th>Pilot base / महिना</th><th>निर्णय</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>EKS</b> — managed Kubernetes</td>
+        <td>मध्यम–जास्त</td>
+        <td>✔ दीर्घायुषी pods pools सांभाळतात</td>
+        <td>~$175</td>
+        <td><span class="tag g">निवडले</span> टीम, repo, Terraform आणि §8 चा DR runbook आधीच k8s-आकाराचे; AWS बाहेरही नेता येते</td>
+      </tr>
+      <tr>
+        <td><b>ECS Fargate</b> — AWS containers, nodes सांभाळावे लागत नाहीत</td>
+        <td>कमी</td>
+        <td>✔ tasks दीर्घायुषी</td>
+        <td>~$110</td>
+        <td><span class="tag b">सर्वात जवळचा स्पर्धक</span> k8s अनुभव नसलेल्या टीमसाठी greenfield निवड; $73 control-plane फी नाही, पण AWS-only आणि आपला infra code पुन्हा लिहावा लागेल</td>
+      </tr>
+      <tr>
+        <td><b>Lambda</b> — serverless functions</td>
+        <td>अत्यल्प</td>
+        <td>✘ RDS Proxy + §4 ची पुनर्रचना लागते; NestJS cold starts</td>
+        <td>~$40</td>
+        <td><span class="tag a">pilot ला सर्वात स्वस्त</span> तुरळक/उसळत्या traffic ला जिंकते — आपला load शाळेच्या वेळांत स्थिर, तिथे always-on स्वस्त; cron-आकाराच्या कामासाठी पुढे योग्य (EventBridge)</td>
+      </tr>
+      <tr>
+        <td><b>App Runner</b> — container PaaS</td>
+        <td>अत्यल्प</td>
+        <td>~ दीर्घायुषी, पण scale-to-zero मुळे cold starts परत</td>
+        <td>~$60</td>
+        <td><span class="tag a">अपुरे</span> VPC मॉडेल गैरसोयीचे, cron jobs नाहीत — Lambda जोडावेच लागले असते; एका छोट्या service ला ठीक, platform ला नाही</td>
+      </tr>
+      <tr>
+        <td><b>Elastic Beanstalk</b> — EC2 वरचे जुने PaaS</td>
+        <td>मध्यम</td>
+        <td>✔</td>
+        <td>~$90</td>
+        <td><span class="tag r">वगळा</span> maintenance-mode अवस्था, Terraform शी गैरसोयीचे; ECS/EKS पेक्षा चांगले असे काहीच नाही</td>
+      </tr>
+      <tr>
+        <td><b>साधे EC2</b> — VMs + Docker Compose</td>
+        <td>जास्त (patching, SSH deploys)</td>
+        <td>✔</td>
+        <td>~$60</td>
+        <td><span class="tag r">फक्त demo</span> self-healing नाही, rolling deploys नाहीत; §8 चा runbook संथ व हाताने करावा लागतो</td>
+      </tr>
+      <tr>
+        <td><b>Lightsail</b> — ठरलेल्या किमतीची bundles</td>
+        <td>कमी</td>
+        <td>✔</td>
+        <td>~$40</td>
+        <td><span class="tag r">वगळा</span> IAM/VPC जोडणी कमकुवत — §6 ची private-subnet + KMS शिस्त पाळता येत नाही</td>
+      </tr>
+      <tr>
+        <td><b>AWS बाहेर</b> — Render / Fly / Railway · Nomad</td>
+        <td>कमी</td>
+        <td>✔</td>
+        <td>बदलते</td>
+        <td><span class="tag r">वगळा</span> PaaS पर्याय VPC/KMS/WAF डिझाईनशी विसंगत; Nomad चे ecosystem पैज लावण्याइतके मोठे नाही</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="callout green"><b>ठोकताळा:</b> AWS वर नवी सुरुवात + Kubernetes अनुभव नाही →
+  ECS Fargate; k8s मध्ये आधीच गुंतवणूक किंवा multi-cloud ची इच्छा → EKS. आपण नेमके दुसऱ्या
+  गटात. हा निर्णय प्रति-workload आहे, सरसकट नाही: API fleet EKS वरच राहते, आणि cron-आकाराचे
+  काम (बॅकअप, freshness checks) पुढे core design ला धक्का न लावता EventBridge + Lambda कडे
+  नेता येते.</div>
+
+  <h3 class="subhead">DevOps पद्धत</h3>
+  <div class="grid2">
+    <div class="panel">
+      <b>सर्व काही code मध्ये</b>
+      <ul class="check">
+        <li><b>सगळी infrastructure Terraform च्या मालकीची</b> — VPC, EKS, RDS, S3 lifecycle, WAF, Route 53. State S3 मध्ये, DynamoDB locking सह; AWS console फक्त वाचण्यासाठी.</li>
+        <li><b>Kubernetes manifests (Helm) त्याच repo मध्ये</b> — इतर code प्रमाणेच review व version होतात.</li>
+        <li><b>शाळेचे onboarding हा pipeline job</b>, checklist नाही: DB + user + secret तयार, migrations, catalog मध्ये नोंद.</li>
+        <li><b>prod, staging व DR region साठी तेच modules</b> — फक्त tfvars वेगळे. यामुळेच §8 चा runbook म्हणजे एक variable बदल — आठवणीतून पुनर्बांधणी नाही.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Environments</b>
+      <ul class="check">
+        <li><b>dev</b> — laptop वर docker-compose (Postgres + app); मोफत.</li>
+        <li><b>staging</b> — छोटी प्रतिकृती: single-AZ RDS, spot nodes, दोन demo शाळा. प्रत्येक merge वर आपोआप deploy.</li>
+        <li><b>prod</b> — सर्व काही multi-AZ; बदल फक्त pipeline च्या manual gate मधूनच येतात.</li>
+        <li><b>DR</b> — कायमस्वरूपी environment नाही: code (git) + replicate झालेल्या images (ECR) + बॅकअप (S3) हीच संपूर्ण system — त्यामुळे कायम खर्च जवळपास शून्य.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Push / PR</b><span>CI मध्ये lint, unit tests, <code>npm audit</code> — लाल असल्यास merge अडते.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Build</b><span>Docker image ला git SHA चा tag — कधीही <code>latest</code> नाही; rollback ला नेमके tags लागतात.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Publish</b><span>ECR वर push; scan-on-push गंभीर CVEs अडवते.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Staging</b><span>आपोआप deploy; migrations catalog फिरून प्रत्येक शाळेवर; smoke suite चालते.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>मंजुरी</b><span>एक-क्लिक manual gate — merge आणि prod मधली एकमेव मानवी पायरी.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Prod</b><span>Rolling deploy; rollback = <code>kubectl rollout undo</code> (§8).</span></div>
+  </div>
+
+  <div class="panel">
+    <b>Observability व alerts</b>
+    <ul class="check">
+      <li><b>Structured JSON logs</b> — प्रत्येक ओळीत <code>school_id</code> + request id → CloudWatch Logs; "१०:०४ ला शाळा X चे काय झाले" हे एका query त कळते.</li>
+      <li><b>Metrics:</b> p95 latency, 5xx दर, pod restarts, HPA saturation; प्रत्येक silo चे RDS CPU / storage / connections.</li>
+      <li><b>Alerts:</b> 5xx वाढ, p95 भंग, प्रति-शाळा backup-freshness (§7), RDS storage &gt; 80%, certificate expiry, failed-login वाढ.</li>
+      <li><b>Dashboards:</b> एक platform overview + <code>school_id</code> नुसार प्रति-शाळा drill-down.</li>
+    </ul>
+  </div>
+
+  <h3 class="subhead">खर्च किती (दरमहा, ap-south-1)</h3>
+  <table>
+    <thead><tr><th>घटक</th><th>Pilot — ~५ शाळा</th><th>Production — ~५० शाळा</th><th>Scale — ~२०० शाळा</th></tr></thead>
+    <tbody>
+      <tr><td>EKS control plane</td><td>$73</td><td>$73</td><td>$73</td></tr>
+      <tr><td>Worker nodes (EC2)</td><td>2 × t3.medium — $67</td><td>3 × t3.large — $190</td><td>6 × m6g.large — $420</td></tr>
+      <tr><td>RDS Postgres</td><td>db.t4g.micro, 1-AZ — $15</td><td>db.t4g.medium multi-AZ + 100 GB — $145</td><td>2 × r6g.large multi-AZ + 500 GB — $850</td></tr>
+      <tr><td>ALB + WAF</td><td>$25</td><td>$45</td><td>$80</td></tr>
+      <tr><td>NAT gateway</td><td>$36</td><td>$40</td><td>$70</td></tr>
+      <tr><td>S3 बॅकअप (+ Glacier)</td><td>$3</td><td>$15</td><td>$50</td></tr>
+      <tr><td>Secrets Manager</td><td>$3</td><td>$25</td><td>$85</td></tr>
+      <tr><td>CloudWatch · Route 53 · ECR</td><td>$10</td><td>$27</td><td>$60</td></tr>
+      <tr><td>Staging environment</td><td>—</td><td>$80</td><td>$120</td></tr>
+      <tr><td><b>एकूण ≈</b></td><td><b>$230 / महिना (~₹१९ हजार)</b></td><td><b>$640 / महिना (~₹५४ हजार)</b></td><td><b>$1,810 / महिना (~₹१.५ लाख)</b></td></tr>
+      <tr><td><b>प्रति शाळा ≈</b></td><td><span class="tag a">$46</span></td><td><span class="tag b">$13</span></td><td><span class="tag g">$9</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid2">
+    <div class="panel">
+      <b>खर्च कमी करण्याचे मार्ग (मोठा आधी)</b>
+      <ul class="check">
+        <li><b>Database-per-school ≠ instance-per-school</b> — अनेक शाळांचे silo databases एकाच RDS instance वर राहतात, तरी पर्याय E चे isolation कायम (वेगळा DB + वेगळी credentials). मोठ्या शाळांना गरज पडेल तेव्हाच स्वतंत्र instance.</li>
+        <li><b>Savings Plans / reserved instances</b> — वापर स्थिर झाल्यावर EC2 + RDS वर ३०–४०% सूट.</li>
+        <li><b>Graviton (t4g / m6g / r6g)</b> — टेबलात आधीच गृहीत, x86 पेक्षा ~२०% स्वस्त.</li>
+        <li><b>Spot nodes</b> — staging व backup CronJobs साठी.</li>
+        <li><b>S3 / ECR साठी VPC endpoints</b> — NAT चा data-processing खर्च कमी होतो.</li>
+        <li><b>§7 चे lifecycle नियम हेही खर्च-नियंत्रणच</b> — तासागणिक १० दिवसांत जातात, ६० दिवसांनी Glacier.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>खर्चावरची कुंपणे</b>
+      <ul class="check">
+        <li><b>AWS Budgets</b> — मासिक लक्ष्याच्या ८०% व १००% वर alerts; anomaly detection चालू.</li>
+        <li><b>Cost-allocation tags</b> सर्वत्र (<code>env</code>, जमेल तिथे <code>school_id</code>) — मग Cost Explorer <i>प्रति शाळा</i> खर्च दाखवतो.</li>
+        <li><b>आठवड्याला खर्चाचा आढावा</b> हा ops चाच भाग — uptime सारखा. लक्ष ठेवायचा आकडा म्हणजे प्रति-शाळा खर्च: शाळा वाढतील तसा तो घटत गेला पाहिजे.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout"><b>हे अंदाज आहेत, कोटेशन नाही:</b> ऑगस्ट २०२६ चे ap-south-1 on-demand दर (~₹८४/$),
+  data transfer, डोमेन व support plan वगळून. पक्के करण्यापूर्वी AWS Pricing Calculator मध्ये
+  पुन्हा तपासा.</div>
+</section>
+
+<section id="compute-mr">
+  <h2><span class="secnum">12</span> Compute पर्यायांची तुलना — EKS का?</h2>
+  <p class="lead">NestJS fleet चालवण्याचे AWS वरील सर्व मार्ग, <i>याच</i> डिझाईनच्या कसोटीवर:
+  pool-per-school connection manager (§4) ला दीर्घायुषी processes लागतात, security posture (§6) ला
+  खरे VPC/KMS integration लागते, आणि DR runbook (§8) declarative redeploys गृहीत धरतो.
+  खर्च = ढोबळ pilot-स्केल on-demand आकडे, प्रति महिना.</p>
+  <table>
+    <thead><tr><th>पर्याय</th><th>Ops भार</th><th>Pool-per-school (§4)?</th><th>Pilot / महिना</th><th>निर्णय</th></tr></thead>
+    <tbody>
+      <tr><td><b>EKS</b> — managed Kubernetes</td><td>मध्यम–जास्त</td><td>✔ दीर्घायुषी pods pools धरून ठेवतात</td><td>~$175</td><td><span class="tag g">निवडले</span> टीम, repo, Terraform आणि §8 चा DR runbook आधीच k8s-आकाराचे आहेत; AWS बाहेरही नेता येते</td></tr>
+      <tr><td><b>ECS Fargate</b> — AWS containers, nodes सांभाळायचे नाहीत</td><td>कमी</td><td>✔ tasks दीर्घायुषी असतात</td><td>~$110</td><td><span class="tag b">सर्वात जवळचा स्पर्धक</span> k8s कौशल्य नसलेल्या टीमसाठी greenfield निवड; $73 control-plane फी नाही — पण AWS-only, आणि आपला infra code पुन्हा लिहावा लागेल</td></tr>
+      <tr><td><b>Lambda</b> — serverless functions</td><td>अगदी कमी</td><td>✘ RDS Proxy + §4 ची पुनर्रचना लागेल; NestJS cold starts</td><td>~$40</td><td><span class="tag a">pilot ला सर्वात स्वस्त</span> spiky traffic वर जिंकते — आपला load शाळेच्या वेळांचा, स्थिर आहे, तिथे always-on स्वस्त पडते; cron-आकाराच्या कामांसाठी (EventBridge) पुढे योग्यच</td></tr>
+      <tr><td><b>App Runner</b> — container PaaS</td><td>अगदी कमी</td><td>~ दीर्घायुषी, पण scale-to-zero ने cold starts परत येतात</td><td>~$60</td><td><span class="tag r">अपुरे</span> VPC model गैरसोयीचे, cron jobs नाहीत — शेवटी Lambda जोडावेच लागेल; एका छोट्या service साठी ठीक, प्लॅटफॉर्मसाठी नाही</td></tr>
+      <tr><td><b>Elastic Beanstalk</b> — जुने PaaS (EC2 वर)</td><td>मध्यम</td><td>✔</td><td>~$90</td><td><span class="tag r">वगळा</span> maintenance-mode अवस्था, Terraform शी अवघड; ECS/EKS पेक्षा चांगले असे काहीही नाही</td></tr>
+      <tr><td><b>साधे EC2</b> — VMs + Docker Compose</td><td>जास्त (patching, SSH deploys)</td><td>✔</td><td>~$60</td><td><span class="tag r">फक्त demo</span> self-healing नाही, rolling deploys नाहीत; §8 चा runbook हळू आणि manual होतो</td></tr>
+      <tr><td><b>Lightsail</b> — ठराविक किंमतीचे bundles</td><td>कमी</td><td>✔</td><td>~$40</td><td><span class="tag r">वगळा</span> IAM/VPC integration कमजोर — §6 ची private-subnet + KMS posture पूर्ण करू शकत नाही</td></tr>
+      <tr><td><b>AWS बाहेर</b> — Render / Fly / Railway · Nomad</td><td>कमी</td><td>✔</td><td>वेगवेगळे</td><td><span class="tag r">वगळा</span> PaaS पर्याय VPC/KMS/WAF डिझाईनशी विसंगत; Nomad ची ecosystem पैज लावण्याइतकी मोठी नाही</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><b>टेबल कसे वाचावे:</b> Lambda चे ~$40 आकर्षक वाटते — जोपर्यंत workload चा
+  आकार लक्षात घेत नाही: शाळेच्या वेळांचा स्थिर traffic always-on compute ला अनुकूल आहे, आणि §4 चा
+  connection manager request पेक्षा जास्त जगणाऱ्या processes गृहीत धरतो. ECS Fargate हा प्रामाणिक
+  उपविजेता; EKS जिंकते ते आधीच असलेल्या गोष्टींवर (कौशल्ये, Terraform, runbooks) — शोभेवर नाही.
+  <b>पुनर्विचाराचा निकष:</b> cluster सांभाळण्यात टीमचा &gt;10% वेळ जाऊ लागला, तर आणखी k8s वाढवण्याआधी
+  API tier साठी ECS Fargate चाचणी करा.</div>
 </section>
 
 <footer>
