@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Platform — Tenancy, Security, Backup &amp; DR Design</title>
-<meta name="description" content="Design decisions: per-school isolation (option E→F), single-domain tenant routing, NestJS blueprint, backup lifecycle, DR plan, API & DB security, per-school admin panel.">
+<title>School Platform — Tenancy, Security, Backup &amp; DR</title>
+<meta name="description" content="Design decisions: per-school isolation (option E→F), single-domain tenant routing, NestJS blueprint, backup lifecycle, DR plan, API & DB security, per-school admin panels. English + मराठी.">
 <style>
   :root {
     --bg:#f8fafc; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
@@ -18,7 +18,12 @@
   .wrap { max-width:1100px; margin:0 auto; padding:24px; }
   a { color:var(--blue); }
 
-  header.hero { text-align:center; padding:52px 16px 24px; }
+  .langbar { position:sticky; top:0; z-index:20; display:flex; justify-content:flex-end; padding:10px 0; background:var(--bg); }
+  .langbar .inner { background:var(--card); border:1px solid var(--line); border-radius:999px; padding:4px; display:flex; gap:4px; }
+  .langbar button { border:none; background:transparent; color:var(--muted); font:inherit; font-weight:700; font-size:.9rem; padding:6px 16px; border-radius:999px; cursor:pointer; }
+  .langbar button.active { background:var(--blue); color:#fff; }
+
+  header.hero { text-align:center; padding:24px 16px 24px; }
   .hero h1 { font-size:clamp(1.7rem,4.2vw,2.9rem); letter-spacing:-.02em; }
   .hero .sub { color:var(--muted); max-width:760px; margin:12px auto 0; }
   .decisions { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin:28px 0 8px; }
@@ -71,6 +76,18 @@
 <body>
 <div class="wrap">
 
+<div class="langbar">
+  <div class="inner">
+    <button id="btn-en" onclick="setLang('en')">English</button>
+    <button id="btn-mr" onclick="setLang('mr')">मराठी</button>
+  </div>
+</div>
+
+<!-- ################################################################ -->
+<!-- ############################ ENGLISH ########################### -->
+<!-- ################################################################ -->
+<div id="lang-en">
+
 <header class="hero">
   <h1>🏫 School Platform — Tenancy, Security, Backup &amp; DR</h1>
   <p class="sub">The production design for serving many schools from <b>one domain</b> with
@@ -92,7 +109,6 @@
   <a href="#roadmap">10 Roadmap</a>
 </nav>
 
-<!-- ============================================================ 1 -->
 <section id="arch">
   <h2><span class="secnum">1</span> Architecture: E today, F when analytics needs it</h2>
   <p class="lead">Between your shortlisted options E and F: they are not rivals — <b>F is E plus one
@@ -118,7 +134,6 @@
   <div class="callout green"><b>Decision:</b> ship E; keep every silo's schema identical (same migrations everywhere) so the F gate is a pure add-on, not a refactor.</div>
 </section>
 
-<!-- ============================================================ 2 -->
 <section id="tenancy">
   <h2><span class="secnum">2</span> One domain, no subdomains — how UI → API knows the school</h2>
   <p class="lead">Everything lives on <code>app.yourschools.com</code>. The school is <b>not</b> in the
@@ -152,7 +167,6 @@
   </div>
 </section>
 
-<!-- ============================================================ 3 -->
 <section id="multi">
   <h2><span class="secnum">3</span> Users who belong to two schools</h2>
   <p class="lead">A teacher can work at two schools; a director can own five. The rule:
@@ -178,7 +192,6 @@
   </div>
 </section>
 
-<!-- ============================================================ 4 -->
 <section id="nest">
   <h2><span class="secnum">4</span> NestJS blueprint</h2>
   <p class="lead">NestJS fits this design well: guards for authn/authz, middleware for tenant
@@ -227,7 +240,6 @@ async forSchool(id: string) {
   </div>
 </section>
 
-<!-- ============================================================ 5 -->
 <section id="apisec">
   <h2><span class="secnum">5</span> API security</h2>
   <div class="panel"><ul class="check">
@@ -242,7 +254,6 @@ async forSchool(id: string) {
   </ul></div>
 </section>
 
-<!-- ============================================================ 6 -->
 <section id="dbsec">
   <h2><span class="secnum">6</span> Database security</h2>
   <div class="panel"><ul class="check">
@@ -256,7 +267,6 @@ async forSchool(id: string) {
   </ul></div>
 </section>
 
-<!-- ============================================================ 7 -->
 <section id="backup">
   <h2><span class="secnum">7</span> Backup policy — your retention rules, implemented</h2>
   <p class="lead">Requirement: hourly backups always available for recent history; after 10 days
@@ -292,7 +302,6 @@ rule "monthly-cold"  { prefix = "monthly/"
   </div>
 </section>
 
-<!-- ============================================================ 8 -->
 <section id="dr">
   <h2><span class="secnum">8</span> Disaster-recovery plan</h2>
   <p class="lead">Targets: <b>RPO ≤ 1 hour</b> (per your backup rule; effectively minutes via PITR)
@@ -323,7 +332,6 @@ rule "monthly-cold"  { prefix = "monthly/"
   <div class="callout"><b>Why this works:</b> the three replicated things — Terraform code (git), images (ECR replication), data (S3 cross-region) — are the entire system. Everything else is derived.</div>
 </section>
 
-<!-- ============================================================ 9 -->
 <section id="admin">
   <h2><span class="secnum">9</span> Per-school admin panel &amp; feature control</h2>
   <p class="lead">Two admin surfaces, strictly separated: a <b>school admin panel</b> for each school's
@@ -359,7 +367,6 @@ rule "monthly-cold"  { prefix = "monthly/"
   </div>
 </section>
 
-<!-- ============================================================ 10 -->
 <section id="roadmap">
   <h2><span class="secnum">10</span> Build order</h2>
   <div class="panel"><ul class="check">
@@ -376,9 +383,329 @@ rule "monthly-cold"  { prefix = "monthly/"
 
 <footer>
   School Platform · design doc · single domain · option E → F ·
-  <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform">repo</a> ·
-  see also <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/README.md#6%EF%B8%8F%E2%83%A3-multi-tenancy--100-schools-zero-mix-ups">multi-tenancy diagram</a>
+  <a href="https://github.com/BaluRaut/cloud-2026-eks-docker-terraform">repo</a>
 </footer>
-</div>
+</div><!-- /lang-en -->
+
+<!-- ################################################################ -->
+<!-- ############################ मराठी ############################## -->
+<!-- ################################################################ -->
+<div id="lang-mr" hidden>
+
+<header class="hero">
+  <h1>🏫 स्कूल प्लॅटफॉर्म — टेनन्सी, सुरक्षा, बॅकअप आणि DR</h1>
+  <p class="sub"><b>एकाच डोमेनवरून</b> अनेक शाळा चालवण्याचे प्रोडक्शन डिझाईन — प्रत्येक शाळेसाठी
+  स्वतंत्र isolation (तुमचा पर्याय <b>E</b>, पुढे <b>F</b>), NestJS बॅकएंड,
+  तासागणिक→दैनिक बॅकअप lifecycle आणि सराव करून तपासलेली disaster-recovery योजना.</p>
+  <div class="decisions">
+    <div class="decision" style="--c:var(--green)"><b>आर्किटेक्चर</b><span>आत्ता पर्याय E (प्रत्येक शाळेचा silo + control plane) — cross-school analytics लागेल तेव्हा F चे aggregation gate जोडू</span></div>
+    <div class="decision" style="--c:var(--blue)"><b>टेनन्सी routing</b><span>एकच डोमेन, subdomain नाही — शाळा JWT मधून ठरते; लॉगिननंतर school-picker</span></div>
+    <div class="decision" style="--c:var(--violet)"><b>बॅकएंड</b><span>NestJS: auth व roles साठी guards, tenant ओळखण्यासाठी middleware, प्रत्येक शाळेसाठी वेगळा connection pool</span></div>
+    <div class="decision" style="--c:var(--amber)"><b>बॅकअप</b><span>तासागणिक (१० दिवस) → दैनिक (३० दिवस) → मासिक (१२ महिने) · RPO ≤ १ तास, restore drills</span></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#arch-mr">१ आर्किटेक्चर</a> <a href="#tenancy-mr">२ एक-डोमेन टेनन्सी</a>
+  <a href="#multi-mr">३ दोन शाळांचे युजर्स</a> <a href="#nest-mr">४ NestJS</a>
+  <a href="#apisec-mr">५ API सुरक्षा</a> <a href="#dbsec-mr">६ DB सुरक्षा</a>
+  <a href="#backup-mr">७ बॅकअप</a> <a href="#dr-mr">८ DR योजना</a> <a href="#admin-mr">९ ॲडमिन पॅनेल</a>
+  <a href="#roadmap-mr">१० रोडमॅप</a>
+</nav>
+
+<section id="arch-mr">
+  <h2><span class="secnum">1</span> आर्किटेक्चर: आज E, analytics लागेल तेव्हा F</h2>
+  <p class="lead">E आणि F हे प्रतिस्पर्धी नाहीत — <b>F म्हणजे E + एक जास्तीचा घटक</b>
+  (governed aggregation gate). त्यामुळे प्रश्न "कोणता?" नसून "कोणत्या क्रमाने?" एवढाच आहे.</p>
+  <div class="grid2">
+    <div class="panel">
+      <h3>सुरुवात E ने — प्रत्येक शाळेचा silo + control plane</h3>
+      <ul class="check">
+        <li><b>प्रत्येक शाळेसाठी स्वतंत्र डेटाबेस</b> — स्वतःचा schema, स्वतःची credentials, स्वतःची बॅकअप लाईन. शाळा A च्या connection ला शाळा B चा डेटा वाचणे शक्यच नाही.<small>Isolation रचनेतच आहे — WHERE clause मध्ये नाही.</small></li>
+        <li><b>Control plane</b> — auth, शाळांची नोंदवही (catalog), routing, feature flags. छोटे, साधे, स्वतःच्या डेटाबेससह.</li>
+        <li><b>एकच shared app fleet</b> — तेच NestJS pods सर्व शाळांना सेवा देतात; request मधील JWT ठरवतो कोणत्या शाळेच्या डेटाबेसकडे जायचे.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>F चे aggregation gate नंतर जोडा</h3>
+      <ul class="check">
+        <li><b>कधी बांधायचे:</b> cross-school माहितीची पहिली खरी गरज (benchmarks, प्लॅटफॉर्म dashboards, feature-वापराचे आकडे).</li>
+        <li><b>फक्त aggregates, एकाच दिशेने</b> — scheduled job शाळा-पातळीवरील aggregates (संख्या, सरासरी) वेगळ्या analytics store मध्ये मोजतो. Row-level डेटा silo बाहेर कधीच जात नाही.</li>
+        <li><b>Governance अंगभूत:</b> किमान cohort आकार (उदा. ५ पेक्षा कमी शाळांचा aggregate दडपणे), प्रत्येक aggregate query चा audit log, ad-hoc row egress मार्ग नाही.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout green"><b>निर्णय:</b> E लाँच करा; प्रत्येक silo चा schema सारखाच ठेवा (सर्वत्र त्याच migrations) — म्हणजे F gate हे निव्वळ add-on राहते, refactor नाही.</div>
+</section>
+
+<section id="tenancy-mr">
+  <h2><span class="secnum">2</span> एकच डोमेन, subdomain नाही — UI → API ला शाळा कशी कळते</h2>
+  <p class="lead">सर्व काही <code>app.yourschools.com</code> वर चालते. शाळा URL मध्ये <b>नसते</b> —
+  ती JWT मध्ये claim म्हणून प्रवास करते. त्यामुळे एक डोमेन, एक TLS cert, एक ALB राहते आणि
+  शाळेची बतावणी करणे म्हणजे signed token बनावट करण्याइतकेच कठीण होते.</p>
+
+  <div class="flow">
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>लॉगिन (global)</b><span>POST /auth/login — email + password (+ OTP). Credentials control plane मध्ये असतात — कोणत्याही शाळेच्या DB मध्ये नाही.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Membership शोध</b><span>Control plane युजरच्या शाळा-memberships व प्रत्येक शाळेतील role परत करते.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>School picker</b><span>१ शाळा → आपोआप निवड. २+ → picker स्क्रीन (§3 पहा).</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Session token</b><span>कमी आयुष्याचा JWT: <code>sub</code>, <code>school_id</code>, <code>role</code>. Refresh token HttpOnly cookie मध्ये.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>प्रत्येक API call</b><span>UI JWT पाठवते. NestJS TenantMiddleware <code>school_id</code> वाचते — query param मधून कधीही नाही.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Silo connection</b><span>Catalog school_id → DB host + secret देतो; त्या शाळेचा cached pool query चालवतो.</span></div>
+  </div>
+
+  <div class="panel">
+    <b>Token ची रचना</b>
+    <pre><code>{
+  "sub": "user_8123",
+  "school_id": "sch_dps_pune",     // सक्रिय शाळा — एकमेव source of truth
+  "role": "school_admin",          // ह्याच शाळेतील role (शाळेनुसार वेगळी)
+  "memberships": ["sch_dps_pune", "sch_svm_mumbai"],
+  "exp": 1735489900                // १५ मिनिटे — refresh ने फिरते
+}</code></pre>
+    <b>पक्के नियम</b>
+    <ul class="check">
+      <li>API <code>school_id</code> body, query किंवा custom header मधून <b>कधीही</b> स्वीकारत नाही — फक्त verified JWT मधून. यामुळे cross-tenant bugs चे अख्खे प्रकार संपतात.</li>
+      <li>शाळा बदलणे = <code>POST /auth/switch-school</code> मधून नवा token (server आधी membership तपासतो) — client-side variable कधीच नाही.</li>
+      <li>प्रत्येक DB access tenant-scoped connection मधूनच जाते — request कोडला सर्व शाळा दिसू शकणारा "global" pool अस्तित्वातच नाही.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="multi-mr">
+  <h2><span class="secnum">3</span> दोन शाळांमध्ये असलेले युजर्स</h2>
+  <p class="lead">एक शिक्षक दोन शाळांत शिकवू शकतो; एक संचालक पाच शाळा चालवू शकतो. नियम:
+  <b>एका session मध्ये एकच सक्रिय शाळा</b> — dashboard उघडण्यापूर्वी स्पष्टपणे निवडलेली.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>प्रवाह</b>
+      <ul class="check">
+        <li>लॉगिननंतर <code>memberships.length &gt; 1</code> असल्यास UI <code>/choose-school</code> वर नेते — प्रत्येक शाळेचे कार्ड (नाव, लोगो, तिथली role).</li>
+        <li>निवड <code>POST /auth/switch-school</code> कॉल करते → server membership तपासतो → त्या <code>school_id</code> सह session JWT देतो.</li>
+        <li>त्यानंतरच app dashboard चा डेटा आणते. या बिंदूनंतर "शाळा निवडलेली नाही" अशी स्थितीच उरत नाही.</li>
+        <li>Top-nav मध्ये शाळा बदलण्याचा switcher असतो; बदल तीच server-side देवाणघेवाण पुन्हा करतो आणि dashboard <b>पूर्ण reload</b> होते (शाळा B चा token सक्रिय असताना शाळा A चा कोणताही डेटा स्क्रीनवर उरत नाही).</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>त्रास टाळणारे तपशील</b>
+      <ul class="check">
+        <li><b>शेवटची निवड लक्षात ठेवा</b> (control plane मध्ये), ती preselect करा — पण multi-school युजरना दिवसाच्या पहिल्या लॉगिनला picker दाखवाच.<small>९५% वेळा जलद, audit साठी स्पष्ट.</small></li>
+        <li><b>Roles प्रत्येक membership नुसार</b> — तीच व्यक्ती शाळा A त <code>school_admin</code> आणि शाळा B त फक्त <code>teacher</code> असू शकते. Token फक्त सक्रिय शाळेची role वाहतो.</li>
+        <li><b>Deep links:</b> "चुकीची" शाळा सक्रिय असताना उघडलेली लिंक "हे पाहण्यासाठी DPS पुणे वर स्विच करा" असे एक-क्लिक interstitial दाखवते — कधीही आपोआप स्विच होत नाही.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="nest-mr">
+  <h2><span class="secnum">4</span> NestJS blueprint</h2>
+  <p class="lead">हे डिझाईन NestJS ला चपखल बसते: authn/authz साठी guards, tenant ओळखण्यासाठी
+  middleware, आणि प्रत्येक शाळेच्या connection साठी dependency injection. एकमेव अवघड भाग —
+  <b>pool-per-school</b> — connection manager ने (LRU-capped) सोडवला आहे.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>Module रचना</b>
+      <pre><code>src/
+├── auth/            # login, refresh, switch-school, OTP
+│   ├── jwt.strategy.ts
+│   └── roles.guard.ts        # @Roles('school_admin')
+├── tenancy/
+│   ├── tenant.middleware.ts  # JWT → school_id → connection
+│   ├── catalog.service.ts    # control-plane lookup (cached)
+│   └── connection.manager.ts # pool per school, LRU-capped
+├── control-plane/   # schools registry, memberships,
+│   │                #   feature flags, audit log
+├── students/        # feature modules — all tenant-scoped
+├── teachers/
+├── analytics/       # later: F's aggregation gate
+└── common/          # validation pipes, rate limits, filters</code></pre>
+    </div>
+    <div class="panel">
+      <b>Tenant-scoped connection (मुख्य युक्ती)</b>
+      <pre><code>// tenant.middleware.ts
+const { school_id } = verifyJwt(req);
+const conn = await this.connections
+    .forSchool(school_id);        // cached pool
+req.tenant = { schoolId: school_id, conn };
+
+// connection.manager.ts
+async forSchool(id: string) {
+  if (this.pools.has(id)) return this.pools.get(id);
+  const cfg = await this.catalog.dbConfig(id);
+  //   ↑ host + creds — Secrets Manager, ५ मि cache
+  const pool = createPool({ ...cfg, max: 5 });
+  this.pools.set(id, pool);       // ~200 नंतर LRU-evict
+  return pool;
+}</code></pre>
+      <ul class="check">
+        <li><b>छोटे pools × अनेक शाळा</b> — प्रति शाळा ५ connections; schools × pools Postgres च्या मर्यादेजवळ आल्यावर समोर PgBouncer.</li>
+        <li><b>सर्व silos साठी migrations</b> — एकच command catalog फिरून प्रत्येक शाळेवर migrations चालवते; नवीन शाळेला त्या onboarding च्या वेळीच मिळतात.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="apisec-mr">
+  <h2><span class="secnum">5</span> API सुरक्षा</h2>
+  <div class="panel"><ul class="check">
+    <li><b>AuthN:</b> १५ मिनिटांचा access JWT + फिरता refresh token <code>HttpOnly; Secure; SameSite=Lax</code> cookie मध्ये. Refresh चा पुनर्वापर आढळल्यास अख्खे token-family रद्द.</li>
+    <li><b>AuthZ:</b> दोन थर — role guard (<code>@Roles('school_admin')</code>) आणि tenant guard (resource ची शाळा = token मधील <code>school_id</code>). दोन्ही प्रत्येक route वर चालतात.</li>
+    <li><b>Validation:</b> global <code>ValidationPipe</code> (<code>whitelist: true, forbidNonWhitelisted: true</code>) — अनोळखी fields नाकारली जातात, दुर्लक्षित होत नाहीत.</li>
+    <li><b>Rate limiting:</b> <code>@nestjs/throttler</code> — <code>/auth/*</code> वर कडक (brute-force), इतरत्र प्रति-युजर सैल; शिवाय ALB वर AWS WAF (SQLi/XSS rules, IP throttles).</li>
+    <li><b>Headers व CORS:</b> helmet defaults; CORS एकाच डोमेनवर लॉक — subdomain न वापरण्याचा बोनस फायदा.</li>
+    <li><b>Secrets:</b> env files किंवा images मध्ये काहीही नाही — boot च्या वेळी AWS Secrets Manager मधून (आणि connect करताना प्रत्येक शाळेची DB creds).</li>
+    <li><b>Audit log:</b> control-plane टेबल — कोण, शाळा, कृती, entity, वेळ, IP — प्रत्येक बदल व auth घटनेसाठी; अपरिवर्तनीय (UPDATE/DELETE grants नाहीत).</li>
+    <li><b>Dependencies:</b> ECR scan-on-push (आधीच चालू) + CI मध्ये <code>npm audit</code>/<code>pip-audit</code>.</li>
+  </ul></div>
+</section>
+
+<section id="dbsec-mr">
+  <h2><span class="secnum">6</span> डेटाबेस सुरक्षा</h2>
+  <div class="panel"><ul class="check">
+    <li><b>नेटवर्क:</b> डेटाबेस फक्त private subnets मध्ये; security group फक्त EKS node/pod SG कडूनच port 5432 स्वीकारतो. Public endpoint कधीच नाही.</li>
+    <li><b>Encryption:</b> at rest KMS ने (प्रति-instance keys; premium शाळांना स्वतःची CMK), in transit सक्तीचे TLS (client वर <code>rejectUnauthorized</code>).</li>
+    <li><b>प्रत्येक शाळेची स्वतःची credentials:</b> प्रत्येक silo चा DB user <b>फक्त स्वतःच्याच</b> डेटाबेसमध्ये जाऊ शकतो — app च्या मार्गात superuser नाही. Secrets Manager rotation ३०–९० दिवसांनी.</li>
+    <li><b>किमान-अधिकार grants:</b> app user ला फक्त DML (SELECT/INSERT/UPDATE/DELETE); DDL फक्त migration job च्या वेगळ्या role मधून.</li>
+    <li><b>मानवी access:</b> shared psql passwords नाहीत — break-glass साठी SSM Session Manager + IAM auth; प्रत्येक session लॉग होते.</li>
+    <li><b>Audit व detection:</b> DDL + role बदलांवर pgAudit; RDS API calls वर CloudTrail; failed-login वाढ व असामान्य egress वर alarms.</li>
+    <li><b>शेवटची फळी isolation:</b> bug गेला तरी शाळा-A चे connection शाळा-B ला स्पर्श करणारी query लिहूच शकत नाही — कोणत्याही एका चुकीचा फटका एका शाळेपुरताच.</li>
+  </ul></div>
+</section>
+
+<section id="backup-mr">
+  <h2><span class="secnum">7</span> बॅकअप धोरण — तुमचेच retention नियम, अंमलात</h2>
+  <p class="lead">गरज: अलीकडच्या इतिहासासाठी तासागणिक बॅकअप नेहमी हजर; १० दिवसांनंतर फक्त दैनिक
+  ठेवायचे आणि तासागणिक काढून टाकायचे. अंमलबजावणी: प्रति-शाळा dumps S3 वर + lifecycle rules,
+  आणि खाली RDS point-in-time recovery.</p>
+  <table>
+    <thead><tr><th>स्तर</th><th>कधी</th><th>किती काळ</th><th>यंत्रणा</th><th>Restore</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag b">PITR</span></td><td>सतत (WAL)</td><td>१० दिवस</td><td>RDS automated backups</td><td>गेल्या १० दिवसांतील कोणताही क्षण — तासागणिकपेक्षाही बारीक</td></tr>
+      <tr><td><span class="tag g">तासागणिक</span></td><td>दर तासाला, प्रति शाळा</td><td><b>१० दिवस</b>, नंतर आपोआप delete</td><td>k8s CronJob: <code>pg_dump</code> → <code>s3://backups/hourly/&lt;school&gt;/</code> · S3 lifecycle १० दिवसांनी expire</td><td>एक शाळा, तास-पातळी, जलद</td></tr>
+      <tr><td><span class="tag a">दैनिक</span></td><td>पहाटे ०२:०० IST, प्रति शाळा</td><td><b>३० दिवस</b></td><td>तोच job → <code>s3://backups/daily/&lt;school&gt;/</code></td><td>एक शाळा, दिवस-पातळी</td></tr>
+      <tr><td><span class="tag r">मासिक</span></td><td>महिन्याच्या १ तारखेला</td><td>१२ महिने (६० दिवसांनी Glacier)</td><td>त्या दिवसाच्या daily चे promotion</td><td>compliance / दीर्घ इतिहास</td></tr>
+    </tbody>
+  </table>
+  <div class="grid2">
+    <div class="panel">
+      <b>S3 lifecycle (Terraform)</b>
+      <pre><code>rule "expire-hourly" { prefix = "hourly/"  expiration { days = 10 } }
+rule "expire-daily"  { prefix = "daily/"   expiration { days = 30 } }
+rule "monthly-cold"  { prefix = "monthly/"
+  transition { days = 60  storage_class = "GLACIER_IR" }
+  expiration { days = 365 } }</code></pre>
+      <span style="color:var(--muted);font-size:.88rem">Bucket: versioned, KMS-encrypted, हवे असल्यास Object Lock (छेडछाड-रोधक), DR region मध्ये replicate (§8).</span>
+    </div>
+    <div class="panel">
+      <b>तडजोड नसलेल्या गोष्टी</b>
+      <ul class="check">
+        <li><b>प्रति-शाळा फाईल्स</b> — शाळा #42 restore करताना इतर silos ना धक्काही लागत नाही (हाच पर्याय E चा मूळ हेतू).</li>
+        <li><b>Backup monitoring:</b> CronJob प्रत्येक शाळेसाठी success marker लिहितो; ताजा backup नसलेल्या शाळेवर रोजचा alert — गुपचूप fail होणारा backup हाच DR चा खरा शत्रू.</li>
+        <li><b>Restore drills:</b> दर महिन्याला एका random शाळेचा dump scratch instance मध्ये restore करून row-count तपासणी. कधीही restore न केलेला backup म्हणजे आशा — backup नव्हे.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="dr-mr">
+  <h2><span class="secnum">8</span> Disaster-recovery योजना</h2>
+  <p class="lead">लक्ष्ये: <b>RPO ≤ १ तास</b> (तुमच्या बॅकअप नियमानुसार; PITR मुळे प्रत्यक्षात
+  मिनिटे) आणि परिस्थितीनुसार <b>RTO</b>. सगळी infrastructure Terraform मध्ये असल्याने सर्व काही
+  code + backups मधून पुन्हा उभे राहते.</p>
+  <table>
+    <thead><tr><th>परिस्थिती</th><th>कोण हाताळते</th><th>RTO</th><th>कसे</th></tr></thead>
+    <tbody>
+      <tr><td>Pod / node क्रॅश</td><td><span class="tag g">आपोआप</span></td><td>सेकंद–मिनिटे</td><td>Kubernetes self-healing + HPA; multi-AZ node group</td></tr>
+      <tr><td>Availability-zone बंद</td><td><span class="tag g">आपोआप</span></td><td>~१–२ मिनिटे</td><td>RDS Multi-AZ failover; pods दुसऱ्या AZ त; ALB दोन्ही AZ त असतो</td></tr>
+      <tr><td>चुकीचे deploy</td><td><span class="tag b">runbook</span></td><td>मिनिटे</td><td><code>kubectl rollout undo</code> — आधीची image एका command वर (SHA-tagged images)</td></tr>
+      <tr><td>डेटा बिघाड / चुकीचे migration (एक शाळा)</td><td><span class="tag b">runbook</span></td><td>&lt; १ तास</td><td>PITR ने बिघाडाच्या अगदी आधीच्या क्षणी, किंवा त्या शाळेचा hourly dump नव्या DB त restore करून catalog मधील नोंद बदलणे</td></tr>
+      <tr><td>Ransom / डेटाशी छेडछाड</td><td><span class="tag a">runbook</span></td><td>तास</td><td>versioned, cross-region S3 मधून restore (Object Lock इतिहास जपतो)</td></tr>
+      <tr><td>अख्खा region बंद</td><td><span class="tag r">runbook</span></td><td>&lt; ४ तास</td><td>खालील runbook ↓</td></tr>
+    </tbody>
+  </table>
+  <div class="panel">
+    <b>Region गेल्यावरचा runbook (वर्षातून दोनदा सराव)</b>
+    <ul class="check">
+      <li><b>१. जाहीर करा</b> — एक व्यक्ती incident commander; सर्वप्रथम status page अपडेट.</li>
+      <li><b>२. उभारणी</b> — DR region वर <code>terraform apply</code> (तोच code, फक्त <code>aws_region</code> वेगळा). VPC + EKS + ECR साठी ~२० मिनिटे.</li>
+      <li><b>३. Images</b> — ECR cross-region replication मुळे images आधीच तिथे असतात.</li>
+      <li><b>४. डेटा</b> — replicate झालेल्या S3 backups मधून प्रत्येक शाळा restore (parallel jobs, catalog-नुसार; मोठ्या शाळा आधी).</li>
+      <li><b>५. Cutover</b> — Route 53 तोच एक डोमेन नव्या ALB कडे वळवते (TTL 60 सेकंद ठेवलेला). एक डोमेन = एकच DNS बदल.</li>
+      <li><b>६. पडताळणी</b> — प्रत्येक शाळेची smoke test (लॉगिन, dashboard, एक write), मग लेखी timeline सह incident बंद.</li>
+    </ul>
+  </div>
+  <div class="callout"><b>हे का चालते:</b> replicate होणाऱ्या तीनच गोष्टी — Terraform code (git), images (ECR replication), डेटा (S3 cross-region) — म्हणजेच संपूर्ण system. बाकी सगळे त्यातून उभे राहते.</div>
+</section>
+
+<section id="admin-mr">
+  <h2><span class="secnum">9</span> प्रत्येक शाळेचे ॲडमिन पॅनेल व feature नियंत्रण</h2>
+  <p class="lead">दोन वेगळे admin पृष्ठभाग, काटेकोरपणे वेगळे: शाळेच्या स्टाफसाठी <b>school admin
+  panel</b> आणि तुमच्यासाठी <b>platform panel</b>. Feature flags control plane मध्ये असतात —
+  त्यामुळे deploy न करता शाळेनुसार features चालू/बंद करता येतात.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>भूमिका (प्रत्येक membership नुसार)</b>
+      <table>
+        <thead><tr><th>भूमिका</th><th>व्याप्ती</th><th>काय करू शकते</th></tr></thead>
+        <tbody>
+          <tr><td><code>platform_admin</code></td><td>तुम्ही / तुमची टीम</td><td>शाळा onboard करणे, plans व feature flags ठरवणे, aggregates पाहणे (फक्त F-gate मधून) — सामान्य कामात शाळांचा row-डेटा कधीच वाचत नाही</td></tr>
+          <tr><td><code>school_admin</code></td><td>एक शाळा</td><td>त्या शाळेचे users व roles, branding, <i>plan च्या मर्यादेत</i> features चालू/बंद, शाळेचा audit log पाहणे</td></tr>
+          <tr><td><code>teacher</code> / <code>staff</code></td><td>एक शाळा</td><td>school_admin च्या settings नुसार दैनंदिन features</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <b>Feature flags (control plane)</b>
+      <pre><code>school_features
+  school_id      "sch_dps_pune"
+  feature_key    "analytics" | "attendance"
+                 | "fee_module" | "parent_portal"
+  enabled        true
+  source         "plan" | "school_admin" | "platform"
+  updated_by / updated_at        # audited</code></pre>
+      <ul class="check">
+        <li>API: <code>FeatureGuard</code> (<code>@Feature('fee_module')</code>) बंद असताना 404 देतो — बंद feature "लपवलेले" नसते, ते अस्तित्वातच नसते.</li>
+        <li>UI session मध्ये एकदा <code>GET /me/features</code> वाचते; server-side ६० सेकंद cache.</li>
+        <li>Plan ही कमाल मर्यादा; school admins तिच्या <i>आत</i> मोकळेपणाने toggle करतात; platform panel मधून तुम्ही काहीही override करू शकता.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap-mr">
+  <h2><span class="secnum">10</span> बांधणीचा क्रम</h2>
+  <div class="panel"><ul class="check">
+    <li><b>१. Control plane + auth</b> (NestJS): शाळांची registry, memberships, login, switch-school, <code>school_id</code> सह JWT.</li>
+    <li><b>२. Tenancy plumbing:</b> TenantMiddleware, connection manager, catalog-driven migrations; दोन demo शाळा end-to-end.</li>
+    <li><b>३. School picker UI</b> + शाळा switcher + deep-link interstitial.</li>
+    <li><b>४. Backups:</b> प्रति-शाळा CronJob + S3 lifecycle (१० दि तासागणिक / ३० दि दैनिक / १२ म मासिक) + backup monitoring alert.</li>
+    <li><b>५. Security hardening:</b> WAF, throttler, audit log, Secrets Manager rotation, pgAudit.</li>
+    <li><b>६. Admin panels:</b> आधी school admin (users + feature toggles), मग platform panel (onboarding automation).</li>
+    <li><b>७. पहिली DR drill</b> — एक शाळा restore + region-runbook चा tabletop सराव. यानंतरच platform ला production-ready म्हणा.</li>
+    <li><b>८. नंतर:</b> cross-school analytics ची मागणी आल्यावर F चे aggregation gate.</li>
+  </ul></div>
+</section>
+
+<footer>
+  स्कूल प्लॅटफॉर्म · design doc · एक डोमेन · पर्याय E → F ·
+  <a href="https://github.com/BaluRaut/cloud-2026-eks-docker-terraform">repo</a>
+</footer>
+</div><!-- /lang-mr -->
+
+</div><!-- /wrap -->
+
+<script>
+function setLang(lang) {
+  document.getElementById("lang-en").hidden = (lang !== "en");
+  document.getElementById("lang-mr").hidden = (lang !== "mr");
+  document.getElementById("btn-en").classList.toggle("active", lang === "en");
+  document.getElementById("btn-mr").classList.toggle("active", lang === "mr");
+  document.documentElement.lang = lang;
+  try { localStorage.setItem("arch-lang", lang); } catch (e) {}
+}
+const urlLang = new URLSearchParams(location.search).get("lang");
+let saved = null;
+try { saved = localStorage.getItem("arch-lang"); } catch (e) {}
+setLang(urlLang === "mr" || (!urlLang && saved === "mr") ? "mr" : "en");
+</script>
 </body>
 </html>
