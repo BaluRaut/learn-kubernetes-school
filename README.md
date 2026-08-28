@@ -222,8 +222,10 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 >   single-domain routing (external IdP + X-School-Id), NestJS blueprint, backup lifecycle, DR runbook,
 >   security checklists, per-school admin panels. English + मराठी toggle.
 > - [docs/architecture-lfg.html](docs/architecture-lfg.html) — **LFG (Large Farm Grower) platform**:
->   silo per LFG with no cross-LFG path, per-country crop attribute dictionaries, rolling field-zoning
->   vintages (2017–2022, 2018–2023, …), and the Upload-UI/CI-job ingestion pipeline with mapping templates.
+>   engineering companion to the [RFC figures](docs/LFG%20Data%20Architecture.html) — phase 1 D+E
+>   (per-grower silos, no cross-silo path), phase 2 F (governed aggregate gate, deferred), the
+>   metric-as-rows canonical model extended for multi-country growers, rolling variability windows,
+>   and the two-route ingestion pipeline (UI upload / direct inject) with one commit boundary.
 
 # 6️⃣ Multi-Tenancy — 100 Schools, Zero Mix-Ups
 

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LFG Platform — Multi-Country Grower Architecture</title>
-<meta name="description" content="Architecture for Large Farm Growers: silo per LFG (no cross-LFG data path), multi-country crop attribute dictionaries, rolling field-zoning windows, dual ingestion (Upload UI / CI job) through a schema-mapping layer.">
+<title>LFG Platform — Engineering Design (companion to the RFC)</title>
+<meta name="description" content="Platform-engineering design for the Large Farm Grower data consolidation RFC: phase 1 D+E (per-grower silos), phase 2 F (governed aggregate gate), canonical metric-as-rows model, variability windows, dual-route ingestion with a single commit boundary.">
 <style>
   :root {
     --bg:#f8fafc; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
@@ -19,7 +19,7 @@
   a { color:var(--blue); }
   header.hero { text-align:center; padding:52px 16px 24px; }
   .hero h1 { font-size:clamp(1.7rem,4.2vw,2.9rem); letter-spacing:-.02em; }
-  .hero .sub { color:var(--muted); max-width:780px; margin:12px auto 0; }
+  .hero .sub { color:var(--muted); max-width:800px; margin:12px auto 0; }
   .decisions { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin:28px 0 8px; }
   .decision { background:var(--card); border:1px solid var(--line); border-left:6px solid var(--c,var(--blue)); border-radius:12px; padding:14px 16px; text-align:left; }
   .decision b { display:block; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:var(--c,var(--blue)); }
@@ -64,195 +64,189 @@
 <div class="wrap">
 
 <header class="hero">
-  <h1>🌾 LFG Platform — Multi-Country Grower Architecture</h1>
-  <p class="sub">The design for serving <b>Large Farm Growers</b> that operate across countries —
-  with country-specific crop attributes, rolling field-zoning windows (2017–2022, 2018–2023, …),
-  dual data ingestion (Upload UI / CI job) through a schema-mapping layer, and a hard rule:
-  <b>no data ever crosses between LFGs.</b></p>
+  <h1>🌾 LFG Platform — Engineering Design</h1>
+  <p class="sub">The platform-engineering companion to
+  <a href="LFG%20Data%20Architecture.html"><b>LFG Data Architecture</b></a> (RFC figures, drawn from
+  <code>LARGE-FARM-GROWER-DATA-RFC.md</code>). The RFC decides <i>what</i> and <i>why</i> —
+  options A–F, the canonical model, the isolation staircase, the phasing. This page adds the
+  <i>how to run it</i>: multi-country attribute scoping, variability-window versioning,
+  infrastructure, backups and DR for the chosen shape: <b>Phase 1 = D+E, Phase 2 = F (deferred)</b>.</p>
   <div class="decisions">
-    <div class="decision" style="--c:var(--green)"><b>Tenancy</b><span>One silo (database) per LFG — option E, deliberately without option F's aggregate gate: nothing crosses, by structure</span></div>
-    <div class="decision" style="--c:var(--blue)"><b>Country model</b><span>Fixed core entities everywhere; crop attributes defined per country in an attribute dictionary, data stored as validated JSONB</span></div>
-    <div class="decision" style="--c:var(--violet)"><b>Zoning</b><span>Immutable zoning <i>vintages</i> per field, keyed by year window (2017–2022, 2018–2023, …) — PostGIS geometries, never overwritten</span></div>
-    <div class="decision" style="--c:var(--amber)"><b>Ingestion</b><span>Upload UI and CI jobs land in the same pipeline: staging → mapping template → dictionary validation → silo load, with per-row reject reports</span></div>
+    <div class="decision" style="--c:var(--green)"><b>Tenancy (RFC fig 5, 8)</b><span>Phase 1: standalone LFG service on Seeds infra + <b>per-grower silo from day one</b> (D+E). Phase 2, deferred: F's governed aggregation gate — governance agreed before any code</span></div>
+    <div class="decision" style="--c:var(--blue)"><b>Data model (RFC fig 3)</b><span>Metrics are <b>rows</b> on one <code>metric_definition</code> registry — crop-agnostic, filterable in a WHERE clause; <code>entity_alias</code> kills the key-mismatch class; <code>batch_id</code> on every fact row</span></div>
+    <div class="decision" style="--c:var(--violet)"><b>Zoning</b><span>Variability windows as immutable versions per field (2017–2022, 2018–2023, …) → zones → <code>zone_metric</code> rows — never overwritten, provenance via <code>batch_id</code></span></div>
+    <div class="decision" style="--c:var(--amber)"><b>Ingestion (RFC fig 2)</b><span>Route 1 (UI upload) and Route 2 (direct inject) share one staging pipeline and one commit boundary; the saved mapping template is what makes Route 2 possible</span></div>
   </div>
 </header>
 
 <nav class="toc">
-  <a href="#tenancy">1 Silo per LFG</a> <a href="#country">2 Countries &amp; crop attributes</a>
-  <a href="#zoning">3 Field zoning windows</a> <a href="#model">4 Data model</a>
-  <a href="#ingest">5 Ingestion pipeline</a> <a href="#isolation">6 No-cross-LFG guarantees</a>
-  <a href="#residency">7 Regions &amp; residency</a> <a href="#ops">8 Ops: backup / DR / security</a>
-  <a href="#roadmap">9 Build order</a>
+  <a href="#phasing">1 Options &amp; phasing</a> <a href="#isolation">2 Isolation staircase</a>
+  <a href="#model">3 Canonical model + countries</a> <a href="#zoning">4 Variability windows</a>
+  <a href="#ingest">5 Ingestion routes</a> <a href="#serving">6 What it serves</a>
+  <a href="#residency">7 Regions &amp; residency</a> <a href="#ops">8 Ops</a>
+  <a href="#questions">9 Open questions</a>
 </nav>
 
 <!-- ============================================================ 1 -->
-<section id="tenancy">
-  <h2><span class="secnum">1</span> Silo per LFG — and deliberately no aggregate gate</h2>
-  <p class="lead">Same skeleton as the school platform's option E: a small <b>control plane</b>
-  (LFG registry, memberships, mapping templates, feature flags) and <b>one database silo per LFG</b>.
-  One difference is a decision, not an omission:</p>
-  <div class="callout red"><b>No option F here.</b> The requirement is "no data share cross LFG" —
-  so this platform has <b>no aggregation gate at all</b>. There is no service, job, credential or
-  path that reads two silos. Cross-LFG benchmarking, if ever requested, would be a new signed
-  agreement and a new design — not a toggle.</div>
+<section id="phasing">
+  <h2><span class="secnum">1</span> Options A–F, and the chosen phasing</h2>
+  <p class="lead">The RFC's figure 5 lays out six options that all give the Seed Selector UI one
+  contract and move the join server-side (today it runs in the browser — figure 1). The proposal
+  (figure 8) is two phases with <b>no rework between them</b>:</p>
   <div class="grid2">
     <div class="panel">
-      <b>What's in a silo (per LFG)</b>
+      <b>Phase 1 — now: D + E</b>
       <ul class="check">
-        <li>Growers' org data: farms, fields, seasons, crops, observations, zoning vintages.</li>
-        <li>Its own DB credentials, its own KMS key, its own S3 prefixes (raw uploads + backups).</li>
-        <li>Its own mapping templates and ingest history — even the <i>shape</i> of an LFG's source files is treated as confidential.</li>
+        <li>Standalone LFG data service on <b>Seeds infra</b> — PA / FVA optional, <b>scheduled, one-way, inbound</b> feeds only. Never in the request path.</li>
+        <li><b>Per-grower silo from day one</b> — own schema, own key, own retention, own backup; a control plane (auth · routing · schema registry) routes by <code>grower_id</code>.</li>
+        <li>Intake: Route 1 (UI upload) first — it produces the mapping templates — then Route 2 (direct inject) reuses them unattended (§5).</li>
+        <li>Settles isolation levels 1–3: storage, compute, transit (§2).</li>
       </ul>
     </div>
     <div class="panel">
-      <b>What's in the control plane</b>
+      <b>Phase 2 — deferred: F</b>
       <ul class="check">
-        <li>LFG registry: silo location (region!), status, plan.</li>
-        <li>Memberships: IdP <code>sub</code> → LFG + role (same external-auth pattern as the school doc: token = WHO, membership table = MAY/AS WHAT, <code>X-Lfg-Id</code> header = WHICH, checked every request).</li>
-        <li>Country attribute dictionaries (§2) — platform-owned reference data, not grower data.</li>
+        <li>The <b>aggregation gate</b> over the same silos: minimum cohort size enforced in code, no row-level egress, every export audited.</li>
+        <li>Shared benchmark / model layer → the successful-field benchmark of figure 4; recommendations returned <i>into</i> each silo.</li>
+        <li><b>Governance agreed before any code</b> — the gate's cohort threshold is a policy decision, and set too low it leaks via repeated queries (RFC fig 7's warning).</li>
+        <li>Reads exactly what phase 1 builds — deferring costs nothing; retro-fitting silos onto a pooled store is the migration nobody wants.</li>
       </ul>
     </div>
   </div>
+  <div class="callout red"><b>The promise, stated precisely:</b> raw grower rows <b>never</b> cross a
+  silo boundary — in either phase. Phase 1 has no cross-silo path at all; phase 2 permits only
+  above-threshold cohort statistics through one narrow, audited gate. "Your data is not mixed"
+  stays literally true.</div>
 </section>
 
 <!-- ============================================================ 2 -->
-<section id="country">
-  <h2><span class="secnum">2</span> Multi-country LFGs &amp; per-country crop attributes</h2>
-  <p class="lead">An LFG can farm in Brazil, India and Ukraine at once. The <b>core entities are
-  identical everywhere</b> (farm → field → season), but what you measure about a crop differs by
-  country — soybean in Brazil carries different attributes than soybean in India (regulatory,
-  agronomic, unit conventions). Hard-coding columns per country would mean a migration for every
-  new market. Instead: an <b>attribute dictionary</b>.</p>
-  <div class="grid2">
-    <div class="panel">
-      <b>The dictionary (platform reference data)</b>
-      <pre><code>crop_attribute_defs
-  country        "BR" | "IN" | "UA"
-  crop           "soybean" | "wheat" | ...
-  attr_key       "maturity_group" | "protein_pct" | ...
-  value_type     number | text | enum | date | boolean
-  unit           "kg/ha" | "%" | null
-  enum_values    [...]           -- when value_type = enum
-  rules          { min, max, required, regex }
-  since_season   2023            -- dictionary is versioned too</code></pre>
-      <span style="color:var(--muted);font-size:.88rem">Adding a country or a new attribute = inserting dictionary rows, not a schema migration. The dictionary is versioned by season so historical data stays interpretable.</span>
-    </div>
-    <div class="panel">
-      <b>The data (in each silo)</b>
-      <pre><code>season_crop_data
-  field_id       → fields
-  season_year    2024
-  crop           "soybean"
-  country        "BR"            -- denormalized for validation
-  attrs          JSONB           -- ONLY keys allowed by the
-                                 -- (country, crop) dictionary
--- GIN index on attrs for querying
--- CHECK: validated at API + ingest, not by trigger</code></pre>
-      <ul class="check">
-        <li><b>Validation at the edges:</b> API writes and the ingest pipeline both validate <code>attrs</code> against the dictionary — wrong type, unknown key, out-of-range → rejected with a precise error.</li>
-        <li><b>Typed reads:</b> the API serves attributes together with their definitions (type, unit, label) so every UI renders any country's crops without country-specific code.</li>
-      </ul>
-    </div>
-  </div>
+<section id="isolation">
+  <h2><span class="secnum">2</span> "Cannot be mixed" is four requirements (RFC fig 6)</h2>
+  <p class="lead">Most designs satisfy storage isolation and stop. The recommendation use case
+  lives on the fourth step — which is what makes the option choice non-negotiable.</p>
+  <table>
+    <thead><tr><th>Level</th><th>Requirement</th><th>Cleared by</th><th>Engineering enforcement (this design)</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag b">1 · Storage</span></td><td>rows not in shared tables</td><td>C D E F</td><td>silo per grower; per-silo credentials; per-silo KMS key; per-silo S3 prefixes &amp; backups</td></tr>
+      <tr><td><span class="tag b">2 · Compute</span></td><td>no shared query process</td><td>E F</td><td>tenant-scoped connections only (pool per silo); no "global" pool reachable from request code</td></tr>
+      <tr><td><span class="tag a">3 · Transit</span></td><td>neither data <i>nor the query pattern</i> leaves</td><td>E F</td><td>PA/FVA feeds are scheduled + inbound; no per-request call out of the boundary — "grower 1042 asked about Ranger Russet, 400 fields, Idaho" is itself a disclosure</td></tr>
+      <tr><td><span class="tag r">4 · Derived</span></td><td>models/aggregates carry nothing between growers</td><td>F only</td><td>phase 2's gate: min-cohort in code, audited, no row egress; until then, no derived path exists</td></tr>
+    </tbody>
+  </table>
 </section>
 
 <!-- ============================================================ 3 -->
-<section id="zoning">
-  <h2><span class="secnum">3</span> Field zoning — rolling year-windows as immutable vintages</h2>
-  <p class="lead">Each field carries zoning computed over a rolling multi-year window:
-  2017–2022, then 2018–2023, and so on. Each window's result is a <b>vintage</b> — stored whole,
-  never edited, never overwritten by the next window.</p>
-  <div class="panel">
-    <pre><code>field_zoning_vintages
-  id
-  field_id        → fields
-  window_start    2018
-  window_end      2023                  -- UNIQUE (field_id, window_start, window_end)
-  zones           GEOMETRY(MultiPolygon, 4326)   -- PostGIS; one row per zone alternative:
-  zone_props      JSONB                 -- per-zone class/productivity attributes
-  source          "upload" | "ci:pipeline-name"
-  ingest_run_id   → ingest_runs        -- full provenance
-  created_at      timestamptz          -- immutable after insert</code></pre>
-    <ul class="check">
-      <li><b>Default read = latest complete window</b> (<code>ORDER BY window_end DESC LIMIT 1</code>); any historical window stays one query away — agronomists can compare 2017–2022 vs 2018–2023 zoning side by side.</li>
-      <li><b>Immutability:</b> a re-computation of the same window inserts a new vintage row (with new <code>ingest_run_id</code>) and marks the old one superseded — you can always answer "what did the zoning say <i>at that time</i>?"</li>
-      <li><b>Window length is data, not code:</b> storing <code>start + end</code> (not "the 5-year window") means a country or LFG that moves to 3-year windows needs zero schema change.</li>
-      <li><b>Geometry hygiene:</b> zones validated on ingest (valid polygons, within the field boundary, no overlaps beyond tolerance) — bad geometry is a reject, not a surprise on the map later.</li>
-    </ul>
+<section id="model">
+  <h2><span class="secnum">3</span> Canonical model (RFC fig 3) — extended for multi-country LFGs</h2>
+  <p class="lead">Three clusters on one registry. The RFC's three load-bearing decisions:
+  <b>metrics as rows</b> on <code>metric_definition</code> (kills hardcoded crop-specific maps, makes
+  every metric a <code>WHERE</code> clause), <b><code>entity_alias</code></b> (kills the key-mismatch
+  class), and <b><code>batch_id</code> on every fact row</b> (makes intake reversible). One extension
+  is needed for growers operating across countries:</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>The model (per RFC, in each silo)</b>
+      <pre><code>CANONICAL + CATALOGUE          VARIABILITY
+grower  (org · workspace)      variability_window
+farm    (name, country ⬅ NEW)    (date range · source)
+field   (boundary · ext_ref)   zone (geometry)
+field_season                   zone_metric
+  (one planting · batch_id)      (value per metric)
+field_season_metric
+  (value per metric · batch_id)
+                               INGESTION
+variety (catalog_ref)          ingest_mapping_template
+season  (crop · year)            (column_map · unit_map)
+crop    (name)                 ingest_batch (status · rollback unit)
+metric_definition              ingest_row   (raw JSONB · error)
+  (key · unit · min/max)       entity_alias (their name → our id)</code></pre>
+    </div>
+    <div class="panel">
+      <b>The multi-country extension</b>
+      <pre><code>metric_definition            -- registry, platform-owned
+  key          "pd_spread" | "protein_pct" | ...
+  unit         "kg/ha" | "%" | null
+  min / max    validation range
+  crop         nullable  -- crop-scoped when set
+  country      nullable  ⬅ NEW — country-scoped
+  since_season 2023      ⬅ NEW — versioned</code></pre>
+      <ul class="check">
+        <li><b>Country lives on the farm</b> — a multi-country LFG is one silo whose farms carry different country codes; <code>country</code> on <code>metric_definition</code> scopes which metrics are valid (and how validated) per farm's country.</li>
+        <li><b>New country = registry rows, not a migration</b> — the whole point of metrics-as-rows extends cleanly: soybean-in-Brazil and soybean-in-India differ only in which definition rows apply.</li>
+        <li><b>Versioned by season</b> so historical fact rows stay interpretable when a definition's range or unit convention changes.</li>
+      </ul>
+    </div>
   </div>
 </section>
 
 <!-- ============================================================ 4 -->
-<section id="model">
-  <h2><span class="secnum">4</span> The data model in one view</h2>
+<section id="zoning">
+  <h2><span class="secnum">4</span> Variability windows — rolling ranges as immutable versions</h2>
+  <p class="lead">Zoning is computed over rolling multi-year windows (2017–2022, then 2018–2023, …).
+  In the RFC's model that is <code>variability_window → zone → zone_metric</code>. The engineering
+  rules that keep it trustworthy:</p>
   <div class="panel">
-    <pre><code>CONTROL PLANE (one, global)                 SILO (one per LFG)
-─────────────────────────────               ─────────────────────────────
-lfg_registry    (silo region, status)       farms          (country per farm!)
-memberships     (idp_sub → lfg, role)       fields         (farm_id, boundary GEOMETRY)
-crop_attribute_defs (country, crop, ...)    seasons        (year, crop per field)
-mapping_templates   (per lfg+country)       season_crop_data (attrs JSONB, §2)
-ingest_runs registry (status only)          field_zoning_vintages (§3)
-audit_log                                   ingest_runs / reject_rows (detail)
-                                            uploads_raw pointer → s3://lfg-<id>/raw/</code></pre>
     <ul class="check">
-      <li><b>Country lives on the farm</b>, not the LFG — a multi-country LFG is just farms with different country codes, and each farm's crops validate against that country's dictionary.</li>
-      <li><b>Mapping templates sit in the control plane but are scoped per LFG</b> — they contain no grower data, only column-mapping recipes; still, they're never listed across LFGs.</li>
+      <li><b>A window is a version, not a state:</b> each computed window is inserted whole — <code>variability_window (field, date_start, date_end, source, batch_id)</code> with its zones and zone_metric rows. Re-computation inserts a new window row and marks the old superseded; nothing is edited in place. "What did the zoning say at that time?" always has an answer.</li>
+      <li><b>Default read = latest complete window;</b> historical windows are one query away, so 2017–2022 vs 2018–2023 compare side by side — a first-class API, since that comparison is exactly what agronomists ask for.</li>
+      <li><b>Date ranges, not hardcoded 5-year spans</b> (the RFC already stores a date range) — a crop or geography that moves to 3-year windows is data, not a schema change.</li>
+      <li><b>PD spread and weighted-average PD are <code>zone_metric</code> rows</b> — which is precisely what lets figure 4's fan-out row be selected and filtered at the source instead of assembled in the browser.</li>
+      <li><b>Geometry hygiene at ingest:</b> valid polygons, within the field boundary, overlap tolerance — bad geometry is a per-row reject (§5), not a surprise on the map. Shapefile/GeoJSON parsing runs in a sandboxed worker (parser CVE history), size-capped.</li>
     </ul>
   </div>
 </section>
 
 <!-- ============================================================ 5 -->
 <section id="ingest">
-  <h2><span class="secnum">5</span> Ingestion: Upload UI and CI job → one pipeline</h2>
-  <p class="lead">Two doors, one hallway. Whether an agronomist drags a CSV into the browser or a
-  nightly CI job pushes a partner export, the file takes the <b>same validated path</b> — so there is
-  exactly one place where mapping, validation and provenance are enforced.</p>
+  <h2><span class="secnum">5</span> Two intake routes, one pipeline (RFC fig 2)</h2>
+  <p class="lead"><b>Route 1</b>: a grower uploads a CSV/XLSX through the UI and maps it once.
+  <b>Route 2</b>: direct inject — an Excel drop, an FMS connection or a bulk API push on a schedule,
+  no human in the loop. They differ only in where they enter: Route 2 reuses the saved mapping
+  template and starts at entity resolution. From validation down, the path and the commit boundary
+  are identical.</p>
 
   <div class="flow">
-    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Arrive</b><span>Upload UI (presigned S3 PUT) or CI job (service token from the CI context — machine identity, same membership check). Lands in <code>s3://lfg-&lt;id&gt;/raw/&lt;run&gt;/</code>.</span></div>
-    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Register run</b><span><code>ingest_runs</code> row: who/what, LFG, file hash, source=upload|ci. Everything downstream links to this run.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Map</b><span>A <b>mapping template</b> (per LFG + country + source type) translates source columns → target fields/attr keys, with unit conversions and transforms.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Validate</b><span>Rows checked against the country dictionary (§2) + geometry checks for zoning files (§3). Row-level verdicts.</span></div>
-    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Load</b><span>Valid rows upserted into the LFG's silo in one transaction per batch; zoning becomes a new vintage.</span></div>
-    <div class="fstep" style="--c:var(--amber)"><span class="n">6</span><b>Report</b><span>Reject report per run: row, column, reason ("attr protein_pct &gt; max 60", "polygon self-intersects"). Downloadable; nothing silently dropped.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Upload</b><span>File stored (per-silo S3 prefix); one <code>ingest_batch</code> row created. Route 2 enters here on a schedule with a service identity.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Profile</b><span>Headers parsed, first N rows sampled, types + units inferred.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Map columns</b><span>Grower columns → canonical fields; template pre-fills matches. <i>Route 2 skips the human step — the template supplies the column + unit map.</i></span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Resolve entities</b><span>Unknown field/variety names → worklist; each fix saved as <code>entity_alias</code>, so keys agree across routes forever after.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>Validate</b><span>Required, units, duplicates, ranges (from <code>metric_definition</code> — country-aware, §3), geometry checks. Errors are per row.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">6</span><b>Save template</b><span>Column map + unit map stored per grower — <b>step 6 is what makes Route 2 possible.</b></span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">7</span><b>Commit</b><span>The ONLY write to canonical tables. Every fact row stamped <code>batch_id</code>; a batch rolls back as a unit.</span></div>
   </div>
 
   <div class="grid2">
     <div class="panel">
-      <b>Mapping template (stored, reusable, versioned)</b>
-      <pre><code>mapping_templates
-  lfg_id, country, source_kind   "csv" | "geojson" | "shapefile" | "api"
-  version                        7      -- runs record which version they used
-  map:
-    "Talhao"        → field.external_ref
-    "Cultura"       → season.crop        (values: {"Soja":"soybean", ...})
-    "Prod_sc_ha"    → attrs.yield        (unit: sc/ha → kg/ha, ×60)
-    "ZonaGeo"       → zoning.zones       (geojson, srid 4674 → 4326)
-  defaults: { season_year: from filename /(\d{4})/ }</code></pre>
+      <b>Why Route 1 first</b>
+      <ul class="check">
+        <li>It is the only route that can resolve <i>new</i> unknown names — because it can ask. Needed to cold-start a grower, a crop or a geography.</li>
+        <li>Steps 3 + 6 produce the mapping template — <b>the template is the entire prerequisite</b> for an unattended feed.</li>
+        <li>Route 2 then survives an LFG's real volumes and cadence; unresolvable names queue to the same worklist instead of blocking the batch.</li>
+      </ul>
     </div>
     <div class="panel">
-      <b>Why one pipeline matters</b>
+      <b>The commit boundary discipline</b>
       <ul class="check">
-        <li><b>The UI is just a client</b> of the same ingest API the CI job calls — no "the upload path validates but the CI path doesn't" drift, ever.</li>
-        <li><b>Idempotency:</b> file hash + template version dedupe re-runs; a re-pushed CI file updates its run instead of double-loading.</li>
-        <li><b>Provenance answers audits:</b> every row and every zoning vintage points to its ingest run → file → uploader/pipeline → mapping version.</li>
-        <li><b>Big files:</b> processing is an async job (queue) with progress on the run row — the UI polls the run, nobody holds an HTTP request open for a 2 GB shapefile.</li>
+        <li><b>Staging commits nothing:</b> a scheduled inject that fails validation leaves zero rows in canonical tables.</li>
+        <li><b>Provenance:</b> every fact row → <code>batch_id</code> → file hash, route, template version, actor. Audits answered in one join.</li>
+        <li><b>Idempotency:</b> file hash + template version dedupe re-pushed files — an inject retry updates its batch instead of double-loading.</li>
+        <li><b>Async by construction:</b> big shapefiles process on a queue; the UI polls the batch row — nobody holds an HTTP request open for 2 GB.</li>
       </ul>
     </div>
   </div>
 </section>
 
 <!-- ============================================================ 6 -->
-<section id="isolation">
-  <h2><span class="secnum">6</span> "No data share cross LFG" — made structural</h2>
+<section id="serving">
+  <h2><span class="secnum">6</span> What the data is for (RFC fig 4) — and what that demands</h2>
+  <p class="lead">The performance prediction model compares a live field profile against a benchmark
+  built from historical fields that cleared the user's own Productivity-Difference threshold <i>and</i>
+  had favourable same-year performance. Engineering consequences:</p>
   <div class="panel"><ul class="check">
-    <li><b>Database:</b> silo per LFG with per-LFG credentials — a connection for LFG A cannot express a query touching LFG B. No shared tables containing two LFGs' rows anywhere.</li>
-    <li><b>Object storage:</b> <code>s3://lfg-&lt;id&gt;/…</code> prefixes with IAM policies scoped per prefix; presigned URLs are minted per LFG per request.</li>
-    <li><b>API:</b> <code>X-Lfg-Id</code> membership-checked on every request (external-IdP pattern); resources embed their LFG and the tenant guard compares — a leaked ID in a URL still 403s.</li>
-    <li><b>No aggregate path:</b> no cross-silo job, no benchmark service, no "platform analytics" credential. The platform team's operational role can see <i>metadata</i> (run counts, sizes, health) — never row data.</li>
-    <li><b>Backups &amp; keys:</b> per-LFG backup lines and per-LFG KMS keys — even at rest, LFGs don't share a blast radius.</li>
-    <li><b>Egress review:</b> the only data that leaves a silo is what that LFG's own users export, and exports are audited (who, what, when, how many rows).</li>
+    <li><b>The threshold parameterises the benchmark, not the view</b> — changing it re-selects which historical fields count as successful. That is a query over the whole historical set per request, not a filter over a fetched page — exactly the load figure 1's in-browser join can't carry, and the reason the join must live server-side with metrics filterable in SQL.</li>
+    <li><b>Zone-level metrics must be rows</b> (PD spread, weighted-average PD) so the fan-out is a <code>SELECT</code>, not client-side assembly (§4).</li>
+    <li><b>Phase 1 scope:</b> the model runs <i>within one silo</i> (a grower benchmarked against their own history). The cross-grower cohort benchmark is exactly the phase-2 F-gate feature — deferred until governance exists (§1).</li>
+    <li><b>Explainability is a data requirement:</b> "falls below successful benchmarks on drainage score and CEC" needs normalised attributes with per-attribute favourable-direction semantics (higher-is-better / band / categorical similarity) — these semantics belong on <code>metric_definition</code>, not in UI code.</li>
   </ul></div>
 </section>
 
@@ -263,17 +257,17 @@ audit_log                                   ingest_runs / reject_rows (detail)
     <div class="panel">
       <b>Placement rules</b>
       <ul class="check">
-        <li><b>Default:</b> one silo per LFG, placed in the LFG's home region (catalog records it; the API routes by catalog, so placement is invisible to clients).</li>
-        <li><b>Residency exception:</b> where law requires in-country data (or the LFG's contracts do), split that LFG into <b>per-country silos</b> — the LFG's own users see a unified view because the API fans out <i>within one LFG's own silos only</i>.<small>Fan-out inside one tenant is fine; the no-cross rule is about different LFGs.</small></li>
-        <li><b>Reference data is global:</b> attribute dictionaries replicate to every region (they contain no grower data).</li>
+        <li><b>Default:</b> one silo per grower in the grower's home region; the control plane's registry records placement and the API routes by it — invisible to clients.</li>
+        <li><b>Residency exception:</b> where law or contract requires in-country data, split that grower into per-country silos; the API may fan out <i>within one grower's own silos</i> — the no-cross rule is about different growers, not about one grower's countries.</li>
+        <li><b>Reference data is global:</b> <code>metric_definition</code> and crop/variety catalogues replicate everywhere (no grower data in them).</li>
       </ul>
     </div>
     <div class="panel">
       <b>Practical notes</b>
       <ul class="check">
-        <li>Field-level geometry work (zoning uploads) is latency-tolerant (async pipeline) — silo placement matters more for dashboard reads; keep the app fleet in each serving region behind latency-based DNS if usage justifies it.</li>
-        <li>Units and locales come from the dictionary + country (metric vs sacas/ha etc.) — never guessed from the browser.</li>
-        <li>Start with one region + the catalog's <code>region</code> column populated — multi-region becomes an operation, not a redesign.</li>
+        <li>Ingest is latency-tolerant (async); silo placement matters most for dashboard reads — add serving regions only when usage justifies.</li>
+        <li>Units/locales come from <code>metric_definition</code> + farm country (kg/ha vs sacas/ha) — never guessed from the browser.</li>
+        <li>Start single-region with the registry's <code>region</code> column populated — multi-region becomes an operation, not a redesign.</li>
       </ul>
     </div>
   </div>
@@ -282,34 +276,42 @@ audit_log                                   ingest_runs / reject_rows (detail)
 <!-- ============================================================ 8 -->
 <section id="ops">
   <h2><span class="secnum">8</span> Ops: backup, DR, security — inherited patterns</h2>
-  <p class="lead">These are identical in shape to the <a href="architecture.html">school platform design</a>,
-  re-scoped per LFG. Differences only:</p>
+  <p class="lead">Same shape as the <a href="architecture.html">school platform design</a>, re-scoped
+  per grower silo:</p>
   <div class="panel"><ul class="check">
-    <li><b>Backups per LFG</b> (not per school): PITR + hourly (10 d) → daily (30 d) → monthly (12 mo); restore drills pick one random LFG monthly. Raw upload files in S3 are themselves versioned — the ingest pipeline can be replayed from raw, which is a second, independent recovery path for derived data.</li>
-    <li><b>DR:</b> same three replicated pillars (IaC in git, images in ECR replication, data in cross-region S3) + the same region runbook; RPO ≤ 1 h, region RTO &lt; 4 h. Multi-region silos (§7) already halve the blast radius.</li>
-    <li><b>Security:</b> external IdP (identity only) + membership table + per-request tenant check; DB in private subnets, KMS per LFG, Secrets Manager rotation, immutable audit log, WAF. Plus one LFG-specific rule: <b>geometry files are treated as untrusted input</b> — parsed in a sandboxed worker (shapefile/GeoJSON parsers have CVE history), size-capped, and validated before anything touches the silo.</li>
+    <li><b>Backups per silo:</b> PITR + hourly (10 d) → daily (30 d) → monthly (12 mo); monthly restore drills on one random silo. Raw upload files in S3 are versioned — <b>replaying the ingest pipeline from raw is a second, independent recovery path</b>, and <code>batch_id</code> makes the replay verifiable.</li>
+    <li><b>DR:</b> three replicated pillars (IaC in git, images via ECR replication, data via cross-region S3) + region runbook; RPO ≤ 1 h, region RTO &lt; 4 h.</li>
+    <li><b>Security:</b> external IdP (identity only) + membership table + per-request tenant check (<code>X-Grower-Id</code> validated every request); DB in private subnets; KMS per silo; Secrets Manager rotation; immutable audit log; WAF; sandboxed geometry parsing (§4).</li>
   </ul></div>
 </section>
 
 <!-- ============================================================ 9 -->
-<section id="roadmap">
-  <h2><span class="secnum">9</span> Build order</h2>
-  <div class="panel"><ul class="check">
-    <li><b>1. Control plane:</b> LFG registry (+region), memberships on the IdP's <code>sub</code>, tenant guard with <code>X-Lfg-Id</code>.</li>
-    <li><b>2. Core silo schema:</b> farms (with country) → fields (boundary) → seasons; migrations loop over the catalog.</li>
-    <li><b>3. Attribute dictionary</b> + validated JSONB writes for one country/crop pair, then add countries as dictionary rows.</li>
-    <li><b>4. Ingest pipeline v1:</b> ingest_runs + CSV mapping templates + reject reports — Upload UI first (it forces the API shape), CI job second (same API, service token).</li>
-    <li><b>5. Zoning vintages:</b> PostGIS, GeoJSON ingest, window queries, side-by-side vintage compare API.</li>
-    <li><b>6. Backups + first restore drill</b> (one LFG), then security hardening pass (WAF, rotation, sandboxed geometry parsing).</li>
-    <li><b>7. Residency work</b> only when the first contract demands it — the catalog's region column is already waiting.</li>
-  </ul></div>
-  <div class="callout green"><b>Reuse note:</b> control plane, tenant guard, membership model, backup
-  jobs and the DR runbook are the same components as the school platform — two products, one
-  platform skeleton. Build them once, parameterize the tenant type.</div>
+<section id="questions">
+  <h2><span class="secnum">9</span> The RFC's open questions — engineering answers in progress</h2>
+  <div class="grid2">
+    <div class="panel">
+      <b>Q4 · Seeds computes performance independently of PA — what if they disagree?</b>
+      <ul class="check">
+        <li>A join problem becoming a <i>credibility</i> problem is fair — mitigate with provenance, not authority: every computed metric row carries its <code>source</code> and method version, and the UI can show both values labelled when they differ.</li>
+        <li>Add a scheduled reconciliation report (same inbound-feed machinery) that quantifies divergence per metric — so the discussion is about a number, not a feeling.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Q7 · E is affordable at tens of growers, untenable at thousands</b>
+      <ul class="check">
+        <li>The cost driver is silo <i>operations</i>, not storage — so automate them away: catalog-driven migrations, shared app fleet, pooled Postgres instances hosting many single-grower databases (the school platform's exact pattern), PgBouncer as pools multiply.</li>
+        <li>That carries E to <b>hundreds</b> of growers on a handful of instances. At thousands: tier the silos (dedicated instance / shared instance / schema-level) behind the same control plane — routing already abstracts placement, so tiering is a placement policy, not a redesign.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout green"><b>Alignment note:</b> this page tracks the RFC figures
+  (<a href="LFG%20Data%20Architecture.html">LFG Data Architecture</a>, figs 1–8). If the RFC moves —
+  options, thresholds, phasing — update that document first; this one follows.</div>
 </section>
 
 <footer>
-  LFG Platform · design doc · silo per LFG · no cross-LFG path ·
+  LFG Platform · engineering companion to the RFC ·
+  <a href="LFG%20Data%20Architecture.html">RFC figures</a> ·
   <a href="architecture.html">school platform design</a> ·
   <a href="https://github.com/BaluRaut/cloud-2026-eks-docker-terraform">repo</a>
 </footer>
