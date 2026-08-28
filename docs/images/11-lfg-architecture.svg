@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <rect width="3840" height="2160" fill="#f8fafc"/>
+
+  <text x="120" y="140" font-size="88" font-weight="bold" fill="#0f172a">LFG Platform — Phase 1 (E), with the Phase 2 (F) Gate Deferred</text>
+  <text x="120" y="228" font-size="46" fill="#475569">One shared service fleet · a silo per grower · two intake routes · zone jobs on queues — and no path between silos</text>
+
+  <!-- ===================== 1. Seed Selector users ===================== -->
+  <rect x="120" y="400" width="520" height="300" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="120" y="400" width="520" height="80" rx="24" fill="#0f172a"/>
+  <text x="380" y="455" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Seed Selector UI</text>
+  <text x="380" y="545" font-size="36" fill="#334155" text-anchor="middle">growers &amp; agronomists</text>
+  <text x="380" y="600" font-size="36" fill="#334155" text-anchor="middle">queries + Route 1 uploads</text>
+  <text x="380" y="660" font-size="34" fill="#64748b" text-anchor="middle">one domain, auth via external IdP</text>
+  <circle cx="120" cy="400" r="48" fill="#dc2626"/>
+  <text x="120" y="420" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+
+  <!-- ===================== 2. Route 2 feeds ===================== -->
+  <rect x="120" y="790" width="520" height="300" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="120" y="790" width="520" height="80" rx="24" fill="#475569"/>
+  <text x="380" y="845" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Direct inject (Route 2)</text>
+  <text x="380" y="935" font-size="36" fill="#334155" text-anchor="middle">Excel drop · FMS · bulk API</text>
+  <text x="380" y="990" font-size="36" fill="#334155" text-anchor="middle">scheduled, service identity</text>
+  <text x="380" y="1050" font-size="34" fill="#64748b" text-anchor="middle">reuses saved mapping template</text>
+  <circle cx="120" cy="790" r="48" fill="#dc2626"/>
+  <text x="120" y="810" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text>
+
+  <!-- arrows to ALB -->
+  <line x1="640" y1="550" x2="770" y2="640" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+  <line x1="640" y1="940" x2="770" y2="850" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 3. ALB + WAF ===================== -->
+  <rect x="790" y="600" width="420" height="300" rx="24" fill="#ffffff" stroke="#FF9900" stroke-width="5"/>
+  <rect x="790" y="600" width="420" height="80" rx="24" fill="#FF9900"/>
+  <text x="1000" y="655" font-size="40" font-weight="bold" fill="#ffffff" text-anchor="middle">ALB + WAF</text>
+  <text x="1000" y="745" font-size="34" fill="#334155" text-anchor="middle">one public entry point</text>
+  <text x="1000" y="800" font-size="34" fill="#334155" text-anchor="middle">X-Grower-Id validated</text>
+  <text x="1000" y="855" font-size="34" fill="#334155" text-anchor="middle">on every request</text>
+  <circle cx="790" cy="600" r="48" fill="#dc2626"/>
+  <text x="790" y="620" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text>
+
+  <line x1="1210" y1="750" x2="1330" y2="750" stroke="#475569" stroke-width="8" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 4. EKS service fleet ===================== -->
+  <rect x="1350" y="380" width="1060" height="1080" rx="28" fill="#eff6ff" stroke="#326CE5" stroke-width="6"/>
+  <rect x="1350" y="380" width="1060" height="90" rx="28" fill="#326CE5"/>
+  <text x="1880" y="442" font-size="46" font-weight="bold" fill="#ffffff" text-anchor="middle">LFG service — one shared fleet (EKS)</text>
+  <circle cx="1350" cy="380" r="48" fill="#dc2626"/>
+  <text x="1350" y="400" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text>
+
+  <rect x="1410" y="530" width="450" height="200" rx="18" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="1635" y="600" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">API pods</text>
+  <text x="1635" y="655" font-size="32" fill="#334155" text-anchor="middle">tenant guard · one query</text>
+  <text x="1635" y="700" font-size="32" fill="#334155" text-anchor="middle">contract for the UI</text>
+
+  <rect x="1900" y="530" width="450" height="200" rx="18" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="2125" y="600" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">Ingest workers</text>
+  <text x="2125" y="655" font-size="32" fill="#334155" text-anchor="middle">profile → map → resolve →</text>
+  <text x="2125" y="700" font-size="32" fill="#334155" text-anchor="middle">validate → commit (batch_id)</text>
+
+  <rect x="1410" y="780" width="450" height="200" rx="18" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="1635" y="850" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">Zone workers</text>
+  <text x="1635" y="905" font-size="32" fill="#334155" text-anchor="middle">KEDA-scaled on queue depth</text>
+  <text x="1635" y="950" font-size="32" fill="#334155" text-anchor="middle">windows → zones → metrics</text>
+
+  <rect x="1900" y="780" width="450" height="200" rx="18" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
+  <text x="2125" y="850" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">CronJobs</text>
+  <text x="2125" y="905" font-size="32" fill="#334155" text-anchor="middle">per-silo backups · window roll</text>
+  <text x="2125" y="950" font-size="32" fill="#334155" text-anchor="middle">scheduler · PA/FVA loaders</text>
+
+  <!-- 6. SQS inside-ish bottom of EKS -->
+  <rect x="1410" y="1080" width="940" height="300" rx="18" fill="#fffbeb" stroke="#d97706" stroke-width="5"/>
+  <text x="1880" y="1150" font-size="40" font-weight="bold" fill="#92400e" text-anchor="middle">SQS job lanes</text>
+  <text x="1880" y="1215" font-size="34" fill="#92400e" text-anchor="middle">ingest lane · zone lanes: interactive + backfill · DLQ + alarms</text>
+  <text x="1880" y="1275" font-size="34" fill="#92400e" text-anchor="middle">idempotency: (grower, field, window, method_version)</text>
+  <text x="1880" y="1335" font-size="34" font-weight="bold" fill="#92400e" text-anchor="middle">staging commits nothing — one commit boundary, batch_id</text>
+  <circle cx="1410" cy="1080" r="48" fill="#dc2626"/>
+  <text x="1410" y="1100" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text>
+
+  <!-- ===================== 5. Control plane ===================== -->
+  <rect x="120" y="1560" width="1100" height="420" rx="24" fill="#ffffff" stroke="#d97706" stroke-width="5"/>
+  <rect x="120" y="1560" width="1100" height="80" rx="24" fill="#d97706"/>
+  <text x="670" y="1615" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Control plane (own small DB)</text>
+  <text x="670" y="1710" font-size="36" fill="#334155" text-anchor="middle">grower registry (region · tier) · memberships (IdP sub → grower, role)</text>
+  <text x="670" y="1770" font-size="36" fill="#334155" text-anchor="middle">mapping templates · metric_definition registry (country-scoped)</text>
+  <text x="670" y="1830" font-size="36" fill="#334155" text-anchor="middle">audit log · zone_jobs status</text>
+  <text x="670" y="1915" font-size="34" font-weight="bold" fill="#b45309" text-anchor="middle">reference data only — no grower rows in here</text>
+  <circle cx="120" cy="1560" r="48" fill="#dc2626"/>
+  <text x="120" y="1580" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+  <polyline points="1000,900 1000,1560" fill="none" stroke="#d97706" stroke-width="7" stroke-dasharray="16 12" marker-start="url(#arrow)"/>
+  <text x="1060" y="1520" font-size="32" fill="#b45309" text-anchor="middle">who? which silo?</text>
+
+  <!-- ===================== 7. Silos ===================== -->
+  <rect x="2500" y="380" width="820" height="1000" rx="28" fill="#ffffff" stroke="#336791" stroke-width="6"/>
+  <rect x="2500" y="380" width="820" height="90" rx="28" fill="#336791"/>
+  <text x="2910" y="442" font-size="44" font-weight="bold" fill="#ffffff" text-anchor="middle">Per-grower silos</text>
+  <circle cx="2500" cy="380" r="48" fill="#dc2626"/>
+  <text x="2500" y="400" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">7</text>
+
+  <rect x="2560" y="520" width="700" height="230" rx="16" fill="#f8fafc" stroke="#336791" stroke-width="4"/>
+  <text x="2910" y="580" font-size="34" font-weight="bold" fill="#0f172a" text-anchor="middle">Pooled RDS host A (Multi-AZ)</text>
+  <rect x="2600" y="610" width="200" height="70" rx="10" fill="#eff6ff" stroke="#336791" stroke-width="3"/>
+  <text x="2700" y="655" font-size="26" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">grower_1042</text>
+  <rect x="2820" y="610" width="200" height="70" rx="10" fill="#eff6ff" stroke="#336791" stroke-width="3"/>
+  <text x="2920" y="655" font-size="26" font-family="Menlo, monospace" fill="#0f172a" text-anchor="middle">grower_…</text>
+  <rect x="3040" y="610" width="180" height="70" rx="10" fill="#eff6ff" stroke="#94a3b8" stroke-width="3" stroke-dasharray="10 8"/>
+  <text x="3130" y="655" font-size="26" fill="#64748b" text-anchor="middle">…</text>
+
+  <rect x="2560" y="790" width="700" height="150" rx="16" fill="#f8fafc" stroke="#336791" stroke-width="4"/>
+  <text x="2910" y="850" font-size="34" font-weight="bold" fill="#0f172a" text-anchor="middle">Pooled RDS host B …</text>
+  <text x="2910" y="905" font-size="30" fill="#334155" text-anchor="middle">more growers, same pattern</text>
+
+  <rect x="2560" y="980" width="700" height="150" rx="16" fill="#fff7ed" stroke="#FF9900" stroke-width="4"/>
+  <text x="2910" y="1040" font-size="34" font-weight="bold" fill="#0f172a" text-anchor="middle">Dedicated RDS — top-tier grower</text>
+  <text x="2910" y="1095" font-size="30" fill="#334155" text-anchor="middle">own instance; just a registry change</text>
+
+  <text x="2910" y="1200" font-size="32" fill="#334155" text-anchor="middle">every silo: own DB user · own KMS key</text>
+  <text x="2910" y="1250" font-size="32" fill="#334155" text-anchor="middle">own S3 prefix (raw + backups) · own backup line</text>
+  <text x="2910" y="1330" font-size="34" font-weight="bold" fill="#336791" text-anchor="middle">no query can name two growers</text>
+
+  <!-- arrows EKS -> silos -->
+  <line x1="2410" y1="700" x2="2490" y2="700" stroke="#16a34a" stroke-width="9" marker-end="url(#arrow)"/>
+  <text x="2450" y="660" font-size="30" fill="#16a34a" text-anchor="middle">SQL</text>
+
+  <!-- ===================== 8. External inputs ===================== -->
+  <rect x="3400" y="380" width="320" height="1000" rx="24" fill="#ffffff" stroke="#7c3aed" stroke-width="5" stroke-dasharray="18 12"/>
+  <text x="3560" y="460" font-size="36" font-weight="bold" fill="#7c3aed" text-anchor="middle">External inputs</text>
+  <text x="3560" y="560" font-size="30" fill="#334155" text-anchor="middle">Imagery API</text>
+  <text x="3560" y="610" font-size="30" fill="#334155" text-anchor="middle">soil · terrain</text>
+  <text x="3560" y="660" font-size="30" fill="#334155" text-anchor="middle">weather</text>
+  <text x="3560" y="760" font-size="30" fill="#334155" text-anchor="middle">PA · FVA</text>
+  <text x="3560" y="810" font-size="30" fill="#334155" text-anchor="middle">scheduled</text>
+  <text x="3560" y="860" font-size="30" fill="#334155" text-anchor="middle">one-way</text>
+  <text x="3560" y="910" font-size="30" fill="#334155" text-anchor="middle">inbound</text>
+  <text x="3560" y="1010" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">never in the</text>
+  <text x="3560" y="1055" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">request path —</text>
+  <text x="3560" y="1100" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">no query pattern</text>
+  <text x="3560" y="1145" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">ever leaves</text>
+  <circle cx="3400" cy="380" r="48" fill="#dc2626"/>
+  <text x="3400" y="400" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
+  <polyline points="3400,700 3360,700 3360,240 1635,240 1635,370" fill="none" stroke="#7c3aed" stroke-width="7" stroke-dasharray="16 12" marker-end="url(#arrow)"/>
+
+  <!-- ===================== 9. Phase 2 gate ===================== -->
+  <rect x="1350" y="1560" width="2370" height="420" rx="28" fill="#fef2f2" stroke="#dc2626" stroke-width="6" stroke-dasharray="24 18"/>
+  <text x="1420" y="1650" font-size="44" font-weight="bold" fill="#dc2626">Phase 2 — deferred: the F gate</text>
+  <text x="1420" y="1730" font-size="36" fill="#334155">aggregation gate: minimum cohort in code · every export audited · no row-level egress</text>
+  <text x="1420" y="1790" font-size="36" fill="#334155">→ shared benchmark / model layer → recommendations returned into each silo</text>
+  <text x="1420" y="1880" font-size="36" font-weight="bold" fill="#dc2626">governance signed before any code — until then this box does not exist</text>
+  <circle cx="1350" cy="1560" r="48" fill="#dc2626"/>
+  <text x="1350" y="1580" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">9</text>
+  <line x1="2910" y1="1380" x2="2910" y2="1550" stroke="#dc2626" stroke-width="7" stroke-dasharray="16 12" marker-end="url(#arrow)"/>
+  <text x="3090" y="1480" font-size="30" fill="#dc2626" text-anchor="middle">aggregates only, one way</text>
+</svg>

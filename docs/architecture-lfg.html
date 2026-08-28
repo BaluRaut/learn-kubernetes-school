@@ -97,6 +97,27 @@
   <a href="#infra">17 Infra choices compared</a>
 </nav>
 
+<section id="diagram">
+  <h2 style="font-size:1.45rem;margin-bottom:6px">🗺️ The architecture in one picture</h2>
+  <p class="lead">Everything below in a single numbered view — 4K PNG here, and an
+  <a href="images/11-lfg-architecture.svg">infinitely zoomable SVG</a> in the repo.</p>
+  <p><img src="images/11-lfg-architecture-4k.png" alt="LFG platform architecture: Seed Selector UI and Route 2 feeds enter through one ALB, a shared EKS fleet with API pods, ingest workers, zone workers and CronJobs talks to per-grower RDS silos, SQS job lanes carry ingest and zone work, a control plane holds registry and templates, external inputs arrive scheduled and one-way, and the phase-2 F gate is drawn dashed — deferred." style="width:100%;height:auto;border-radius:14px;border:1px solid var(--line)"></p>
+  <div class="panel">
+    <b>What each number does</b>
+    <ul class="check">
+      <li><b>1 · Seed Selector UI</b> — growers and agronomists on one domain, authenticated by the external IdP. All queries and Route 1 uploads start here; the UI holds no join logic (that was RFC figure 1's whole problem).</li>
+      <li><b>2 · Direct inject (Route 2)</b> — Excel drops, FMS connections and bulk API pushes on a schedule, running under a service identity. No human in the loop because the saved mapping template answers the human questions in advance (§5).</li>
+      <li><b>3 · ALB + WAF</b> — the single public entry point. Every request's <code>X-Grower-Id</code> is membership-checked against the control plane before any handler runs; a non-member gets 403 (§8 security).</li>
+      <li><b>4 · LFG service, one shared fleet (EKS)</b> — the same pods serve every grower: API pods (tenant guard + the one query contract), ingest workers (profile → map → resolve → validate → commit), KEDA-scaled zone workers, and CronJobs for backups, the window-roll scheduler and PA/FVA loaders.</li>
+      <li><b>5 · Control plane</b> — its own small database holding <i>reference data only</i>: grower registry (region, tier), memberships, mapping templates, the country-scoped <code>metric_definition</code> registry, audit log and <code>zone_jobs</code> status. No grower rows live here — it answers "who are you, which silo is yours", nothing more (§1, §3).</li>
+      <li><b>6 · SQS job lanes</b> — ingest lane plus the two zone lanes (interactive / backfill) with DLQ + alarms. Idempotency key <code>(grower, field, window, method_version)</code>; staging commits nothing — everything crosses one commit boundary stamped with <code>batch_id</code> (§5, §13).</li>
+      <li><b>7 · Per-grower silos</b> — pooled Multi-AZ RDS hosts carrying many single-grower databases, plus dedicated instances for top-tier growers (a registry change, not a migration). Every silo: own DB user, own KMS key, own S3 prefix, own backup line — <i>no query can name two growers</i> (§2 isolation).</li>
+      <li><b>8 · External inputs</b> — imagery, soil/terrain/weather context, and the PA/FVA feeds: all <b>scheduled, one-way, inbound</b>. Nothing resolves a live request by calling out, so no grower query pattern ever leaves the boundary (isolation level 3).</li>
+      <li><b>9 · Phase 2 — the F gate (deferred)</b> — drawn dashed because it does not exist yet: the governed aggregation gate (minimum cohort in code, audited, no row egress) feeding the shared benchmark layer. Governance is signed before any code; until then the only thing crossing this line is nothing (§1).</li>
+    </ul>
+  </div>
+</section>
+
 <!-- ============================================================ 1 -->
 <section id="phasing">
   <h2><span class="secnum">1</span> The architecture: E now, F deferred</h2>
