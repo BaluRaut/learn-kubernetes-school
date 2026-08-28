@@ -3,7 +3,6 @@ import { IsOptional, IsString } from 'class-validator';
 import { TenantGuard } from '../tenancy/tenant.guard';
 import { Tenant } from '../tenancy/tenant.decorator';
 import type { TenantContext } from '../tenancy/tenant.guard';
-import { SiloManager } from '../tenancy/silo.manager';
 
 class CreateFarmDto {
   @IsString() name: string;
@@ -21,31 +20,27 @@ class CreateFieldDto {
 @Controller()
 @UseGuards(TenantGuard)
 export class CanonicalController {
-  constructor(private readonly silos: SiloManager) {}
-
   @Get('farms')
   listFarms(@Tenant() t: TenantContext) {
-    return [...t.silo.farms.values()];
+    return t.repo.listFarms();
   }
 
   @Post('farms')
   createFarm(@Tenant() t: TenantContext, @Body() dto: CreateFarmDto) {
-    const farm = { id: this.silos.nextId(t.silo, 'farm'), ...dto };
-    t.silo.farms.set(farm.id, farm);
-    return farm;
+    return t.repo.createFarm(dto.name, dto.country);
   }
 
   @Get('fields')
   listFields(@Tenant() t: TenantContext) {
-    return [...t.silo.fields.values()];
+    return t.repo.listFields();
   }
 
   @Post('fields')
-  createField(@Tenant() t: TenantContext, @Body() dto: CreateFieldDto) {
-    if (!t.silo.farms.has(dto.farmId)) throw new NotFoundException(`unknown farm ${dto.farmId}`);
-    const field = { id: this.silos.nextId(t.silo, 'field'), ...dto };
-    t.silo.fields.set(field.id, field);
-    if (dto.externalRef) t.silo.entityAliases.set(dto.externalRef, field.id);
+  async createField(@Tenant() t: TenantContext, @Body() dto: CreateFieldDto) {
+    const farm = await t.repo.getFarm(dto.farmId);
+    if (!farm) throw new NotFoundException(`unknown farm ${dto.farmId}`);
+    const field = await t.repo.createField(dto);
+    if (dto.externalRef) await t.repo.setAlias(dto.externalRef, field.id);
     return field;
   }
 
@@ -57,20 +52,15 @@ export class CanonicalController {
     @Query('metricKey') metricKey?: string,
     @Query('season') season?: string,
   ) {
-    return t.silo.factRows.filter(
-      (r) =>
-        (!fieldId || r.fieldId === fieldId) &&
-        (!metricKey || r.metricKey === metricKey) &&
-        (!season || r.seasonYear === Number(season)),
-    );
+    return t.repo.queryMetrics({ fieldId, metricKey, seasonYear: season ? Number(season) : undefined });
   }
 
   /** Zoning vintages for a field; default = latest complete window. */
   @Get('fields/:id/zoning')
-  zoning(@Tenant() t: TenantContext, @Param('id') id: string, @Query('all') all?: string) {
-    const vintages = t.silo.zoningVintages
-      .filter((v) => v.fieldId === id)
-      .sort((a, b) => b.windowEnd - a.windowEnd || b.createdAt.localeCompare(a.createdAt));
+  async zoning(@Tenant() t: TenantContext, @Param('id') id: string, @Query('all') all?: string) {
+    const vintages = (await t.repo.listVintages(id)).sort(
+      (a, b) => b.windowEnd - a.windowEnd || b.createdAt.localeCompare(a.createdAt),
+    );
     if (all === 'true') return vintages;
     const current = vintages.find((v) => !v.supersededBy);
     if (!current) throw new NotFoundException(`no zoning for field ${id}`);

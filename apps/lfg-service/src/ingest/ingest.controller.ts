@@ -34,16 +34,16 @@ export class IngestController {
 
   @Post('batches')
   runBatch(@Tenant() t: TenantContext, @Body() dto: RunBatchDto) {
-    return this.ingest.runBatch(t.silo, dto.source, dto.templateId, dto.rows);
+    return this.ingest.runBatch(t.repo, dto.source, dto.templateId, dto.rows);
   }
 
   @Get('batches')
   batches(@Tenant() t: TenantContext) {
-    return [...t.silo.batches.values()];
+    return t.repo.listBatches();
   }
 
   @Post('batches/:id/rollback')
   rollback(@Tenant() t: TenantContext, @Param('id') id: string) {
-    return this.ingest.rollback(t.silo, id);
+    return this.ingest.rollback(t.repo, id);
   }
 }

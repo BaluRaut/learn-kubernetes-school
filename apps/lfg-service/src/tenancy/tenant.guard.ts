@@ -1,13 +1,14 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegistryService } from '../control-plane/registry.service';
-import { SiloManager, SiloStore } from './silo.manager';
+import { SiloManager } from './silo.manager';
+import { SiloRepo } from './silo.repo';
 import { Role } from '../control-plane/types';
 
 export interface TenantContext {
   growerId: string;
   sub: string;
   role: Role;
-  silo: SiloStore;
+  repo: SiloRepo;
 }
 
 /**
@@ -25,7 +26,7 @@ export class TenantGuard implements CanActivate {
     private readonly silos: SiloManager,
   ) {}
 
-  canActivate(ctx: ExecutionContext): boolean {
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req = ctx.switchToHttp().getRequest();
     const sub = req.headers['x-user-sub'] as string | undefined; // prod: JWKS-verified token
     const growerId = req.headers['x-grower-id'] as string | undefined;
@@ -40,7 +41,7 @@ export class TenantGuard implements CanActivate {
       growerId,
       sub,
       role: membership.role,
-      silo: this.silos.forGrower(growerId),
+      repo: await this.silos.forGrower(growerId),
     };
     req.tenant = tenant;
     return true;

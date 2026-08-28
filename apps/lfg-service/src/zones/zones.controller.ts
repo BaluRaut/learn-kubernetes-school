@@ -20,16 +20,16 @@ export class ZonesController {
 
   @Post()
   enqueue(@Tenant() t: TenantContext, @Body() dto: EnqueueZoneJobDto) {
-    return this.zoneJobs.enqueue(t.silo, dto);
+    return this.zoneJobs.enqueue(t.repo, dto);
   }
 
   @Get()
   list(@Tenant() t: TenantContext) {
-    return this.zoneJobs.list(t.silo);
+    return this.zoneJobs.list(t.repo);
   }
 
   @Get(':id')
   get(@Tenant() t: TenantContext, @Param('id') id: string) {
-    return this.zoneJobs.get(t.silo, id);
+    return this.zoneJobs.get(t.repo, id);
   }
 }

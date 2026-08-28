@@ -4,14 +4,43 @@ Phase 1 (option **E**) of the [LFG platform design](../../docs/architecture-lfg.
 control plane, per-grower silo isolation, country-scoped metric validation, Route-1 ingest with a
 single `batch_id` commit boundary, and the zone-job queue with immutable window vintages.
 
-Runs with **zero infrastructure** — silos are in-memory stores. Every production swap point is
-marked with a comment: `SiloManager.forGrower()` → pg pool per grower, `x-user-sub` header →
-JWKS-verified IdP token, the zone worker loop → SQS + KEDA pods.
+Two run modes, decided by environment:
+
+| Mode | Silos | Zone queue / files / secrets | Start |
+|---|---|---|---|
+| **memory** (default) | in-memory store per grower | in-process queue, no-ops | `npm start` |
+| **local-AWS** | **real Postgres — one DATABASE per grower**, created + migrated on first touch, pool per silo | **real SQS lanes, S3 raw files, Secrets Manager** via LocalStack (same SDK calls as production AWS) | see below |
 
 ```bash
 npm install
-npm start          # :4000
+npm start                                  # memory mode, :4000, zero infra
+
+# --- local-AWS mode -------------------------------------------------------
+docker compose -f ../../docker-compose.lfg.yml up -d lfg-db localstack
+DATABASE_URL='postgres://lfg:lfg@localhost:5433/lfg_admin' \
+AWS_ENDPOINT_URL='http://localhost:4566' \
+npm start
+
+# or fully containerized (service included):
+docker compose -f ../../docker-compose.lfg.yml up --build
 ```
+
+**See the real thing after running the demo below** (local-AWS mode):
+
+```bash
+docker exec cloud-real-lfg-db-1 psql -U lfg -d lfg_admin \
+  -c "SELECT datname FROM pg_database WHERE datname LIKE 'grower%'"   # one DB per grower
+docker exec cloud-real-lfg-db-1 psql -U lfg -d grower_1042 \
+  -c "SELECT metric_key, value, batch_id FROM fact_rows"              # batch_id on every row
+docker exec cloud-real-localstack-1 awslocal s3 ls s3://lfg-raw/grower_1042/raw/
+docker exec cloud-real-localstack-1 awslocal sqs list-queues
+docker exec cloud-real-localstack-1 awslocal secretsmanager \
+  get-secret-value --secret-id lfg/grower_1042/db --query SecretString --output text
+```
+
+Remaining production swap points (each one a marked comment): `x-user-sub` header →
+JWKS-verified IdP token · the worker `tick()` loop → KEDA-scaled pods ·
+`AWS_ENDPOINT_URL` removed → the same SDK calls hit real AWS.
 
 ## The 5-minute demo
 

@@ -1,78 +1,42 @@
-import { Injectable } from '@nestjs/common';
-
-/** Everything one grower owns. In production: one Postgres database per grower. */
-export interface SiloStore {
-  growerId: string;
-  farms: Map<string, Farm>;
-  fields: Map<string, Field>;
-  factRows: FactRow[];              // field_season_metric — metrics as ROWS
-  zoningVintages: ZoningVintage[];  // variability_window versions, immutable
-  entityAliases: Map<string, string>; // "their name" -> our field id
-  batches: Map<string, IngestBatch>;
-  seq: number;
-}
-
-export interface Farm { id: string; name: string; country: string }
-export interface Field { id: string; farmId: string; name: string; externalRef?: string; boundary?: unknown }
-export interface FactRow {
-  fieldId: string;
-  seasonYear: number;
-  crop: string;
-  metricKey: string;
-  value: unknown;
-  batchId: string;                  // provenance on EVERY fact row
-}
-export interface ZoningVintage {
-  id: string;
-  fieldId: string;
-  windowStart: number;
-  windowEnd: number;
-  zones: { geometry: unknown; metrics: Record<string, number> }[];
-  batchId: string;
-  supersededBy?: string;
-  createdAt: string;
-}
-export interface IngestBatch {
-  id: string;
-  status: 'committed' | 'rolled_back';
-  source: 'upload' | 'inject';
-  committedRows: number;
-  rejectedRows: number;
-  createdAt: string;
-}
+import { Injectable, Logger } from '@nestjs/common';
+import { SiloRepo } from './silo.repo';
+import { MemorySiloRepo } from './silo.memory';
+import { PgSiloRepo } from './silo.pg';
+import { AwsService } from '../aws/aws.service';
+import { cfg } from '../config';
 
 /**
- * Pool-per-grower, the §4 core trick. Here each "pool" is an in-memory store;
- * in production forGrower() returns a cached pg.Pool built from the catalog's
- * host + Secrets Manager credentials, LRU-capped (~200 pools).
- *
- * The isolation property this preserves either way: request code receives ONE
- * grower's handle and has no API that can reach another grower's data.
+ * Pool-per-grower (§4 of the design doc).
+ *   memory mode  -> a MemorySiloRepo per grower
+ *   postgres mode-> a real DATABASE per grower on the local server, created
+ *                   and migrated on first touch, with its own small pg pool —
+ *                   plus its credentials written to (Local)Secrets Manager.
+ * Either way, request code receives one grower's repo and nothing else.
  */
 @Injectable()
 export class SiloManager {
-  private silos = new Map<string, SiloStore>();
+  private readonly log = new Logger('silos');
+  private repos = new Map<string, Promise<SiloRepo>>();
 
-  forGrower(growerId: string): SiloStore {
-    let silo = this.silos.get(growerId);
-    if (!silo) {
-      silo = {
-        growerId,
-        farms: new Map(),
-        fields: new Map(),
-        factRows: [],
-        zoningVintages: [],
-        entityAliases: new Map(),
-        batches: new Map(),
-        seq: 0,
-      };
-      this.silos.set(growerId, silo);
+  constructor(private readonly aws: AwsService) {}
+
+  forGrower(growerId: string): Promise<SiloRepo> {
+    let repo = this.repos.get(growerId);
+    if (!repo) {
+      repo = this.build(growerId);
+      this.repos.set(growerId, repo);
     }
-    return silo;
+    return repo;
   }
 
-  nextId(silo: SiloStore, prefix: string): string {
-    silo.seq += 1;
-    return `${prefix}_${silo.seq}`;
+  private async build(growerId: string): Promise<SiloRepo> {
+    if (!cfg.postgres) return new MemorySiloRepo(growerId);
+
+    const repo = await PgSiloRepo.provision(cfg.databaseUrl!, growerId);
+    this.log.log(`silo ready: database "${growerId}" (migrated, pool attached)`);
+    // Production: a dedicated DB user per silo with DML-only grants; the
+    // secret below then holds THAT user's credentials, rotated by AWS.
+    await this.aws.createSiloSecret(growerId, { database: growerId, host: 'local-postgres' });
+    return repo;
   }
 }
