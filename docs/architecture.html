@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Platform — Tenancy, Security, Backup &amp; DR Design</title>
+<meta name="description" content="Design decisions: per-school isolation (option E→F), single-domain tenant routing, NestJS blueprint, backup lifecycle, DR plan, API & DB security, per-school admin panel.">
+<style>
+  :root {
+    --bg:#f8fafc; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
+    --blue:#2563eb; --green:#16a34a; --red:#dc2626; --amber:#d97706; --violet:#7c3aed; --cyan:#0891b2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0b1220; --card:#131c2e; --ink:#e2e8f0; --muted:#94a3b8; --line:#253349; }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.65; }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px; }
+  a { color:var(--blue); }
+
+  header.hero { text-align:center; padding:52px 16px 24px; }
+  .hero h1 { font-size:clamp(1.7rem,4.2vw,2.9rem); letter-spacing:-.02em; }
+  .hero .sub { color:var(--muted); max-width:760px; margin:12px auto 0; }
+  .decisions { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin:28px 0 8px; }
+  .decision { background:var(--card); border:1px solid var(--line); border-left:6px solid var(--c,var(--blue)); border-radius:12px; padding:14px 16px; text-align:left; }
+  .decision b { display:block; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:var(--c,var(--blue)); }
+  .decision span { font-size:.95rem; }
+
+  nav.toc { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 20px; margin:20px 0; font-size:.92rem; }
+  nav.toc a { margin-right:14px; white-space:nowrap; text-decoration:none; font-weight:600; }
+
+  section { margin:44px 0; }
+  section > h2 { font-size:1.45rem; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
+  .secnum { flex:none; width:34px; height:34px; border-radius:50%; background:var(--red); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; }
+  section > p.lead { color:var(--muted); margin-bottom:16px; }
+
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin:14px 0; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+
+  table { width:100%; border-collapse:collapse; font-size:.92rem; margin:10px 0; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  .tag { display:inline-block; border-radius:999px; padding:1px 10px; font-size:.78rem; font-weight:700; }
+  .tag.g { background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); }
+  .tag.r { background:color-mix(in srgb,var(--red) 12%,transparent); color:var(--red); }
+  .tag.a { background:color-mix(in srgb,var(--amber) 15%,transparent); color:var(--amber); }
+  .tag.b { background:color-mix(in srgb,var(--blue) 12%,transparent); color:var(--blue); }
+
+  pre { background:#0f172a; color:#e2e8f0; border-radius:12px; padding:16px 18px; overflow-x:auto; font-size:.84rem; line-height:1.55; margin:10px 0; }
+  code { font-family:Menlo,Consolas,monospace; }
+  p > code, li > code, td > code { background:color-mix(in srgb,var(--ink) 8%,transparent); padding:1px 6px; border-radius:6px; font-size:.88em; }
+
+  .flow { display:flex; flex-wrap:wrap; gap:0; align-items:stretch; margin:14px 0; }
+  .fstep { flex:1 1 150px; min-width:150px; background:var(--card); border:1.5px solid var(--line); border-top:5px solid var(--c,var(--blue)); border-radius:12px; padding:12px 14px; margin:6px; position:relative; }
+  .fstep b { display:block; font-size:.9rem; }
+  .fstep span { font-size:.82rem; color:var(--muted); }
+  .fstep .n { position:absolute; top:-14px; left:-8px; width:26px; height:26px; border-radius:50%; background:var(--c,var(--blue)); color:#fff; font-size:.8rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+
+  ul.check { list-style:none; }
+  ul.check li { padding:7px 0 7px 30px; position:relative; border-bottom:1px dashed var(--line); font-size:.94rem; }
+  ul.check li:last-child { border-bottom:none; }
+  ul.check li::before { content:"✔"; position:absolute; left:4px; color:var(--green); font-weight:800; }
+  ul.check li b { color:var(--ink); }
+  ul.check li small { color:var(--muted); display:block; }
+
+  .callout { border-left:5px solid var(--amber); background:color-mix(in srgb,var(--amber) 8%,transparent); border-radius:10px; padding:12px 16px; margin:12px 0; font-size:.93rem; }
+  .callout.green { border-color:var(--green); background:color-mix(in srgb,var(--green) 8%,transparent); }
+  footer { text-align:center; color:var(--muted); font-size:.85rem; padding:30px 0 50px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>🏫 School Platform — Tenancy, Security, Backup &amp; DR</h1>
+  <p class="sub">The production design for serving many schools from <b>one domain</b> with
+  per-school isolation (your option <b>E</b>, upgradeable to <b>F</b>), a NestJS backend,
+  an hourly→daily backup lifecycle, and a tested disaster-recovery plan.</p>
+  <div class="decisions">
+    <div class="decision" style="--c:var(--green)"><b>Architecture</b><span>Option E now (per-school silos + control plane) — F's aggregation gate added when cross-school analytics is needed</span></div>
+    <div class="decision" style="--c:var(--blue)"><b>Tenancy routing</b><span>One domain, no subdomains — school resolved from the JWT, with a school-picker after login</span></div>
+    <div class="decision" style="--c:var(--violet)"><b>Backend</b><span>NestJS: guards for auth &amp; roles, middleware for tenant resolution, one connection pool per school</span></div>
+    <div class="decision" style="--c:var(--amber)"><b>Backups</b><span>Hourly (kept 10 days) → daily (kept 30 days) → monthly (12 months) · RPO ≤ 1 h, drill-tested restores</span></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#arch">1 Architecture</a> <a href="#tenancy">2 One-domain tenancy</a>
+  <a href="#multi">3 Multi-school users</a> <a href="#nest">4 NestJS blueprint</a>
+  <a href="#apisec">5 API security</a> <a href="#dbsec">6 DB security</a>
+  <a href="#backup">7 Backups</a> <a href="#dr">8 DR plan</a> <a href="#admin">9 Admin panels</a>
+  <a href="#roadmap">10 Roadmap</a>
+</nav>
+
+<!-- ============================================================ 1 -->
+<section id="arch">
+  <h2><span class="secnum">1</span> Architecture: E today, F when analytics needs it</h2>
+  <p class="lead">Between your shortlisted options E and F: they are not rivals — <b>F is E plus one
+  extra component</b> (a governed aggregation gate). So the decision is about sequencing, not choosing.</p>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Start with E — per-school silos + control plane</h3>
+      <ul class="check">
+        <li><b>One database per school</b> — own schema, own credentials, own backup line. A connection to school A physically cannot read school B.<small>Isolation is structural, not a WHERE clause.</small></li>
+        <li><b>Control plane</b> — auth, school registry (catalog), routing, feature flags. Small, boring, its own database.</li>
+        <li><b>One shared app fleet</b> — the same NestJS pods serve every school; the request's JWT decides which school database the request touches.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Add F's aggregation gate later</h3>
+      <ul class="check">
+        <li><b>Trigger to build it:</b> the first real need for cross-school insight (benchmarks, platform dashboards, per-feature usage).</li>
+        <li><b>Aggregates only, one way</b> — a scheduled job computes school-level aggregates (counts, averages) into a separate analytics store. No row-level data ever leaves a silo.</li>
+        <li><b>Governance built in:</b> minimum cohort size (e.g. suppress any aggregate covering &lt; 5 schools), audit log of every aggregate query, no ad-hoc row egress path.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout green"><b>Decision:</b> ship E; keep every silo's schema identical (same migrations everywhere) so the F gate is a pure add-on, not a refactor.</div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section id="tenancy">
+  <h2><span class="secnum">2</span> One domain, no subdomains — how UI → API knows the school</h2>
+  <p class="lead">Everything lives on <code>app.yourschools.com</code>. The school is <b>not</b> in the
+  URL — it travels inside the JWT as a claim. That keeps one domain, one TLS cert, one ALB,
+  and makes spoofing a school as hard as forging a signed token.</p>
+
+  <div class="flow">
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Login (global)</b><span>POST /auth/login — email + password (+ OTP). Credentials live in the control plane, not in any school DB.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Membership lookup</b><span>Control plane returns the user's school memberships + role in each.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>School picker</b><span>1 school → auto-selected. 2+ → picker screen (see §3).</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Session token issued</b><span>Short-lived JWT with <code>sub</code>, <code>school_id</code>, <code>role</code>. Refresh token in an HttpOnly cookie.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Every API call</b><span>UI sends the JWT. NestJS TenantMiddleware reads <code>school_id</code> — never from a query param.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Silo connection</b><span>Catalog maps school_id → DB host + secret; a cached pool for that school serves the query.</span></div>
+  </div>
+
+  <div class="panel">
+    <b>Token shape</b>
+    <pre><code>{
+  "sub": "user_8123",
+  "school_id": "sch_dps_pune",     // the ACTIVE school — single source of truth
+  "role": "school_admin",          // role IN THIS SCHOOL (roles differ per school)
+  "memberships": ["sch_dps_pune", "sch_svm_mumbai"],
+  "exp": 1735489900                // 15 min — refresh rotates it
+}</code></pre>
+    <b>Iron rules</b>
+    <ul class="check">
+      <li>The API <b>never</b> accepts <code>school_id</code> from the body, query or a custom header — only from the verified JWT. This kills whole classes of cross-tenant bugs.</li>
+      <li>Switching school = a new token from <code>POST /auth/switch-school</code> (server checks membership first), never a client-side variable.</li>
+      <li>Every DB access goes through the tenant-scoped connection — there is no "global" pool that can see all schools from request code.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 3 -->
+<section id="multi">
+  <h2><span class="secnum">3</span> Users who belong to two schools</h2>
+  <p class="lead">A teacher can work at two schools; a director can own five. The rule:
+  <b>one active school per session</b>, chosen explicitly before any dashboard loads.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>The flow</b>
+      <ul class="check">
+        <li>After login, if <code>memberships.length &gt; 1</code> the UI routes to <code>/choose-school</code> — a card per school (name, logo, the user's role there).</li>
+        <li>Selection calls <code>POST /auth/switch-school</code> → server validates membership → issues the session JWT with that <code>school_id</code>.</li>
+        <li>Only then does the app fetch dashboard data. There is no "no school selected" state after this point.</li>
+        <li>A school switcher stays in the top-nav; switching repeats the same server-side exchange and <b>fully reloads</b> dashboard state (no data from school A ever remains mounted while school B's token is active).</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Details that prevent pain</b>
+      <ul class="check">
+        <li><b>Remember the last choice</b> per user (control plane), preselect it — but still show the picker on first login of the day for multi-school users.<small>Fast for the 95% case, explicit for auditability.</small></li>
+        <li><b>Roles are per membership</b> — the same person can be <code>school_admin</code> at school A and plain <code>teacher</code> at school B. The token carries the role of the active school only.</li>
+        <li><b>Deep links:</b> a link opened while the "wrong" school is active shows a one-click "Switch to DPS Pune to view this" interstitial — never silently switches.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section id="nest">
+  <h2><span class="secnum">4</span> NestJS blueprint</h2>
+  <p class="lead">NestJS fits this design well: guards for authn/authz, middleware for tenant
+  resolution, and dependency injection for the per-school connection. The one hard problem is
+  <b>pool-per-school</b> — solved with a connection manager, LRU-capped.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>Module layout</b>
+      <pre><code>src/
+├── auth/            # login, refresh, switch-school, OTP
+│   ├── jwt.strategy.ts
+│   └── roles.guard.ts        # @Roles('school_admin')
+├── tenancy/
+│   ├── tenant.middleware.ts  # JWT → school_id → connection
+│   ├── catalog.service.ts    # control-plane lookup (cached)
+│   └── connection.manager.ts # pool per school, LRU-capped
+├── control-plane/   # schools registry, memberships,
+│   │                #   feature flags, audit log
+├── students/        # feature modules — all tenant-scoped
+├── teachers/
+├── analytics/       # later: F's aggregation gate
+└── common/          # validation pipes, rate limits, filters</code></pre>
+    </div>
+    <div class="panel">
+      <b>The tenant-scoped connection (core trick)</b>
+      <pre><code>// tenant.middleware.ts
+const { school_id } = verifyJwt(req);
+const conn = await this.connections
+    .forSchool(school_id);        // cached pool
+req.tenant = { schoolId: school_id, conn };
+
+// connection.manager.ts
+async forSchool(id: string) {
+  if (this.pools.has(id)) return this.pools.get(id);
+  const cfg = await this.catalog.dbConfig(id);
+  //   ↑ host + creds from Secrets Manager, cached 5 min
+  const pool = createPool({ ...cfg, max: 5 });
+  this.pools.set(id, pool);       // LRU-evict past ~200
+  return pool;
+}</code></pre>
+      <ul class="check">
+        <li><b>Small pools × many schools</b> — 5 conns/school; PgBouncer in front once schools × pools approaches Postgres limits.</li>
+        <li><b>Migrations for all silos</b> — one command loops the catalog and applies migrations per school; a new school gets them at onboarding.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section id="apisec">
+  <h2><span class="secnum">5</span> API security</h2>
+  <div class="panel"><ul class="check">
+    <li><b>AuthN:</b> 15-min access JWT + rotating refresh token in an <code>HttpOnly; Secure; SameSite=Lax</code> cookie. Refresh reuse detection revokes the family.</li>
+    <li><b>AuthZ:</b> two layers — role guard (<code>@Roles('school_admin')</code>) and tenant guard (resource's school must equal the token's <code>school_id</code>). Both run on every route.</li>
+    <li><b>Validation:</b> global <code>ValidationPipe</code> with <code>whitelist: true, forbidNonWhitelisted: true</code> — unknown fields are rejected, not ignored.</li>
+    <li><b>Rate limiting:</b> <code>@nestjs/throttler</code> — tight on <code>/auth/*</code> (brute-force), generous per-user elsewhere; plus AWS WAF on the ALB (SQLi/XSS rulesets, IP throttles).</li>
+    <li><b>Headers &amp; CORS:</b> helmet defaults; CORS locked to the one domain — a nice side-benefit of the no-subdomain decision.</li>
+    <li><b>Secrets:</b> nothing in env files or images — pulled from AWS Secrets Manager at boot (and per-school DB creds at connect time).</li>
+    <li><b>Audit log:</b> control-plane table: who, school, action, entity, timestamp, IP — written for every mutation and every auth event, immutable (no UPDATE/DELETE grants).</li>
+    <li><b>Dependencies:</b> ECR scan-on-push (already on) + <code>npm audit</code>/<code>pip-audit</code> jobs in CI.</li>
+  </ul></div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section id="dbsec">
+  <h2><span class="secnum">6</span> Database security</h2>
+  <div class="panel"><ul class="check">
+    <li><b>Network:</b> databases in private subnets only; security group admits port 5432 from the EKS node/pod SG only. No public endpoint, ever.</li>
+    <li><b>Encryption:</b> at rest with KMS (per-instance keys; premium schools can get their own CMK), in transit with enforced TLS (<code>rejectUnauthorized</code> on the client).</li>
+    <li><b>Per-school credentials:</b> each silo has its own DB user that can access <b>only its own database</b> — no superuser in the app path. Secrets Manager rotation every 30–90 days.</li>
+    <li><b>Least-privilege grants:</b> app user gets DML only (SELECT/INSERT/UPDATE/DELETE); DDL runs only through the migration job's separate role.</li>
+    <li><b>Human access:</b> no shared psql passwords — SSM Session Manager + IAM auth for break-glass, every session logged.</li>
+    <li><b>Audit &amp; detection:</b> pgAudit on DDL + role changes; CloudTrail on RDS API calls; alarms on failed-login spikes and unusual egress volume.</li>
+    <li><b>Isolation as the last line:</b> even if a bug ships, a school-A connection cannot express a query that touches school B — the blast radius of any single mistake is one school.</li>
+  </ul></div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section id="backup">
+  <h2><span class="secnum">7</span> Backup policy — your retention rules, implemented</h2>
+  <p class="lead">Requirement: hourly backups always available for recent history; after 10 days
+  keep only dailies and drop the hourlies. Implemented with per-school dumps to S3 + lifecycle
+  rules, plus RDS point-in-time recovery underneath.</p>
+  <table>
+    <thead><tr><th>Tier</th><th>Taken</th><th>Kept</th><th>Mechanism</th><th>Restores</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag b">PITR</span></td><td>continuous (WAL)</td><td>10 days</td><td>RDS automated backups</td><td>any second in the last 10 days — beats even hourly granularity</td></tr>
+      <tr><td><span class="tag g">Hourly</span></td><td>every hour, per school</td><td><b>10 days</b>, then auto-deleted</td><td>k8s CronJob: <code>pg_dump</code> → <code>s3://backups/hourly/&lt;school&gt;/</code> · S3 lifecycle expires at 10 d</td><td>one school, one hour granularity, fast</td></tr>
+      <tr><td><span class="tag a">Daily</span></td><td>02:00 IST, per school</td><td><b>30 days</b></td><td>same job → <code>s3://backups/daily/&lt;school&gt;/</code></td><td>one school, day granularity</td></tr>
+      <tr><td><span class="tag r">Monthly</span></td><td>1st of month</td><td>12 months (Glacier after 60 d)</td><td>promotion of that day's daily</td><td>compliance / long look-back</td></tr>
+    </tbody>
+  </table>
+  <div class="grid2">
+    <div class="panel">
+      <b>S3 lifecycle (Terraform-managed)</b>
+      <pre><code>rule "expire-hourly" { prefix = "hourly/"  expiration { days = 10 } }
+rule "expire-daily"  { prefix = "daily/"   expiration { days = 30 } }
+rule "monthly-cold"  { prefix = "monthly/"
+  transition { days = 60  storage_class = "GLACIER_IR" }
+  expiration { days = 365 } }</code></pre>
+      <span style="color:var(--muted);font-size:.88rem">Bucket: versioned, encrypted (KMS), Object Lock optional for tamper-proofing, replicated to the DR region (§8).</span>
+    </div>
+    <div class="panel">
+      <b>Non-negotiables</b>
+      <ul class="check">
+        <li><b>Per-school files</b> — restoring school #42 never touches the other silos (the whole point of option E).</li>
+        <li><b>Backup monitoring:</b> the CronJob writes a success marker per school; a daily check alerts on any school with no fresh backup — silent backup failure is the classic DR killer.</li>
+        <li><b>Restore drills:</b> monthly, restore one random school's dump into a scratch instance and run a row-count sanity check. A backup that was never restored is a hope, not a backup.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 8 -->
+<section id="dr">
+  <h2><span class="secnum">8</span> Disaster-recovery plan</h2>
+  <p class="lead">Targets: <b>RPO ≤ 1 hour</b> (per your backup rule; effectively minutes via PITR)
+  and <b>RTO tiered by scenario</b>. Everything is restorable from code + backups because the
+  entire infrastructure is Terraform.</p>
+  <table>
+    <thead><tr><th>Scenario</th><th>Who fixes it</th><th>RTO</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td>Pod / node crash</td><td><span class="tag g">automatic</span></td><td>seconds–minutes</td><td>Kubernetes self-healing + HPA; multi-AZ node group</td></tr>
+      <tr><td>Availability-zone outage</td><td><span class="tag g">automatic</span></td><td>~1–2 min</td><td>RDS Multi-AZ failover; pods reschedule to surviving AZ; ALB spans AZs</td></tr>
+      <tr><td>Bad deploy</td><td><span class="tag b">runbook</span></td><td>minutes</td><td><code>kubectl rollout undo</code> — previous image tag is one command away (SHA-tagged images)</td></tr>
+      <tr><td>Data corruption / bad migration (one school)</td><td><span class="tag b">runbook</span></td><td>&lt; 1 h</td><td>PITR to just-before, or restore that school's hourly dump into a fresh DB, repoint its catalog entry</td></tr>
+      <tr><td>Ransom/tamper of primary data</td><td><span class="tag a">runbook</span></td><td>hours</td><td>restore from versioned, cross-region-replicated S3 (Object Lock protects history)</td></tr>
+      <tr><td>Full region outage</td><td><span class="tag r">runbook</span></td><td>&lt; 4 h</td><td>see the region runbook ↓</td></tr>
+    </tbody>
+  </table>
+  <div class="panel">
+    <b>Region-loss runbook (drilled twice a year)</b>
+    <ul class="check">
+      <li><b>1. Declare</b> — one person is incident commander; status page updated first.</li>
+      <li><b>2. Provision</b> — <code>terraform apply</code> against the DR region (same code, different <code>aws_region</code> var). ~20 min for VPC + EKS + ECR.</li>
+      <li><b>3. Images</b> — ECR cross-region replication means images are already there.</li>
+      <li><b>4. Data</b> — restore each school from the replicated S3 backups (parallel jobs, catalog-driven; priority order: largest schools first).</li>
+      <li><b>5. Cutover</b> — Route 53 flips the one domain to the new ALB (low TTL kept at 60 s). Single domain = single DNS change.</li>
+      <li><b>6. Verify</b> — smoke suite per school (login, dashboard, one write), then close the incident with a written timeline.</li>
+    </ul>
+  </div>
+  <div class="callout"><b>Why this works:</b> the three replicated things — Terraform code (git), images (ECR replication), data (S3 cross-region) — are the entire system. Everything else is derived.</div>
+</section>
+
+<!-- ============================================================ 9 -->
+<section id="admin">
+  <h2><span class="secnum">9</span> Per-school admin panel &amp; feature control</h2>
+  <p class="lead">Two admin surfaces, strictly separated: a <b>school admin panel</b> for each school's
+  own staff, and a <b>platform panel</b> for you. Feature flags live in the control plane so features
+  can be turned on per school without deploys.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>Roles (per membership)</b>
+      <table>
+        <thead><tr><th>Role</th><th>Scope</th><th>Can</th></tr></thead>
+        <tbody>
+          <tr><td><code>platform_admin</code></td><td>you / your team</td><td>onboard schools, set plans &amp; feature flags, view aggregates (F-gate only), never reads school rows in normal operation</td></tr>
+          <tr><td><code>school_admin</code></td><td>one school</td><td>manage that school's users &amp; roles, branding, toggle features <i>within their plan</i>, view school audit log</td></tr>
+          <tr><td><code>teacher</code> / <code>staff</code></td><td>one school</td><td>day-to-day features per school-admin's settings</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <b>Feature flags (control plane)</b>
+      <pre><code>school_features
+  school_id      "sch_dps_pune"
+  feature_key    "analytics" | "attendance"
+                 | "fee_module" | "parent_portal"
+  enabled        true
+  source         "plan" | "school_admin" | "platform"
+  updated_by / updated_at        # audited</code></pre>
+      <ul class="check">
+        <li>API: a <code>FeatureGuard</code> (<code>@Feature('fee_module')</code>) returns 404 when off — features that are off don't exist, they aren't just hidden.</li>
+        <li>UI reads <code>GET /me/features</code> once per session; flags cached 60 s server-side.</li>
+        <li>Plan defines the ceiling; school admins toggle freely <i>below</i> it; you override anything from the platform panel.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 10 -->
+<section id="roadmap">
+  <h2><span class="secnum">10</span> Build order</h2>
+  <div class="panel"><ul class="check">
+    <li><b>1. Control plane + auth</b> (NestJS): schools registry, memberships, login, switch-school, JWT with <code>school_id</code>.</li>
+    <li><b>2. Tenancy plumbing:</b> TenantMiddleware, connection manager, catalog-driven migrations; two demo schools end-to-end.</li>
+    <li><b>3. School picker UI</b> + school switcher + deep-link interstitial.</li>
+    <li><b>4. Backups:</b> per-school CronJob + S3 lifecycle (10 d hourly / 30 d daily / 12 mo monthly) + backup monitoring alert.</li>
+    <li><b>5. Security hardening:</b> WAF, throttler, audit log, Secrets Manager rotation, pgAudit.</li>
+    <li><b>6. Admin panels:</b> school admin first (users + feature toggles), then the platform panel (onboarding = the automation from the multi-tenancy diagram).</li>
+    <li><b>7. First DR drill</b> — restore one school + region-runbook tabletop. Only after this call the platform production-ready.</li>
+    <li><b>8. Later:</b> F's aggregation gate when cross-school analytics is requested.</li>
+  </ul></div>
+</section>
+
+<footer>
+  School Platform · design doc · single domain · option E → F ·
+  <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform">repo</a> ·
+  see also <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/README.md#6%EF%B8%8F%E2%83%A3-multi-tenancy--100-schools-zero-mix-ups">multi-tenancy diagram</a>
+</footer>
+</div>
+</body>
+</html>

@@ -217,6 +217,11 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 
 ---
 
+> 📐 **Production design doc:** [docs/architecture.html](docs/architecture.html) — the full
+> tenancy/security/backup/DR design as one self-contained page: option E→F decision, single-domain
+> tenant routing (JWT + school picker), NestJS blueprint, hourly→daily backup lifecycle, DR runbook,
+> API/DB security checklists, and per-school admin panels. Open it in any browser.
+
 # 6️⃣ Multi-Tenancy — 100 Schools, Zero Mix-Ups
 
 *The scaling plan: how this platform serves many schools with **one database per school**, so no
