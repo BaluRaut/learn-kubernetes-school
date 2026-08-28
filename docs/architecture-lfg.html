@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LFG Platform — Engineering Design (companion to the RFC)</title>
-<meta name="description" content="Platform-engineering design for the Large Farm Grower data consolidation RFC: phase 1 D+E (per-grower silos), phase 2 F (governed aggregate gate), canonical metric-as-rows model, variability windows, dual-route ingestion with a single commit boundary.">
+<meta name="description" content="Platform-engineering design for the Large Farm Grower data consolidation RFC: phase 1 E (per-grower silos), phase 2 F (governed aggregate gate), canonical metric-as-rows model, variability windows, zone-data job queue, dual-route ingestion with a single commit boundary.">
 <style>
   :root {
     --bg:#f8fafc; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
@@ -74,11 +74,11 @@
   <p class="sub">The platform-engineering companion to
   <a href="LFG%20Data%20Architecture.html"><b>LFG Data Architecture</b></a> (RFC figures, drawn from
   <code>LARGE-FARM-GROWER-DATA-RFC.md</code>). The RFC decides <i>what</i> and <i>why</i> —
-  options A–F, the canonical model, the isolation staircase, the phasing. This page adds the
+  the canonical model, the isolation staircase, the phasing. This page adds the
   <i>how to run it</i>: multi-country attribute scoping, variability-window versioning,
-  infrastructure, backups and DR for the chosen shape: <b>Phase 1 = D+E, Phase 2 = F (deferred)</b>.</p>
+  infrastructure, backups and DR for the chosen shape: <b>Phase 1 = E, Phase 2 = F (deferred)</b>.</p>
   <div class="decisions">
-    <div class="decision" style="--c:var(--green)"><b>Tenancy (RFC fig 5, 8)</b><span>Phase 1: standalone LFG service on Seeds infra + <b>per-grower silo from day one</b> (D+E). Phase 2, deferred: F's governed aggregation gate — governance agreed before any code</span></div>
+    <div class="decision" style="--c:var(--green)"><b>Tenancy (RFC fig 8)</b><span>Phase 1 — <b>E</b>: standalone LFG service with a <b>per-grower silo from day one</b>. Phase 2, deferred — <b>F</b>: the governed aggregation gate; governance agreed before any code</span></div>
     <div class="decision" style="--c:var(--blue)"><b>Data model (RFC fig 3)</b><span>Metrics are <b>rows</b> on one <code>metric_definition</code> registry — crop-agnostic, filterable in a WHERE clause; <code>entity_alias</code> kills the key-mismatch class; <code>batch_id</code> on every fact row</span></div>
     <div class="decision" style="--c:var(--violet)"><b>Zoning</b><span>Variability windows as immutable versions per field (2017–2022, 2018–2023, …) → zones → <code>zone_metric</code> rows — never overwritten, provenance via <code>batch_id</code></span></div>
     <div class="decision" style="--c:var(--amber)"><b>Ingestion (RFC fig 2)</b><span>Route 1 (UI upload) and Route 2 (direct inject) share one staging pipeline and one commit boundary; the saved mapping template is what makes Route 2 possible</span></div>
@@ -92,17 +92,19 @@
   <a href="#residency">7 Regions &amp; residency</a> <a href="#ops">8 Ops</a>
   <a href="#questions">9 Open questions</a> <a href="#devops">10 DevOps on AWS</a>
   <a href="#cost">11 Cost + calculator</a> <a href="#todo">12 TODO</a>
+  <a href="#zonequeue">13 Zone-data job queue</a> <a href="#execution">14 Execution plan</a>
+  <a href="#dod">15 Definition of Done</a> <a href="#continuous">16 Continuous ops</a>
 </nav>
 
 <!-- ============================================================ 1 -->
 <section id="phasing">
-  <h2><span class="secnum">1</span> Options A–F, and the chosen phasing</h2>
-  <p class="lead">The RFC's figure 5 lays out six options that all give the Seed Selector UI one
-  contract and move the join server-side (today it runs in the browser — figure 1). The proposal
-  (figure 8) is two phases with <b>no rework between them</b>:</p>
+  <h2><span class="secnum">1</span> The architecture: E now, F deferred</h2>
+  <p class="lead">One contract for the Seed Selector UI, with the join moved server-side (today it
+  runs in the browser — RFC figure 1). The proposal (figure 8) is two phases with
+  <b>no rework between them</b>:</p>
   <div class="grid2">
     <div class="panel">
-      <b>Phase 1 — now: D + E</b>
+      <b>Phase 1 — now: E</b>
       <ul class="check">
         <li>Standalone LFG data service on <b>Seeds infra</b> — PA / FVA optional, <b>scheduled, one-way, inbound</b> feeds only. Never in the request path.</li>
         <li><b>Per-grower silo from day one</b> — own schema, own key, own retention, own backup; a control plane (auth · routing · schema registry) routes by <code>grower_id</code>.</li>
@@ -134,10 +136,10 @@
   <table>
     <thead><tr><th>Level</th><th>Requirement</th><th>Cleared by</th><th>Engineering enforcement (this design)</th></tr></thead>
     <tbody>
-      <tr><td><span class="tag b">1 · Storage</span></td><td>rows not in shared tables</td><td>C D E F</td><td>silo per grower; per-silo credentials; per-silo KMS key; per-silo S3 prefixes &amp; backups</td></tr>
-      <tr><td><span class="tag b">2 · Compute</span></td><td>no shared query process</td><td>E F</td><td>tenant-scoped connections only (pool per silo); no "global" pool reachable from request code</td></tr>
-      <tr><td><span class="tag a">3 · Transit</span></td><td>neither data <i>nor the query pattern</i> leaves</td><td>E F</td><td>PA/FVA feeds are scheduled + inbound; no per-request call out of the boundary — "grower 1042 asked about Ranger Russet, 400 fields, Idaho" is itself a disclosure</td></tr>
-      <tr><td><span class="tag r">4 · Derived</span></td><td>models/aggregates carry nothing between growers</td><td>F only</td><td>phase 2's gate: min-cohort in code, audited, no row egress; until then, no derived path exists</td></tr>
+      <tr><td><span class="tag b">1 · Storage</span></td><td>rows not in shared tables</td><td>E (phase 1)</td><td>silo per grower; per-silo credentials; per-silo KMS key; per-silo S3 prefixes &amp; backups</td></tr>
+      <tr><td><span class="tag b">2 · Compute</span></td><td>no shared query process</td><td>E (phase 1)</td><td>tenant-scoped connections only (pool per silo); no "global" pool reachable from request code</td></tr>
+      <tr><td><span class="tag a">3 · Transit</span></td><td>neither data <i>nor the query pattern</i> leaves</td><td>E (phase 1)</td><td>PA/FVA feeds are scheduled + inbound; no per-request call out of the boundary — "grower 1042 asked about Ranger Russet, 400 fields, Idaho" is itself a disclosure</td></tr>
+      <tr><td><span class="tag r">4 · Derived</span></td><td>models/aggregates carry nothing between growers</td><td>F (phase 2)</td><td>the governed gate: min-cohort in code, audited, no row egress; until then, no derived path exists</td></tr>
     </tbody>
   </table>
 </section>
@@ -445,6 +447,116 @@ metric_definition              ingest_row   (raw JSONB · error)
     </ul>
     <p style="color:var(--muted);font-size:.85rem;margin-top:10px"><span id="todo-count">0</span> / 17 done · progress stored locally in your browser</p>
   </div>
+</section>
+
+<!-- ============================================================ 13 -->
+<section id="zonequeue">
+  <h2><span class="secnum">13</span> Zone-data job queue — how field zoning gets computed</h2>
+  <p class="lead">Deriving a field's variability zones (imagery + soil/terrain context → zone
+  geometries + <code>zone_metric</code> rows) is slow, bursty, and depends on rate-limited external
+  APIs — the definition of work that must <b>never</b> run inside an HTTP request. It runs as an
+  asynchronous job queue on SQS, with worker pods on EKS.</p>
+
+  <div class="flow">
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Enqueue</b><span>Triggers: a new field commits its boundary · the annual window roll (scheduler) · a manual re-run. Message = <code>(grower, field, window, method_version)</code> — that tuple is the <b>idempotency key</b>.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Fetch inputs</b><span>Imagery API + public soil/drainage/terrain context. Rate-limited per provider token bucket; responses cached in S3 so a retry never re-pays the API call.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Compute zones</b><span>Worker pod derives zone geometries + per-zone metrics (PD, PAF) for the window. CPU-heavy; workers scale on queue depth (KEDA/HPA), not on HTTP traffic.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">4</span><b>Validate</b><span>Same gates as ingest: valid polygons, within field boundary, metric ranges from <code>metric_definition</code>. Failures → job error state, not partial data.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Commit</b><span>One transaction: new <code>variability_window</code> version + zones + <code>zone_metric</code> rows, stamped <code>batch_id</code>. Previous version superseded, never edited (§4).</span></div>
+    <div class="fstep" style="--c:var(--red)"><span class="n">6</span><b>Fail well</b><span>Visibility timeout + max-receive → DLQ + alarm. DLQ messages carry the last error; re-drive is one command after the cause is fixed.</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <b>Queue design</b>
+      <ul class="check">
+        <li><b>Two lanes:</b> an <i>interactive</i> queue (a user asked — minutes matter) and a <i>backfill</i> queue (annual window roll across every field — hours are fine). Separate SQS queues, weighted workers — bulk never starves a waiting user.</li>
+        <li><b>Idempotent by key:</b> re-delivery or a double-enqueue of <code>(field, window, method_version)</code> short-circuits if that version already committed — at-least-once delivery becomes exactly-once effect.</li>
+        <li><b>Job status is data:</b> a <code>zone_jobs</code> row per message (queued → fetching → computing → validating → committed | failed) — the UI polls it, dashboards aggregate it.</li>
+        <li><b>Silo discipline holds:</b> a worker processes one grower's job with that silo's credentials only — the queue carries references, never row data.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>The annual window roll</b>
+      <ul class="check">
+        <li>A scheduler (EventBridge cron) walks the registry once per season: for every active field, enqueue the next window (e.g. 2019–2024 once 2024 closes) on the backfill lane, throttled.</li>
+        <li>New method version (algorithm change) = optional re-enqueue of recent windows with the new <code>method_version</code> — old vintages stay, comparisons stay honest.</li>
+        <li>Progress is observable per grower: "fields zoned for window W: 1,240 / 1,300, 4 failed" — from the <code>zone_jobs</code> table, no log-diving.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 14 -->
+<section id="execution">
+  <h2><span class="secnum">14</span> Step-by-step execution</h2>
+  <p class="lead">Milestones in strict order — each one is releasable and demoable on its own, and
+  nothing later requires reworking anything earlier. (The TODO list in §12 tracks the same work as
+  tickable items; this is the sequence.)</p>
+  <table>
+    <thead><tr><th>Step</th><th>Deliverable</th><th>Demo that proves it</th></tr></thead>
+    <tbody>
+      <tr><td><b>M0 · Foundations</b></td><td>Terraform: VPC, EKS, RDS, S3, SQS, ECR; three environments; CI/CD to stage</td><td>a hello-world service deploys to stage via the pipeline</td></tr>
+      <tr><td><b>M1 · Control plane</b></td><td>grower registry, memberships (IdP <code>sub</code>), tenant guard, silo provisioning automation</td><td>"create grower" → silo + secret + registry row appear, tenant guard 403s a non-member</td></tr>
+      <tr><td><b>M2 · Canonical schema</b></td><td>farm/field/field_season + <code>metric_definition</code> registry (country-scoped) + catalog-driven migrations</td><td>same migration applies across two demo silos; metric rows validate per country</td></tr>
+      <tr><td><b>M3 · Route 1 intake</b></td><td>upload → profile → mapping UI → entity worklist → validation → commit boundary</td><td>a real CSV becomes committed fact rows; the batch rolls back as a unit; reject report downloads</td></tr>
+      <tr><td><b>M4 · Zone job queue</b></td><td>§13 end to end: queues, workers, window versioning, compare API</td><td>enqueue a field → new variability_window version; recompute → both versions comparable</td></tr>
+      <tr><td><b>M5 · Serving contract</b></td><td>the one server-side query API for the Seed Selector (join + variability + PD filters at source)</td><td>the fig-4 fan-out row returns from one request, no client-side join</td></tr>
+      <tr><td><b>M6 · Route 2 inject</b></td><td>scheduled runner, service identity, template reuse, idempotency, DLQ</td><td>a dropped file loads unattended; a re-drop doesn't double-load; a bad file leaves nothing behind</td></tr>
+      <tr><td><b>M7 · Production hardening</b></td><td>backups + restore drill, WAF, rotation, pgAudit, dashboards/alarms, DR tabletop</td><td>one silo restored from backup on stage; alarm fires on a killed backup job</td></tr>
+      <tr><td><b>M8 · Pilot</b></td><td>first real grower onboarded end to end (Route 1 → zones → serving API)</td><td>the grower's own data answers a fig-4 query in production</td></tr>
+      <tr><td><b>Phase 2 gate</b></td><td>governance doc signed (cohort threshold, audit policy, owners) — <i>then</i> the F gate is built</td><td>—</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ 15 -->
+<section id="dod">
+  <h2><span class="secnum">15</span> Definition of Done</h2>
+  <p class="lead">A milestone (or any ticket inside one) is <b>Done</b> only when every line below
+  holds. "Works on my machine" and "merged" are not states in this list.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>Code &amp; correctness</b>
+      <ul class="check">
+        <li>Reviewed and merged; unit + integration tests pass in CI (integration = real Postgres/PostGIS, not mocks, for anything touching the silo).</li>
+        <li>Migrations applied across <b>all</b> stage silos by the catalog job — not by hand.</li>
+        <li>Idempotency and rollback demonstrated where applicable (re-run a batch, re-deliver a message — no double data).</li>
+        <li>Tenant isolation asserted by a test: a request with grower A's identity against grower B's resource returns 403 and touches no silo.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Operable &amp; observable</b>
+      <ul class="check">
+        <li>Dashboards + alarms exist for the new path (error rate, queue depth, latency) — shipped <i>with</i> the feature, not after.</li>
+        <li>Runbook entry written: what alarms mean, how to re-drive, how to roll back.</li>
+        <li>Provenance verifiable: any committed row traces to <code>batch_id</code> → run → file/job → actor in one query.</li>
+        <li>Cost tagged: new resources carry the tagging standard so Cost Explorer attributes them.</li>
+        <li>Load-checked at representative volume (an LFG-sized file / a full-grower window roll), not toy data.</li>
+        <li>Demoed on stage with real-shaped data; this design doc updated if behaviour diverged from it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 16 -->
+<section id="continuous">
+  <h2><span class="secnum">16</span> What we keep doing — continuous operations</h2>
+  <p class="lead">Launch is a milestone, not an ending. The recurring cadence that keeps the
+  platform trustworthy:</p>
+  <table>
+    <thead><tr><th>Cadence</th><th>Activity</th><th>Owner signal</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag g">Daily</span></td><td>alarm review · failed-batch triage · DLQ must be empty (or ticketed) · backup freshness check green for every silo</td><td>on-call dashboard, 10 min</td></tr>
+      <tr><td><span class="tag g">Weekly</span></td><td>reject-report trends (a rising reject rate = a grower's source drifted → template update) · queue latency review · cost anomaly scan</td><td>platform weekly</td></tr>
+      <tr><td><span class="tag b">Monthly</span></td><td>restore drill (one random silo) · dependency + image updates · pool-saturation / capacity review · secrets-rotation audit</td><td>ops calendar</td></tr>
+      <tr><td><span class="tag a">Quarterly</span></td><td>DR tabletop · access review (memberships vs reality) · <code>metric_definition</code> review with agronomy (new attributes, new countries) · mapping-template audit per grower</td><td>quarterly review</td></tr>
+      <tr><td><span class="tag r">Seasonal / yearly</span></td><td>window roll executed + verified per grower (§13) · region-loss runbook full drill · pricing/tier review against the §11 calculator · this document re-read against reality</td><td>season close</td></tr>
+    </tbody>
+  </table>
+  <div class="callout green"><b>The one metric to watch continuously:</b> per-grower ingest health —
+  fresh data in, zones computed, zero rows in DLQ. Every promise in this document (isolation,
+  provenance, recovery) degrades quietly if intake quietly stops.</div>
 </section>
 
 <footer>
