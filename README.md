@@ -217,10 +217,13 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 
 ---
 
-> 📐 **Production design doc:** [docs/architecture.html](docs/architecture.html) — the full
-> tenancy/security/backup/DR design as one self-contained page: option E→F decision, single-domain
-> tenant routing (JWT + school picker), NestJS blueprint, hourly→daily backup lifecycle, DR runbook,
-> API/DB security checklists, and per-school admin panels. Open it in any browser.
+> 📐 **Production design docs** (self-contained pages, open in any browser):
+> - [docs/architecture.html](docs/architecture.html) — **School platform**: option E→F tenancy,
+>   single-domain routing (external IdP + X-School-Id), NestJS blueprint, backup lifecycle, DR runbook,
+>   security checklists, per-school admin panels. English + मराठी toggle.
+> - [docs/architecture-lfg.html](docs/architecture-lfg.html) — **LFG (Large Farm Grower) platform**:
+>   silo per LFG with no cross-LFG path, per-country crop attribute dictionaries, rolling field-zoning
+>   vintages (2017–2022, 2018–2023, …), and the Upload-UI/CI-job ingestion pipeline with mapping templates.
 
 # 6️⃣ Multi-Tenancy — 100 Schools, Zero Mix-Ups
 
