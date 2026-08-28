@@ -94,6 +94,7 @@
   <a href="#cost">11 Cost + calculator</a> <a href="#todo">12 TODO</a>
   <a href="#zonequeue">13 Zone-data job queue</a> <a href="#execution">14 Execution plan</a>
   <a href="#dod">15 Definition of Done</a> <a href="#continuous">16 Continuous ops</a>
+  <a href="#infra">17 Infra choices compared</a>
 </nav>
 
 <!-- ============================================================ 1 -->
@@ -557,6 +558,87 @@ metric_definition              ingest_row   (raw JSONB · error)
   <div class="callout green"><b>The one metric to watch continuously:</b> per-grower ingest health —
   fresh data in, zones computed, zero rows in DLQ. Every promise in this document (isolation,
   provenance, recovery) degrades quietly if intake quietly stops.</div>
+</section>
+
+<!-- ============================================================ 17 -->
+<section id="infra">
+  <h2><span class="secnum">17</span> Infrastructure choices — compared, decided, with revisit triggers</h2>
+  <p class="lead">Every layer had real alternatives. This table records what was considered, what we
+  use, <i>why for this workload</i> (bursty geospatial jobs, many small Postgres databases, modest
+  request traffic at first), and — most importantly — the concrete trigger that would reopen the
+  decision. A decision without a revisit trigger is dogma.</p>
+
+  <table>
+    <thead><tr><th>Layer</th><th>Options considered</th><th>Decision</th><th>Why — and when to revisit</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Container orchestration</b></td>
+        <td>EKS · ECS Fargate · Lambda-only · plain EC2</td>
+        <td><span class="tag g">EKS</span></td>
+        <td>CronJobs, KEDA queue-scaling, and the worker patterns in §13 map 1:1 to Kubernetes; skills and IaC already exist. <i>Honest note:</i> ECS Fargate is operationally simpler for a very small team — EKS wins here on job orchestration + existing investment, not on simplicity. <b>Revisit:</b> if cluster upkeep ever consumes &gt;10% of team time, trial ECS/Fargate for the API tier.</td>
+      </tr>
+      <tr>
+        <td><b>Relational database</b></td>
+        <td>RDS PostgreSQL · Aurora PostgreSQL · self-managed on EC2 · DynamoDB</td>
+        <td><span class="tag g">RDS PostgreSQL + PostGIS</span></td>
+        <td>PostGIS is non-negotiable (kills DynamoDB); self-managed loses Multi-AZ/PITR for no gain. Vs Aurora: RDS is ~20–30% cheaper per instance for steady small-DB workloads, and the pooled many-databases-per-host pattern needs no Aurora features. <b>Revisit:</b> a pooled host passing ~1 TB or needing read replicas per grower → move that host to Aurora (same engine, low-drama migration).</td>
+      </tr>
+      <tr>
+        <td><b>Job queue</b></td>
+        <td>SQS · Kafka (MSK) · RabbitMQ (AmazonMQ) · Postgres-based queue</td>
+        <td><span class="tag g">SQS (+ DLQ)</span></td>
+        <td>We need work distribution with retries and DLQ, not stream replay or ordering — SQS gives that serverless at ~zero cost and zero ops. MSK is a cluster to babysit; a Postgres queue couples job load to silo hosts. <b>Revisit:</b> if multiple independent consumers ever need to replay the same event history (true event streaming), introduce MSK <i>alongside</i> SQS — not instead of.</td>
+      </tr>
+      <tr>
+        <td><b>Zone-compute workers</b></td>
+        <td>EKS worker pods (KEDA) · AWS Batch · Lambda</td>
+        <td><span class="tag g">EKS pods, KEDA-scaled</span></td>
+        <td>Zone jobs are CPU-heavy and can exceed Lambda's 15-min cap on large fields; Batch works but adds a second orchestrator for jobs the cluster can already run. Scale-to-zero via KEDA keeps idle cost near nil. <b>Revisit:</b> if compute needs GPUs or 10×-spiky scientific workloads, AWS Batch (or Karpenter spot pools) earns its place.</td>
+      </tr>
+      <tr>
+        <td><b>API edge</b></td>
+        <td>ALB · API Gateway · CloudFront + ALB</td>
+        <td><span class="tag g">ALB (+ WAF)</span></td>
+        <td>Steady authenticated app traffic → ALB is cheaper at volume and WAF attaches directly; API Gateway's per-request pricing and 29 s timeout buy features we don't need (usage plans, API keys). <b>Revisit:</b> when the partner-facing bulk API (Route 2) gets external consumers, front <i>just that</i> with API Gateway for keys/quotas; add CloudFront when a browser UI ships heavy static assets.</td>
+      </tr>
+      <tr>
+        <td><b>Infrastructure as code</b></td>
+        <td>Terraform · CDK · CloudFormation · Pulumi</td>
+        <td><span class="tag g">Terraform</span></td>
+        <td>Existing codebase and team fluency; the module ecosystem (VPC/EKS/RDS) is the most worn path; state + plan reviews fit the CI gate. CDK is attractive for TypeScript teams but adds a synth layer to debug. <b>Revisit:</b> only with a platform-team decision — mixed IaC is worse than either choice.</td>
+      </tr>
+      <tr>
+        <td><b>CI/CD</b></td>
+        <td>CircleCI · CodePipeline/CodeBuild · GitHub Actions</td>
+        <td><span class="tag g">CircleCI</span></td>
+        <td>Already wired (AWS context, ECR push, EKS deploy, manual gate) — the stages are identical on any runner, so this is the lowest-switching-cost decision on the page. <b>Revisit:</b> if an AWS-only mandate hardens, CodePipeline is a mechanical port; if the org consolidates on GitHub, Actions likewise.</td>
+      </tr>
+      <tr>
+        <td><b>Secrets &amp; config</b></td>
+        <td>Secrets Manager · SSM Parameter Store · Vault</td>
+        <td><span class="tag g">Secrets Manager + Parameter Store</span></td>
+        <td>Split by nature: <b>Secrets Manager</b> for per-silo DB credentials (rotation is the feature — $0.40/secret is the price of it); free-tier <b>Parameter Store</b> for non-secret config. Vault is real power at real ops cost — unjustified at this scale. <b>Revisit:</b> multi-cloud or dynamic short-lived DB creds per request → Vault.</td>
+      </tr>
+      <tr>
+        <td><b>Observability</b></td>
+        <td>CloudWatch + Container Insights · Prometheus/Grafana (AMP/AMG) · Datadog</td>
+        <td><span class="tag g">CloudWatch first</span></td>
+        <td>AWS-only constraint, zero extra infrastructure, alarms + dashboards good enough for the §16 cadence. Prometheus is the better k8s-native fit <i>eventually</i>; Datadog is the best product at the worst price. <b>Revisit:</b> when engineers routinely need high-cardinality per-grower metrics (per-silo latency histograms), adopt AMP/AMG managed Prometheus — keep CloudWatch for AWS-service alarms.</td>
+      </tr>
+      <tr>
+        <td><b>Geometry processing</b></td>
+        <td>In-DB PostGIS · dedicated geo service · GeoPandas workers</td>
+        <td><span class="tag g">PostGIS for storage/query · workers for parsing</span></td>
+        <td>Split by trust boundary: untrusted file <i>parsing</i> (shapefile/GeoJSON) happens in sandboxed worker pods (§4's CVE note); validated geometries then live in PostGIS where window queries and joins are SQL. One database fewer, one attack surface contained. <b>Revisit:</b> raster/imagery analysis at scale → dedicated workers with rasterio, results still landing in PostGIS.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout green"><b>The meta-decision:</b> every choice above favors <i>managed, boring,
+  already-known</i> over <i>optimal-on-paper</i> — because the team's scarce resource is operational
+  attention, and §16's cadence is only sustainable if the infrastructure mostly runs itself. The
+  revisit triggers are the honesty mechanism: each one names the measurable moment where "boring"
+  stops being the right answer.</div>
 </section>
 
 <footer>
