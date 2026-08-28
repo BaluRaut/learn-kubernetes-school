@@ -13,6 +13,7 @@ RUN addgroup -S app && adduser -S app -G app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
+COPY public ./public
 USER app
 ENV PORT=4000 NODE_ENV=production
 EXPOSE 4000

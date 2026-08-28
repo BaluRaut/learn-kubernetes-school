@@ -42,6 +42,14 @@ Remaining production swap points (each one a marked comment): `x-user-sub` heade
 JWKS-verified IdP token · the worker `tick()` loop → KEDA-scaled pods ·
 `AWS_ENDPOINT_URL` removed → the same SDK calls hit real AWS.
 
+## The UI
+
+The service serves a single-page console at **http://localhost:4000/** (no build step):
+pick a user (simulated IdP), pick a grower (the membership-driven picker), then use the
+tabs — Farms & fields, Ingest (template + CSV paste → per-row reject report → rollback),
+Zone jobs (lanes, live status, vintage compare), Metrics (fact-row queries with provenance).
+Deep links work: `/?user=idp|sam&grower=grower_1042&tab=zones`.
+
 ## The 5-minute demo
 
 ```bash
