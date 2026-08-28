@@ -95,7 +95,7 @@
   an hourly→daily backup lifecycle, and a tested disaster-recovery plan.</p>
   <div class="decisions">
     <div class="decision" style="--c:var(--green)"><b>Architecture</b><span>Option E now (per-school silos + control plane) — F's aggregation gate added when cross-school analytics is needed</span></div>
-    <div class="decision" style="--c:var(--blue)"><b>Tenancy routing</b><span>One domain, no subdomains — school resolved from the JWT, with a school-picker after login</span></div>
+    <div class="decision" style="--c:var(--blue)"><b>Tenancy routing</b><span>One domain, no subdomains — the external auth token proves identity only; the active school travels as an <code>X-School-Id</code> header, membership-checked on every request</span></div>
     <div class="decision" style="--c:var(--violet)"><b>Backend</b><span>NestJS: guards for auth &amp; roles, middleware for tenant resolution, one connection pool per school</span></div>
     <div class="decision" style="--c:var(--amber)"><b>Backups</b><span>Hourly (kept 10 days) → daily (kept 30 days) → monthly (12 months) · RPO ≤ 1 h, drill-tested restores</span></div>
   </div>
@@ -119,7 +119,7 @@
       <ul class="check">
         <li><b>One database per school</b> — own schema, own credentials, own backup line. A connection to school A physically cannot read school B.<small>Isolation is structural, not a WHERE clause.</small></li>
         <li><b>Control plane</b> — auth, school registry (catalog), routing, feature flags. Small, boring, its own database.</li>
-        <li><b>One shared app fleet</b> — the same NestJS pods serve every school; the request's JWT decides which school database the request touches.</li>
+        <li><b>One shared app fleet</b> — the same NestJS pods serve every school; the verified identity plus the validated <code>X-School-Id</code> header decide which school database the request touches.</li>
       </ul>
     </div>
     <div class="panel">
@@ -136,32 +136,37 @@
 
 <section id="tenancy">
   <h2><span class="secnum">2</span> One domain, no subdomains — how UI → API knows the school</h2>
-  <p class="lead">Everything lives on <code>app.yourschools.com</code>. The school is <b>not</b> in the
-  URL — it travels inside the JWT as a claim. That keeps one domain, one TLS cert, one ALB,
-  and makes spoofing a school as hard as forging a signed token.</p>
+  <p class="lead">Everything lives on <code>app.yourschools.com</code>. The auth service is
+  <b>external</b> — we don't control its token claims — so its token proves only <b>who</b> the
+  user is. <b>Which school</b> is active travels as an <code>X-School-Id</code> header, and the API
+  validates that header against the membership table on <b>every single request</b>. The header is
+  a hint; our control plane is the authority.</p>
 
   <div class="flow">
-    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Login (global)</b><span>POST /auth/login — email + password (+ OTP). Credentials live in the control plane, not in any school DB.</span></div>
-    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Membership lookup</b><span>Control plane returns the user's school memberships + role in each.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>School picker</b><span>1 school → auto-selected. 2+ → picker screen (see §3).</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Session token issued</b><span>Short-lived JWT with <code>sub</code>, <code>school_id</code>, <code>role</code>. Refresh token in an HttpOnly cookie.</span></div>
-    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Every API call</b><span>UI sends the JWT. NestJS TenantMiddleware reads <code>school_id</code> — never from a query param.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Login (external)</b><span>Redirect to the auth service's hosted login. It returns its JWT — identity only: <code>sub</code>, email.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Token verification</b><span>API verifies via the service's JWKS: signature, issuer, audience, expiry. No custom claims needed.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Membership lookup</b><span>Control plane maps <code>sub</code> → schools + role in each. OUR data — the token knows nothing about schools.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>School picker</b><span>1 school → auto-selected. 2+ → picker screen (see §3). Choice becomes the <code>X-School-Id</code> header.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Every API call</b><span>UI sends token + <code>X-School-Id</code>. TenantGuard re-checks membership (cached ~60 s) — non-members get 403.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Silo connection</b><span>Catalog maps school_id → DB host + secret; a cached pool for that school serves the query.</span></div>
   </div>
 
   <div class="panel">
-    <b>Token shape</b>
-    <pre><code>{
-  "sub": "user_8123",
-  "school_id": "sch_dps_pune",     // the ACTIVE school — single source of truth
-  "role": "school_admin",          // role IN THIS SCHOOL (roles differ per school)
-  "memberships": ["sch_dps_pune", "sch_svm_mumbai"],
-  "exp": 1735489900                // 15 min — refresh rotates it
-}</code></pre>
+    <b>Three sources, three jobs</b>
+    <pre><code>// 1. From the AUTH SERVICE token (we don't control its claims):
+{ "sub": "auth0|8123", "email": "priya@dps.edu", "exp": ... }   // WHO
+
+// 2. From OUR control plane (queried per request, cached 60 s):
+memberships:  auth0|8123 → [ { school: "sch_dps_pune",   role: "school_admin" },
+                             { school: "sch_svm_mumbai", role: "teacher" } ]   // MAY + AS WHAT
+
+// 3. From the CLIENT (untrusted until checked):
+X-School-Id: sch_dps_pune          // WHICH — TenantGuard validates it EVERY request</code></pre>
     <b>Iron rules</b>
     <ul class="check">
-      <li>The API <b>never</b> accepts <code>school_id</code> from the body, query or a custom header — only from the verified JWT. This kills whole classes of cross-tenant bugs.</li>
-      <li>Switching school = a new token from <code>POST /auth/switch-school</code> (server checks membership first), never a client-side variable.</li>
+      <li>The <code>X-School-Id</code> header is <b>untrusted input</b> — TenantGuard checks (sub, school) against the membership table on every request; a non-member gets 403 before any handler runs. Trusting the header without this check would be the cross-tenant bug.</li>
+      <li><b>Roles come from our membership table, never from the token</b> — the auth service only proves identity; authorization is entirely ours.</li>
+      <li><b>Bonus over JWT claims:</b> revoking someone's access = delete the membership row — effective within the 60 s cache, no waiting for a token to expire.</li>
       <li>Every DB access goes through the tenant-scoped connection — there is no "global" pool that can see all schools from request code.</li>
     </ul>
   </div>
@@ -176,9 +181,9 @@
       <b>The flow</b>
       <ul class="check">
         <li>After login, if <code>memberships.length &gt; 1</code> the UI routes to <code>/choose-school</code> — a card per school (name, logo, the user's role there).</li>
-        <li>Selection calls <code>POST /auth/switch-school</code> → server validates membership → issues the session JWT with that <code>school_id</code>.</li>
+        <li>Selection sets the active school: saved as last-choice via <code>POST /me/active-school</code>, and from then on every request carries <code>X-School-Id</code> with that value — which the server membership-checks each time.</li>
         <li>Only then does the app fetch dashboard data. There is no "no school selected" state after this point.</li>
-        <li>A school switcher stays in the top-nav; switching repeats the same server-side exchange and <b>fully reloads</b> dashboard state (no data from school A ever remains mounted while school B's token is active).</li>
+        <li>A school switcher stays in the top-nav; switching changes the header value and <b>fully reloads</b> dashboard state (no data from school A ever remains mounted while school B is active). A wrong or stale header value can't leak anything — the per-request check 403s it.</li>
       </ul>
     </div>
     <div class="panel">
@@ -201,9 +206,9 @@
     <div class="panel">
       <b>Module layout</b>
       <pre><code>src/
-├── auth/            # login, refresh, switch-school, OTP
-│   ├── jwt.strategy.ts
-│   └── roles.guard.ts        # @Roles('school_admin')
+├── auth/            # JWKS verify of external IdP token
+│   ├── idp-jwt.strategy.ts   # issuer + audience checks
+│   └── roles.guard.ts        # @Roles(...) — role from OUR memberships
 ├── tenancy/
 │   ├── tenant.middleware.ts  # JWT → school_id → connection
 │   ├── catalog.service.ts    # control-plane lookup (cached)
@@ -217,11 +222,14 @@
     </div>
     <div class="panel">
       <b>The tenant-scoped connection (core trick)</b>
-      <pre><code>// tenant.middleware.ts
-const { school_id } = verifyJwt(req);
-const conn = await this.connections
-    .forSchool(school_id);        // cached pool
-req.tenant = { schoolId: school_id, conn };
+      <pre><code>// tenant.guard.ts
+const { sub } = await verifyIdpJwt(req);   // JWKS of the external auth service
+const schoolId = req.headers['x-school-id'];
+const member = await this.memberships
+    .check(sub, schoolId);                 // control plane, cached 60 s
+if (!member) throw new ForbiddenException();
+req.tenant = { schoolId, role: member.role,
+  conn: await this.connections.forSchool(schoolId) };
 
 // connection.manager.ts
 async forSchool(id: string) {
@@ -243,8 +251,8 @@ async forSchool(id: string) {
 <section id="apisec">
   <h2><span class="secnum">5</span> API security</h2>
   <div class="panel"><ul class="check">
-    <li><b>AuthN:</b> 15-min access JWT + rotating refresh token in an <code>HttpOnly; Secure; SameSite=Lax</code> cookie. Refresh reuse detection revokes the family.</li>
-    <li><b>AuthZ:</b> two layers — role guard (<code>@Roles('school_admin')</code>) and tenant guard (resource's school must equal the token's <code>school_id</code>). Both run on every route.</li>
+    <li><b>AuthN:</b> delegated to the external auth service — we verify its JWT via JWKS (signature, issuer, audience, expiry) and cache the JWKS keys. Short-lived tokens + its refresh flow are the auth service's job.</li>
+    <li><b>AuthZ (entirely ours):</b> two layers — role guard (<code>@Roles('school_admin')</code>, role read from our membership table) and tenant guard (validated <code>X-School-Id</code> membership check). Both run on every route.</li>
     <li><b>Validation:</b> global <code>ValidationPipe</code> with <code>whitelist: true, forbidNonWhitelisted: true</code> — unknown fields are rejected, not ignored.</li>
     <li><b>Rate limiting:</b> <code>@nestjs/throttler</code> — tight on <code>/auth/*</code> (brute-force), generous per-user elsewhere; plus AWS WAF on the ALB (SQLi/XSS rulesets, IP throttles).</li>
     <li><b>Headers &amp; CORS:</b> helmet defaults; CORS locked to the one domain — a nice side-benefit of the no-subdomain decision.</li>
@@ -370,7 +378,7 @@ rule "monthly-cold"  { prefix = "monthly/"
 <section id="roadmap">
   <h2><span class="secnum">10</span> Build order</h2>
   <div class="panel"><ul class="check">
-    <li><b>1. Control plane + auth</b> (NestJS): schools registry, memberships, login, switch-school, JWT with <code>school_id</code>.</li>
+    <li><b>1. Control plane + auth integration</b> (NestJS): schools registry, memberships keyed by the auth service's <code>sub</code>, JWKS token verification, active-school API.</li>
     <li><b>2. Tenancy plumbing:</b> TenantMiddleware, connection manager, catalog-driven migrations; two demo schools end-to-end.</li>
     <li><b>3. School picker UI</b> + school switcher + deep-link interstitial.</li>
     <li><b>4. Backups:</b> per-school CronJob + S3 lifecycle (10 d hourly / 30 d daily / 12 mo monthly) + backup monitoring alert.</li>
@@ -399,7 +407,7 @@ rule "monthly-cold"  { prefix = "monthly/"
   तासागणिक→दैनिक बॅकअप lifecycle आणि सराव करून तपासलेली disaster-recovery योजना.</p>
   <div class="decisions">
     <div class="decision" style="--c:var(--green)"><b>आर्किटेक्चर</b><span>आत्ता पर्याय E (प्रत्येक शाळेचा silo + control plane) — cross-school analytics लागेल तेव्हा F चे aggregation gate जोडू</span></div>
-    <div class="decision" style="--c:var(--blue)"><b>टेनन्सी routing</b><span>एकच डोमेन, subdomain नाही — शाळा JWT मधून ठरते; लॉगिननंतर school-picker</span></div>
+    <div class="decision" style="--c:var(--blue)"><b>टेनन्सी routing</b><span>एकच डोमेन, subdomain नाही — बाहेरील auth service चा token फक्त ओळख देतो; सक्रिय शाळा <code>X-School-Id</code> header मधून, प्रत्येक request ला membership-तपासणीसह</span></div>
     <div class="decision" style="--c:var(--violet)"><b>बॅकएंड</b><span>NestJS: auth व roles साठी guards, tenant ओळखण्यासाठी middleware, प्रत्येक शाळेसाठी वेगळा connection pool</span></div>
     <div class="decision" style="--c:var(--amber)"><b>बॅकअप</b><span>तासागणिक (१० दिवस) → दैनिक (३० दिवस) → मासिक (१२ महिने) · RPO ≤ १ तास, restore drills</span></div>
   </div>
@@ -423,7 +431,7 @@ rule "monthly-cold"  { prefix = "monthly/"
       <ul class="check">
         <li><b>प्रत्येक शाळेसाठी स्वतंत्र डेटाबेस</b> — स्वतःचा schema, स्वतःची credentials, स्वतःची बॅकअप लाईन. शाळा A च्या connection ला शाळा B चा डेटा वाचणे शक्यच नाही.<small>Isolation रचनेतच आहे — WHERE clause मध्ये नाही.</small></li>
         <li><b>Control plane</b> — auth, शाळांची नोंदवही (catalog), routing, feature flags. छोटे, साधे, स्वतःच्या डेटाबेससह.</li>
-        <li><b>एकच shared app fleet</b> — तेच NestJS pods सर्व शाळांना सेवा देतात; request मधील JWT ठरवतो कोणत्या शाळेच्या डेटाबेसकडे जायचे.</li>
+        <li><b>एकच shared app fleet</b> — तेच NestJS pods सर्व शाळांना सेवा देतात; पडताळलेली ओळख + तपासलेला <code>X-School-Id</code> header ठरवतो कोणत्या शाळेच्या डेटाबेसकडे जायचे.</li>
       </ul>
     </div>
     <div class="panel">
@@ -440,32 +448,37 @@ rule "monthly-cold"  { prefix = "monthly/"
 
 <section id="tenancy-mr">
   <h2><span class="secnum">2</span> एकच डोमेन, subdomain नाही — UI → API ला शाळा कशी कळते</h2>
-  <p class="lead">सर्व काही <code>app.yourschools.com</code> वर चालते. शाळा URL मध्ये <b>नसते</b> —
-  ती JWT मध्ये claim म्हणून प्रवास करते. त्यामुळे एक डोमेन, एक TLS cert, एक ALB राहते आणि
-  शाळेची बतावणी करणे म्हणजे signed token बनावट करण्याइतकेच कठीण होते.</p>
+  <p class="lead">सर्व काही <code>app.yourschools.com</code> वर चालते. Auth service <b>बाहेरील</b> आहे —
+  त्याच्या token च्या claims वर आपले नियंत्रण नाही — म्हणून तो token फक्त <b>कोण</b> आहे हे सिद्ध
+  करतो. <b>कोणती शाळा</b> सक्रिय आहे हे <code>X-School-Id</code> header मधून येते, आणि API तो header
+  <b>प्रत्येक request ला</b> membership टेबलाशी तपासते. Header हा फक्त इशारा; आपले control plane
+  हाच अधिकार.</p>
 
   <div class="flow">
-    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>लॉगिन (global)</b><span>POST /auth/login — email + password (+ OTP). Credentials control plane मध्ये असतात — कोणत्याही शाळेच्या DB मध्ये नाही.</span></div>
-    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Membership शोध</b><span>Control plane युजरच्या शाळा-memberships व प्रत्येक शाळेतील role परत करते.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>School picker</b><span>१ शाळा → आपोआप निवड. २+ → picker स्क्रीन (§3 पहा).</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Session token</b><span>कमी आयुष्याचा JWT: <code>sub</code>, <code>school_id</code>, <code>role</code>. Refresh token HttpOnly cookie मध्ये.</span></div>
-    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>प्रत्येक API call</b><span>UI JWT पाठवते. NestJS TenantMiddleware <code>school_id</code> वाचते — query param मधून कधीही नाही.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>लॉगिन (बाहेरील)</b><span>Auth service च्या hosted login कडे redirect. तो त्याचा JWT देतो — फक्त ओळख: <code>sub</code>, email.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Token पडताळणी</b><span>API त्या service च्या JWKS ने तपासते: signature, issuer, audience, expiry. Custom claims ची गरजच नाही.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Membership शोध</b><span>Control plane <code>sub</code> → शाळा + प्रत्येकीतील role देते. हा आपला डेटा — token ला शाळांची माहितीच नसते.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>School picker</b><span>१ शाळा → आपोआप. २+ → picker (§3 पहा). निवड <code>X-School-Id</code> header बनते.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>प्रत्येक API call</b><span>UI token + <code>X-School-Id</code> पाठवते. TenantGuard membership पुन्हा तपासतो (~६० से cache) — सदस्य नसल्यास 403.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Silo connection</b><span>Catalog school_id → DB host + secret देतो; त्या शाळेचा cached pool query चालवतो.</span></div>
   </div>
 
   <div class="panel">
-    <b>Token ची रचना</b>
-    <pre><code>{
-  "sub": "user_8123",
-  "school_id": "sch_dps_pune",     // सक्रिय शाळा — एकमेव source of truth
-  "role": "school_admin",          // ह्याच शाळेतील role (शाळेनुसार वेगळी)
-  "memberships": ["sch_dps_pune", "sch_svm_mumbai"],
-  "exp": 1735489900                // १५ मिनिटे — refresh ने फिरते
-}</code></pre>
+    <b>तीन स्रोत, तीन कामे</b>
+    <pre><code>// 1. AUTH SERVICE च्या token मधून (claims वर आपले नियंत्रण नाही):
+{ "sub": "auth0|8123", "email": "priya@dps.edu", "exp": ... }   // कोण
+
+// 2. आपल्या CONTROL PLANE मधून (प्रत्येक request ला, ६० से cache):
+memberships:  auth0|8123 → [ { school: "sch_dps_pune",   role: "school_admin" },
+                             { school: "sch_svm_mumbai", role: "teacher" } ]   // परवानगी + भूमिका
+
+// 3. CLIENT कडून (तपासल्याशिवाय अविश्वसनीय):
+X-School-Id: sch_dps_pune          // कोणती — TenantGuard प्रत्येक request ला तपासतो</code></pre>
     <b>पक्के नियम</b>
     <ul class="check">
-      <li>API <code>school_id</code> body, query किंवा custom header मधून <b>कधीही</b> स्वीकारत नाही — फक्त verified JWT मधून. यामुळे cross-tenant bugs चे अख्खे प्रकार संपतात.</li>
-      <li>शाळा बदलणे = <code>POST /auth/switch-school</code> मधून नवा token (server आधी membership तपासतो) — client-side variable कधीच नाही.</li>
+      <li><code>X-School-Id</code> header हा <b>अविश्वसनीय input</b> — TenantGuard प्रत्येक request ला (sub, school) membership टेबलाशी तपासतो; सदस्य नसलेल्याला handler पर्यंत पोहोचण्याआधीच 403. तपासणीशिवाय header वर विश्वास ठेवणे — हाच cross-tenant bug ठरला असता.</li>
+      <li><b>Roles आपल्या membership टेबलामधून येतात, token मधून कधीच नाही</b> — auth service फक्त ओळख सिद्ध करते; authorization पूर्णपणे आपले.</li>
+      <li><b>JWT claims पेक्षा बोनस:</b> एखाद्याचा access काढणे = membership row delete करणे — ६० सेकंदांच्या cache मध्येच लागू; token expire होण्याची वाट नाही.</li>
       <li>प्रत्येक DB access tenant-scoped connection मधूनच जाते — request कोडला सर्व शाळा दिसू शकणारा "global" pool अस्तित्वातच नाही.</li>
     </ul>
   </div>
@@ -480,9 +493,9 @@ rule "monthly-cold"  { prefix = "monthly/"
       <b>प्रवाह</b>
       <ul class="check">
         <li>लॉगिननंतर <code>memberships.length &gt; 1</code> असल्यास UI <code>/choose-school</code> वर नेते — प्रत्येक शाळेचे कार्ड (नाव, लोगो, तिथली role).</li>
-        <li>निवड <code>POST /auth/switch-school</code> कॉल करते → server membership तपासतो → त्या <code>school_id</code> सह session JWT देतो.</li>
+        <li>निवड सक्रिय शाळा ठरवते: <code>POST /me/active-school</code> ने शेवटची-निवड जतन होते, आणि पुढील प्रत्येक request त्या मूल्यासह <code>X-School-Id</code> पाठवते — जी server दर वेळी membership-तपासतो.</li>
         <li>त्यानंतरच app dashboard चा डेटा आणते. या बिंदूनंतर "शाळा निवडलेली नाही" अशी स्थितीच उरत नाही.</li>
-        <li>Top-nav मध्ये शाळा बदलण्याचा switcher असतो; बदल तीच server-side देवाणघेवाण पुन्हा करतो आणि dashboard <b>पूर्ण reload</b> होते (शाळा B चा token सक्रिय असताना शाळा A चा कोणताही डेटा स्क्रीनवर उरत नाही).</li>
+        <li>Top-nav मध्ये शाळा बदलण्याचा switcher असतो; बदल header चे मूल्य बदलतो आणि dashboard <b>पूर्ण reload</b> होते (शाळा B सक्रिय असताना शाळा A चा कोणताही डेटा स्क्रीनवर उरत नाही). चुकीचे/शिळे header मूल्य काहीही leak करू शकत नाही — प्रत्येक request ची तपासणी त्याला 403 देते.</li>
       </ul>
     </div>
     <div class="panel">
@@ -505,9 +518,9 @@ rule "monthly-cold"  { prefix = "monthly/"
     <div class="panel">
       <b>Module रचना</b>
       <pre><code>src/
-├── auth/            # login, refresh, switch-school, OTP
-│   ├── jwt.strategy.ts
-│   └── roles.guard.ts        # @Roles('school_admin')
+├── auth/            # JWKS verify of external IdP token
+│   ├── idp-jwt.strategy.ts   # issuer + audience checks
+│   └── roles.guard.ts        # @Roles(...) — role from OUR memberships
 ├── tenancy/
 │   ├── tenant.middleware.ts  # JWT → school_id → connection
 │   ├── catalog.service.ts    # control-plane lookup (cached)
@@ -521,11 +534,14 @@ rule "monthly-cold"  { prefix = "monthly/"
     </div>
     <div class="panel">
       <b>Tenant-scoped connection (मुख्य युक्ती)</b>
-      <pre><code>// tenant.middleware.ts
-const { school_id } = verifyJwt(req);
-const conn = await this.connections
-    .forSchool(school_id);        // cached pool
-req.tenant = { schoolId: school_id, conn };
+      <pre><code>// tenant.guard.ts
+const { sub } = await verifyIdpJwt(req);   // बाहेरील auth service चे JWKS
+const schoolId = req.headers['x-school-id'];
+const member = await this.memberships
+    .check(sub, schoolId);                 // control plane, ६० से cache
+if (!member) throw new ForbiddenException();
+req.tenant = { schoolId, role: member.role,
+  conn: await this.connections.forSchool(schoolId) };
 
 // connection.manager.ts
 async forSchool(id: string) {
@@ -547,8 +563,8 @@ async forSchool(id: string) {
 <section id="apisec-mr">
   <h2><span class="secnum">5</span> API सुरक्षा</h2>
   <div class="panel"><ul class="check">
-    <li><b>AuthN:</b> १५ मिनिटांचा access JWT + फिरता refresh token <code>HttpOnly; Secure; SameSite=Lax</code> cookie मध्ये. Refresh चा पुनर्वापर आढळल्यास अख्खे token-family रद्द.</li>
-    <li><b>AuthZ:</b> दोन थर — role guard (<code>@Roles('school_admin')</code>) आणि tenant guard (resource ची शाळा = token मधील <code>school_id</code>). दोन्ही प्रत्येक route वर चालतात.</li>
+    <li><b>AuthN:</b> बाहेरील auth service कडे सोपवलेले — त्याचा JWT आपण JWKS ने तपासतो (signature, issuer, audience, expiry); JWKS keys cache होतात. Token आयुष्य + refresh हे auth service चे काम.</li>
+    <li><b>AuthZ (पूर्णपणे आपले):</b> दोन थर — role guard (<code>@Roles('school_admin')</code>, role आपल्या membership टेबलामधून) आणि tenant guard (तपासलेला <code>X-School-Id</code> membership check). दोन्ही प्रत्येक route वर चालतात.</li>
     <li><b>Validation:</b> global <code>ValidationPipe</code> (<code>whitelist: true, forbidNonWhitelisted: true</code>) — अनोळखी fields नाकारली जातात, दुर्लक्षित होत नाहीत.</li>
     <li><b>Rate limiting:</b> <code>@nestjs/throttler</code> — <code>/auth/*</code> वर कडक (brute-force), इतरत्र प्रति-युजर सैल; शिवाय ALB वर AWS WAF (SQLi/XSS rules, IP throttles).</li>
     <li><b>Headers व CORS:</b> helmet defaults; CORS एकाच डोमेनवर लॉक — subdomain न वापरण्याचा बोनस फायदा.</li>
@@ -674,7 +690,7 @@ rule "monthly-cold"  { prefix = "monthly/"
 <section id="roadmap-mr">
   <h2><span class="secnum">10</span> बांधणीचा क्रम</h2>
   <div class="panel"><ul class="check">
-    <li><b>१. Control plane + auth</b> (NestJS): शाळांची registry, memberships, login, switch-school, <code>school_id</code> सह JWT.</li>
+    <li><b>१. Control plane + auth जोडणी</b> (NestJS): शाळांची registry, auth service च्या <code>sub</code> वर आधारित memberships, JWKS token पडताळणी, active-school API.</li>
     <li><b>२. Tenancy plumbing:</b> TenantMiddleware, connection manager, catalog-driven migrations; दोन demo शाळा end-to-end.</li>
     <li><b>३. School picker UI</b> + शाळा switcher + deep-link interstitial.</li>
     <li><b>४. Backups:</b> प्रति-शाळा CronJob + S3 lifecycle (१० दि तासागणिक / ३० दि दैनिक / १२ म मासिक) + backup monitoring alert.</li>
