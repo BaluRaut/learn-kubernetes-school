@@ -58,6 +58,12 @@
   .callout.green { border-color:var(--green); background:color-mix(in srgb,var(--green) 8%,transparent); }
   .callout.red { border-color:var(--red); background:color-mix(in srgb,var(--red) 8%,transparent); }
   footer { text-align:center; color:var(--muted); font-size:.85rem; padding:30px 0 50px; }
+  #todo-list li { padding-left:0; }
+  #todo-list li::before { content:none; }
+  #todo-list label { display:flex; gap:10px; align-items:flex-start; cursor:pointer; }
+  #todo-list input { margin-top:4px; width:17px; height:17px; accent-color:var(--green); flex:none; }
+  #todo-list li:has(input:checked) label { opacity:.55; text-decoration:line-through; }
+  input[type=range] { accent-color:var(--blue); }
 </style>
 </head>
 <body>
@@ -84,7 +90,8 @@
   <a href="#model">3 Canonical model + countries</a> <a href="#zoning">4 Variability windows</a>
   <a href="#ingest">5 Ingestion routes</a> <a href="#serving">6 What it serves</a>
   <a href="#residency">7 Regions &amp; residency</a> <a href="#ops">8 Ops</a>
-  <a href="#questions">9 Open questions</a>
+  <a href="#questions">9 Open questions</a> <a href="#devops">10 DevOps on AWS</a>
+  <a href="#cost">11 Cost + calculator</a> <a href="#todo">12 TODO</a>
 </nav>
 
 <!-- ============================================================ 1 -->
@@ -309,12 +316,209 @@ metric_definition              ingest_row   (raw JSONB · error)
   options, thresholds, phasing — update that document first; this one follows.</div>
 </section>
 
+<!-- ============================================================ 10 -->
+<section id="devops">
+  <h2><span class="secnum">10</span> DevOps — everything on AWS</h2>
+  <p class="lead">The full runtime, assuming AWS end to end. One Terraform codebase, three
+  environments (dev · stage · prod), the same shapes as the
+  <a href="architecture.html">school platform</a> repo — parameterized per environment.</p>
+  <div class="grid2">
+    <div class="panel">
+      <b>The stack, per environment</b>
+      <table>
+        <thead><tr><th>Concern</th><th>AWS service</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Compute</td><td>EKS + managed node groups</td><td>API pods, ingest workers (queue consumers), CronJobs (backups, feeds)</td></tr>
+          <tr><td>Silos</td><td>RDS PostgreSQL + PostGIS</td><td>pooled instances hosting many single-grower databases; dedicated instances for top-tier growers</td></tr>
+          <tr><td>Ingest queue</td><td>SQS (+ DLQ)</td><td>batch processing decoupled from HTTP; retries + dead-letter for poison files</td></tr>
+          <tr><td>Files</td><td>S3</td><td><code>raw/</code> uploads (versioned), <code>backups/</code> lifecycle tiers, per-silo prefixes + scoped IAM</td></tr>
+          <tr><td>Edge</td><td>Route 53 · ALB · WAF · ACM</td><td>one domain; TLS; SQLi/XSS rulesets; IP throttles</td></tr>
+          <tr><td>Images</td><td>ECR (scan-on-push, cross-region replication)</td><td>SHA-tagged; keep-last-N lifecycle</td></tr>
+          <tr><td>Secrets / keys</td><td>Secrets Manager · KMS</td><td>per-silo DB creds (rotated); per-silo KMS keys</td></tr>
+          <tr><td>Observability</td><td>CloudWatch + Container Insights</td><td>logs, metrics, alarms: ingest failures, backup freshness, silo pool saturation</td></tr>
+          <tr><td>Audit</td><td>CloudTrail (+ pgAudit in RDS)</td><td>API-level and DB-level trails, both immutable</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <b>Pipelines &amp; environments</b>
+      <ul class="check">
+        <li><b>CI/CD:</b> test → build → push to ECR → deploy to EKS with a manual gate before prod (CircleCI with the AWS context, or CodePipeline/CodeBuild if it must be AWS-native — the stages are identical).</li>
+        <li><b>Environments:</b> dev (small: 1 node, single-AZ RDS, no WAF) → stage (prod-shaped, scaled down) → prod (multi-AZ everything). Same Terraform, different tfvars.</li>
+        <li><b>Migrations:</b> a catalog-driven job applies schema migrations across every silo; new silo provisioning is one automated workflow (create DB → user → migrations → secret → registry row).</li>
+        <li><b>Guardrails:</b> AWS Budgets alerts per environment; tagging standard (<code>env</code>, <code>tenant-tier</code>) so Cost Explorer can split platform vs per-tier spend.</li>
+        <li><b>Drills:</b> monthly silo-restore drill, twice-yearly region runbook (both from §8) live in the ops calendar, not in good intentions.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 11 -->
+<section id="cost">
+  <h2><span class="secnum">11</span> Cost — approximation + interactive calculator</h2>
+  <p class="lead">Rough monthly figures on AWS on-demand list prices (us-east-1, 2026). Treat every
+  number as ±30% and validate in the AWS Pricing Calculator before budgeting — reserved instances /
+  Savings Plans typically cut compute ~30–40% once steady.</p>
+
+  <div class="panel">
+    <b>Baseline: production, ~20 growers, pooled silos</b>
+    <table>
+      <thead><tr><th>Item</th><th>Sizing</th><th>≈ $/month</th></tr></thead>
+      <tbody>
+        <tr><td>EKS control plane</td><td>1 cluster</td><td>73</td></tr>
+        <tr><td>Worker nodes</td><td>3 × m5.large</td><td>210</td></tr>
+        <tr><td>RDS pooled silo host</td><td>1 × db.m5.large Multi-AZ + 200 GB gp3</td><td>290</td></tr>
+        <tr><td>ALB + WAF</td><td>1 + managed rules</td><td>45</td></tr>
+        <tr><td>NAT gateway</td><td>1 + ~100 GB processed</td><td>38</td></tr>
+        <tr><td>S3 (raw + backups)</td><td>~500 GB across tiers</td><td>12</td></tr>
+        <tr><td>ECR, SQS, Secrets, CloudWatch, misc</td><td>—</td><td>80</td></tr>
+        <tr><td><b>Prod total</b></td><td></td><td><b>≈ 750</b></td></tr>
+        <tr><td>+ Stage (prod-shaped, scaled down)</td><td>~40%</td><td>≈ 300</td></tr>
+        <tr><td>+ Dev (minimal)</td><td>~20%</td><td>≈ 150</td></tr>
+        <tr><td><b>All-in</b></td><td></td><td><b>≈ $1,200/mo</b> (≈ $60/grower at 20 growers)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel" id="calc">
+    <b>Calculator — this is Q7 with numbers</b>
+    <p style="color:var(--muted);font-size:.9rem;margin:6px 0 14px">Drag the sliders. The model: a fixed
+    platform base + pooled RDS hosts (one per 100 pooled growers) + dedicated instances for top-tier
+    growers + storage and secrets per grower. Watch <b>cost per grower</b> collapse as N grows —
+    that's why E is affordable far beyond "tens of growers" once silo ops are automated.</p>
+    <div class="grid2">
+      <div>
+        <label>Growers: <b id="v-growers">100</b><br>
+          <input type="range" id="in-growers" min="5" max="2000" step="5" value="100" style="width:100%"></label><br><br>
+        <label>% on a dedicated RDS instance: <b id="v-dedicated">5%</b><br>
+          <input type="range" id="in-dedicated" min="0" max="100" step="1" value="5" style="width:100%"></label><br><br>
+        <label>Avg data per grower (GB, DB + raw + backups): <b id="v-gb">20</b><br>
+          <input type="range" id="in-gb" min="1" max="200" step="1" value="20" style="width:100%"></label><br><br>
+        <label>Environments: <b id="v-envs">3</b><br>
+          <input type="range" id="in-envs" min="1" max="3" step="1" value="3" style="width:100%"></label>
+      </div>
+      <div>
+        <table>
+          <tbody>
+            <tr><td>Platform base (EKS, nodes, ALB, WAF, NAT, obs)</td><td style="text-align:right" id="c-base">—</td></tr>
+            <tr><td>Pooled RDS hosts (<span id="c-pooln">—</span> × Multi-AZ)</td><td style="text-align:right" id="c-pool">—</td></tr>
+            <tr><td>Dedicated RDS (<span id="c-dedn">—</span> growers)</td><td style="text-align:right" id="c-ded">—</td></tr>
+            <tr><td>Storage (RDS gp3 + S3 raw + backups)</td><td style="text-align:right" id="c-store">—</td></tr>
+            <tr><td>Secrets + per-silo overhead</td><td style="text-align:right" id="c-sec">—</td></tr>
+            <tr><td>Non-prod environments</td><td style="text-align:right" id="c-envs">—</td></tr>
+            <tr><td style="font-weight:800">Total / month</td><td style="text-align:right;font-weight:800" id="c-total">—</td></tr>
+            <tr><td style="font-weight:800;color:var(--green)">Cost per grower / month</td><td style="text-align:right;font-weight:800;color:var(--green)" id="c-per">—</td></tr>
+          </tbody>
+        </table>
+        <p style="color:var(--muted);font-size:.82rem" id="c-note"></p>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><b>Honesty box:</b> list prices, rough sizing, no data-transfer surprises
+  modeled beyond NAT, no enterprise support. The shape of the curve (fixed base amortizing across
+  growers) is trustworthy; the exact rupees/dollars need the AWS Pricing Calculator with your real
+  region and usage.</div>
+</section>
+
+<!-- ============================================================ 12 -->
+<section id="todo">
+  <h2><span class="secnum">12</span> TODO — build checklist (ticks save in this browser)</h2>
+  <div class="panel">
+    <ul class="check" id="todo-list" style="list-style:none">
+      <li data-id="t1"><label><input type="checkbox"> <b>Control plane:</b> grower registry (+region, +tier), memberships on IdP <code>sub</code>, tenant guard (<code>X-Grower-Id</code> checked per request)</label></li>
+      <li data-id="t2"><label><input type="checkbox"> <b>Silo automation:</b> provision workflow (DB → user → migrations → secret → registry row) + catalog-driven migration job</label></li>
+      <li data-id="t3"><label><input type="checkbox"> <b>Canonical schema v1:</b> grower/farm/field/field_season + <code>metric_definition</code> registry (with country + since_season)</label></li>
+      <li data-id="t4"><label><input type="checkbox"> <b>Route 1 upload UI:</b> presigned upload → profile → column mapping UI → template save</label></li>
+      <li data-id="t5"><label><input type="checkbox"> <b>Entity resolution:</b> worklist UI + <code>entity_alias</code> persistence</label></li>
+      <li data-id="t6"><label><input type="checkbox"> <b>Validation engine:</b> per-row verdicts from metric_definition rules + reject report download</label></li>
+      <li data-id="t7"><label><input type="checkbox"> <b>Commit boundary:</b> transactional batch commit, <code>batch_id</code> stamping, batch rollback</label></li>
+      <li data-id="t8"><label><input type="checkbox"> <b>Route 2 direct inject:</b> scheduled runner (SQS), service identity, template reuse, idempotency by file hash</label></li>
+      <li data-id="t9"><label><input type="checkbox"> <b>Zoning:</b> PostGIS, GeoJSON/shapefile ingest (sandboxed), variability_window versioning, window-compare API</label></li>
+      <li data-id="t10"><label><input type="checkbox"> <b>Seed Selector contract:</b> one server-side query API (join + variability + PD filters at source) replacing the in-browser join</label></li>
+      <li data-id="t11"><label><input type="checkbox"> <b>PA / FVA feeds:</b> scheduled, one-way, inbound loaders + divergence reconciliation report (Q4)</label></li>
+      <li data-id="t12"><label><input type="checkbox"> <b>Backups:</b> per-silo CronJob + S3 lifecycle tiers + freshness alarm; first restore drill done</label></li>
+      <li data-id="t13"><label><input type="checkbox"> <b>Security hardening:</b> WAF, throttling, secrets rotation, pgAudit, immutable audit log</label></li>
+      <li data-id="t14"><label><input type="checkbox"> <b>Observability:</b> dashboards + alarms (ingest failure rate, queue depth, pool saturation, backup freshness)</label></li>
+      <li data-id="t15"><label><input type="checkbox"> <b>Cost guardrails:</b> tagging standard, AWS Budgets alerts, per-tier cost split in Cost Explorer</label></li>
+      <li data-id="t16"><label><input type="checkbox"> <b>DR:</b> region runbook written + tabletop exercise; ECR + S3 cross-region replication verified</label></li>
+      <li data-id="t17"><label><input type="checkbox"> <b>Phase 2 pre-work (no code):</b> aggregation-gate governance doc — cohort threshold, audit policy, sign-off owners</label></li>
+    </ul>
+    <p style="color:var(--muted);font-size:.85rem;margin-top:10px"><span id="todo-count">0</span> / 17 done · progress stored locally in your browser</p>
+  </div>
+</section>
+
 <footer>
   LFG Platform · engineering companion to the RFC ·
   <a href="LFG%20Data%20Architecture.html">RFC figures</a> ·
   <a href="architecture.html">school platform design</a> ·
   <a href="https://github.com/BaluRaut/cloud-2026-eks-docker-terraform">repo</a>
 </footer>
+
+<script>
+// ---- Cost calculator (approx. on-demand list prices, us-east-1) ----
+const P = {
+  prodBase: 73 + 210 + 45 + 38 + 80,   // EKS + 3×m5.large + ALB/WAF + NAT + misc
+  pooledHost: 250,                     // db.m5.large Multi-AZ (instance only)
+  pooledCapacity: 100,                 // grower DBs per pooled host
+  dedicatedHost: 95,                   // db.t4g.medium Multi-AZ per top-tier grower
+  gbRds: 0.08, gbS3: 0.023,            // storage $/GB-mo (gp3 / S3 standard)
+  secretsPerGrower: 0.8,               // 2 secrets × $0.40
+  envFactor: { 1: 0, 2: 0.4, 3: 0.6 }  // stage 40%, dev 20% of prod base
+};
+const $ = id => document.getElementById(id);
+function fmt(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+function calc() {
+  const g = +$("in-growers").value, dPct = +$("in-dedicated").value,
+        gb = +$("in-gb").value, envs = +$("in-envs").value;
+  $("v-growers").textContent = g; $("v-dedicated").textContent = dPct + "%";
+  $("v-gb").textContent = gb; $("v-envs").textContent = envs;
+  const ded = Math.round(g * dPct / 100), pooled = g - ded;
+  const poolHosts = Math.max(1, Math.ceil(pooled / P.pooledCapacity));
+  // extra worker nodes as growers grow (1 per 150 growers beyond baseline)
+  const extraNodes = Math.floor(g / 150) * 70;
+  const base = P.prodBase + extraNodes;
+  const pool = poolHosts * P.pooledHost;
+  const dedC = ded * P.dedicatedHost;
+  // storage: ~40% of data in RDS, full copy raw + ~60% backup tiers in S3
+  const store = g * gb * (0.4 * P.gbRds + 1.6 * P.gbS3);
+  const sec = g * P.secretsPerGrower + poolHosts * 10;
+  const prod = base + pool + dedC + store + sec;
+  const envC = base * (P.envFactor[envs] || 0) + (envs > 1 ? 150 : 0); // small RDS/dev extras
+  const total = prod + envC;
+  $("c-base").textContent = fmt(base);
+  $("c-pooln").textContent = poolHosts; $("c-pool").textContent = fmt(pool);
+  $("c-dedn").textContent = ded; $("c-ded").textContent = fmt(dedC);
+  $("c-store").textContent = fmt(store);
+  $("c-sec").textContent = fmt(sec);
+  $("c-envs").textContent = fmt(envC);
+  $("c-total").textContent = fmt(total) + " /mo";
+  $("c-per").textContent = "$" + (total / g).toFixed(2) + " /mo";
+  $("c-note").textContent = g >= 500
+    ? "At this scale consider PgBouncer per pooled host, Savings Plans (−30–40% on compute), and tiered silo placement."
+    : "Fixed platform base dominates at low N — cost per grower falls fast as N grows.";
+}
+["in-growers","in-dedicated","in-gb","in-envs"].forEach(id => $(id).addEventListener("input", calc));
+calc();
+
+// ---- TODO checklist with localStorage ----
+const TKEY = "lfg-todo";
+const tstate = JSON.parse(localStorage.getItem(TKEY) || "{}");
+const list = $("todo-list");
+list.querySelectorAll("li").forEach(li => {
+  const cb = li.querySelector("input");
+  cb.checked = !!tstate[li.dataset.id];
+  cb.addEventListener("change", () => {
+    tstate[li.dataset.id] = cb.checked;
+    if (!cb.checked) delete tstate[li.dataset.id];
+    localStorage.setItem(TKEY, JSON.stringify(tstate));
+    tcount();
+  });
+});
+function tcount() {
+  $("todo-count").textContent = list.querySelectorAll("input:checked").length;
+}
+tcount();
+</script>
 </div>
 </body>
 </html>
