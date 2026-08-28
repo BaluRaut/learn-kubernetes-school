@@ -86,7 +86,7 @@
 </header>
 
 <nav class="toc">
-  <a href="#phasing">1 Options &amp; phasing</a> <a href="#isolation">2 Isolation staircase</a>
+  <a href="#phasing">1 E + F phasing</a> <a href="#isolation">2 Isolation staircase</a>
   <a href="#model">3 Canonical model + countries</a> <a href="#zoning">4 Variability windows</a>
   <a href="#ingest">5 Ingestion routes</a> <a href="#serving">6 What it serves</a>
   <a href="#residency">7 Regions &amp; residency</a> <a href="#ops">8 Ops</a>
@@ -323,7 +323,7 @@ metric_definition              ingest_row   (raw JSONB · error)
 <section id="devops">
   <h2><span class="secnum">10</span> DevOps — everything on AWS</h2>
   <p class="lead">The full runtime, assuming AWS end to end. One Terraform codebase, three
-  environments (dev · stage · prod), the same shapes as the
+  environments (sandbox · production), the same shapes as the
   <a href="architecture.html">school platform</a> repo — parameterized per environment.</p>
   <div class="grid2">
     <div class="panel">
@@ -347,7 +347,7 @@ metric_definition              ingest_row   (raw JSONB · error)
       <b>Pipelines &amp; environments</b>
       <ul class="check">
         <li><b>CI/CD:</b> test → build → push to ECR → deploy to EKS with a manual gate before prod (CircleCI with the AWS context, or CodePipeline/CodeBuild if it must be AWS-native — the stages are identical).</li>
-        <li><b>Environments:</b> dev (small: 1 node, single-AZ RDS, no WAF) → stage (prod-shaped, scaled down) → prod (multi-AZ everything). Same Terraform, different tfvars.</li>
+        <li><b>Environments — two only:</b> sandbox (prod-shaped, scaled down: single-AZ RDS, spot nodes, demo growers; auto-deployed on every merge — also where drills and demos run) → production (multi-AZ everything, manual gate). Local dev is docker-compose, free. Same Terraform, different tfvars.</li>
         <li><b>Migrations:</b> a catalog-driven job applies schema migrations across every silo; new silo provisioning is one automated workflow (create DB → user → migrations → secret → registry row).</li>
         <li><b>Guardrails:</b> AWS Budgets alerts per environment; tagging standard (<code>env</code>, <code>tenant-tier</code>) so Cost Explorer can split platform vs per-tier spend.</li>
         <li><b>Drills:</b> monthly silo-restore drill, twice-yearly region runbook (both from §8) live in the ops calendar, not in good intentions.</li>
@@ -376,9 +376,8 @@ metric_definition              ingest_row   (raw JSONB · error)
         <tr><td>S3 (raw + backups)</td><td>~500 GB across tiers</td><td>12</td></tr>
         <tr><td>ECR, SQS, Secrets, CloudWatch, misc</td><td>—</td><td>80</td></tr>
         <tr><td><b>Prod total</b></td><td></td><td><b>≈ 750</b></td></tr>
-        <tr><td>+ Stage (prod-shaped, scaled down)</td><td>~40%</td><td>≈ 300</td></tr>
-        <tr><td>+ Dev (minimal)</td><td>~20%</td><td>≈ 150</td></tr>
-        <tr><td><b>All-in</b></td><td></td><td><b>≈ $1,200/mo</b> (≈ $60/grower at 20 growers)</td></tr>
+        <tr><td>+ Sandbox (prod-shaped, scaled down)</td><td>~40%</td><td>≈ 300</td></tr>
+        <tr><td><b>All-in</b></td><td></td><td><b>≈ $1,050/mo</b> (≈ $53/grower at 20 growers)</td></tr>
       </tbody>
     </table>
   </div>
@@ -397,8 +396,8 @@ metric_definition              ingest_row   (raw JSONB · error)
           <input type="range" id="in-dedicated" min="0" max="100" step="1" value="5" style="width:100%"></label><br><br>
         <label>Avg data per grower (GB, DB + raw + backups): <b id="v-gb">20</b><br>
           <input type="range" id="in-gb" min="1" max="200" step="1" value="20" style="width:100%"></label><br><br>
-        <label>Environments: <b id="v-envs">3</b><br>
-          <input type="range" id="in-envs" min="1" max="3" step="1" value="3" style="width:100%"></label>
+        <label>Environments (1 = prod only · 2 = + sandbox): <b id="v-envs">2</b><br>
+          <input type="range" id="in-envs" min="1" max="2" step="1" value="2" style="width:100%"></label>
       </div>
       <div>
         <table>
@@ -408,7 +407,7 @@ metric_definition              ingest_row   (raw JSONB · error)
             <tr><td>Dedicated RDS (<span id="c-dedn">—</span> growers)</td><td style="text-align:right" id="c-ded">—</td></tr>
             <tr><td>Storage (RDS gp3 + S3 raw + backups)</td><td style="text-align:right" id="c-store">—</td></tr>
             <tr><td>Secrets + per-silo overhead</td><td style="text-align:right" id="c-sec">—</td></tr>
-            <tr><td>Non-prod environments</td><td style="text-align:right" id="c-envs">—</td></tr>
+            <tr><td>Sandbox environment</td><td style="text-align:right" id="c-envs">—</td></tr>
             <tr><td style="font-weight:800">Total / month</td><td style="text-align:right;font-weight:800" id="c-total">—</td></tr>
             <tr><td style="font-weight:800;color:var(--green)">Cost per grower / month</td><td style="text-align:right;font-weight:800;color:var(--green)" id="c-per">—</td></tr>
           </tbody>
@@ -497,14 +496,14 @@ metric_definition              ingest_row   (raw JSONB · error)
   <table>
     <thead><tr><th>Step</th><th>Deliverable</th><th>Demo that proves it</th></tr></thead>
     <tbody>
-      <tr><td><b>M0 · Foundations</b></td><td>Terraform: VPC, EKS, RDS, S3, SQS, ECR; three environments; CI/CD to stage</td><td>a hello-world service deploys to stage via the pipeline</td></tr>
+      <tr><td><b>M0 · Foundations</b></td><td>Terraform: VPC, EKS, RDS, S3, SQS, ECR; sandbox + production; CI/CD to sandbox</td><td>a hello-world service deploys to sandbox via the pipeline</td></tr>
       <tr><td><b>M1 · Control plane</b></td><td>grower registry, memberships (IdP <code>sub</code>), tenant guard, silo provisioning automation</td><td>"create grower" → silo + secret + registry row appear, tenant guard 403s a non-member</td></tr>
       <tr><td><b>M2 · Canonical schema</b></td><td>farm/field/field_season + <code>metric_definition</code> registry (country-scoped) + catalog-driven migrations</td><td>same migration applies across two demo silos; metric rows validate per country</td></tr>
       <tr><td><b>M3 · Route 1 intake</b></td><td>upload → profile → mapping UI → entity worklist → validation → commit boundary</td><td>a real CSV becomes committed fact rows; the batch rolls back as a unit; reject report downloads</td></tr>
       <tr><td><b>M4 · Zone job queue</b></td><td>§13 end to end: queues, workers, window versioning, compare API</td><td>enqueue a field → new variability_window version; recompute → both versions comparable</td></tr>
       <tr><td><b>M5 · Serving contract</b></td><td>the one server-side query API for the Seed Selector (join + variability + PD filters at source)</td><td>the fig-4 fan-out row returns from one request, no client-side join</td></tr>
       <tr><td><b>M6 · Route 2 inject</b></td><td>scheduled runner, service identity, template reuse, idempotency, DLQ</td><td>a dropped file loads unattended; a re-drop doesn't double-load; a bad file leaves nothing behind</td></tr>
-      <tr><td><b>M7 · Production hardening</b></td><td>backups + restore drill, WAF, rotation, pgAudit, dashboards/alarms, DR tabletop</td><td>one silo restored from backup on stage; alarm fires on a killed backup job</td></tr>
+      <tr><td><b>M7 · Production hardening</b></td><td>backups + restore drill, WAF, rotation, pgAudit, dashboards/alarms, DR tabletop</td><td>one silo restored from backup in sandbox; alarm fires on a killed backup job</td></tr>
       <tr><td><b>M8 · Pilot</b></td><td>first real grower onboarded end to end (Route 1 → zones → serving API)</td><td>the grower's own data answers a fig-4 query in production</td></tr>
       <tr><td><b>Phase 2 gate</b></td><td>governance doc signed (cohort threshold, audit policy, owners) — <i>then</i> the F gate is built</td><td>—</td></tr>
     </tbody>
@@ -521,7 +520,7 @@ metric_definition              ingest_row   (raw JSONB · error)
       <b>Code &amp; correctness</b>
       <ul class="check">
         <li>Reviewed and merged; unit + integration tests pass in CI (integration = real Postgres/PostGIS, not mocks, for anything touching the silo).</li>
-        <li>Migrations applied across <b>all</b> stage silos by the catalog job — not by hand.</li>
+        <li>Migrations applied across <b>all</b> sandbox silos by the catalog job — not by hand.</li>
         <li>Idempotency and rollback demonstrated where applicable (re-run a batch, re-deliver a message — no double data).</li>
         <li>Tenant isolation asserted by a test: a request with grower A's identity against grower B's resource returns 403 and touches no silo.</li>
       </ul>
@@ -534,7 +533,7 @@ metric_definition              ingest_row   (raw JSONB · error)
         <li>Provenance verifiable: any committed row traces to <code>batch_id</code> → run → file/job → actor in one query.</li>
         <li>Cost tagged: new resources carry the tagging standard so Cost Explorer attributes them.</li>
         <li>Load-checked at representative volume (an LFG-sized file / a full-grower window roll), not toy data.</li>
-        <li>Demoed on stage with real-shaped data; this design doc updated if behaviour diverged from it.</li>
+        <li>Demoed in sandbox with real-shaped data; this design doc updated if behaviour diverged from it.</li>
       </ul>
     </div>
   </div>
@@ -657,7 +656,7 @@ const P = {
   dedicatedHost: 95,                   // db.t4g.medium Multi-AZ per top-tier grower
   gbRds: 0.08, gbS3: 0.023,            // storage $/GB-mo (gp3 / S3 standard)
   secretsPerGrower: 0.8,               // 2 secrets × $0.40
-  envFactor: { 1: 0, 2: 0.4, 3: 0.6 }  // stage 40%, dev 20% of prod base
+  envFactor: { 1: 0, 2: 0.4 }           // sandbox ≈ 40% of prod base
 };
 const $ = id => document.getElementById(id);
 function fmt(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
@@ -677,7 +676,7 @@ function calc() {
   const store = g * gb * (0.4 * P.gbRds + 1.6 * P.gbS3);
   const sec = g * P.secretsPerGrower + poolHosts * 10;
   const prod = base + pool + dedC + store + sec;
-  const envC = base * (P.envFactor[envs] || 0) + (envs > 1 ? 150 : 0); // small RDS/dev extras
+  const envC = base * (P.envFactor[envs] || 0) + (envs > 1 ? 150 : 0); // sandbox RDS
   const total = prod + envC;
   $("c-base").textContent = fmt(base);
   $("c-pooln").textContent = poolHosts; $("c-pool").textContent = fmt(pool);

@@ -427,7 +427,7 @@ rule "monthly-cold"  { prefix = "monthly/"
       <rect class="box" x="745" y="88" width="180" height="30" rx="7"/><text class="s" x="835" y="107" text-anchor="middle">lint · unit tests · audit</text>
       <rect class="box" x="745" y="126" width="180" height="30" rx="7"/><text class="s" x="835" y="145" text-anchor="middle">docker build — SHA tag</text>
       <rect class="box" x="745" y="164" width="180" height="30" rx="7"/><text class="s" x="835" y="183" text-anchor="middle">push to ECR (scan)</text>
-      <rect class="box" x="745" y="202" width="180" height="30" rx="7"/><text class="s" x="835" y="221" text-anchor="middle">staging deploy + smoke</text>
+      <rect class="box" x="745" y="202" width="180" height="30" rx="7"/><text class="s" x="835" y="221" text-anchor="middle">sandbox deploy + smoke</text>
       <rect class="box" x="745" y="240" width="180" height="30" rx="7"/><text class="s" x="835" y="259" text-anchor="middle">approve → prod rollout</text>
       <path class="ln" d="M835 80 V85" marker-end="url(#arr-en)"/><path class="ln" d="M835 118 V123" marker-end="url(#arr-en)"/><path class="ln" d="M835 156 V161" marker-end="url(#arr-en)"/><path class="ln" d="M835 194 V199" marker-end="url(#arr-en)"/><path class="ln" d="M835 232 V237" marker-end="url(#arr-en)"/>
 
@@ -566,15 +566,15 @@ rule "monthly-cold"  { prefix = "monthly/"
         <li><b>Terraform owns all infrastructure</b> — VPC, EKS, RDS, S3 lifecycle, WAF, Route 53. State in S3 with DynamoDB locking; the AWS console is read-only.</li>
         <li><b>Kubernetes manifests (Helm) live in the same repo</b> — reviewed and versioned like any code.</li>
         <li><b>School onboarding is a pipeline job</b>, not a checklist: create DB + user + secret, run migrations, insert the catalog row.</li>
-        <li><b>Same modules for prod, staging and the DR region</b> — only tfvars differ. This is what makes the §8 runbook a variable change, not a rebuild-from-memory.</li>
+        <li><b>Same modules for production, sandbox and the DR region</b> — only tfvars differ. This is what makes the §8 runbook a variable change, not a rebuild-from-memory.</li>
       </ul>
     </div>
     <div class="panel">
       <b>Environments</b>
       <ul class="check">
-        <li><b>dev</b> — docker-compose (Postgres + app) on the laptop; free.</li>
-        <li><b>staging</b> — scaled-down copy: single-AZ RDS, spot nodes, two demo schools. Auto-deployed on every merge.</li>
-        <li><b>prod</b> — multi-AZ everything; changes arrive only through the pipeline's manual gate.</li>
+        <li><b>Two cloud environments only.</b> Local dev is docker-compose on the laptop — free, and not a deployed environment.</li>
+        <li><b>sandbox</b> — prod-shaped but scaled down: single-AZ RDS, spot nodes, two demo schools. Auto-deployed on every merge; also where restore drills and demos run.</li>
+        <li><b>production</b> — multi-AZ everything; changes arrive only through the pipeline's manual gate.</li>
         <li><b>DR</b> — no standing environment: code (git) + replicated images (ECR) + replicated backups (S3) are the whole system, so standing cost is near zero.</li>
       </ul>
     </div>
@@ -584,7 +584,7 @@ rule "monthly-cold"  { prefix = "monthly/"
     <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Push / PR</b><span>lint, unit tests, <code>npm audit</code> run in CI — red blocks the merge.</span></div>
     <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Build</b><span>Docker image tagged with the git SHA — never <code>latest</code>; rollback needs exact tags.</span></div>
     <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Publish</b><span>Push to ECR; scan-on-push blocks critical CVEs.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Staging</b><span>Auto-deploy; migrations loop the catalog per school; smoke suite runs.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Sandbox</b><span>Auto-deploy; migrations loop the catalog per school; smoke suite runs.</span></div>
     <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>Approve</b><span>One-click manual gate — the only human step between merge and prod.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Prod</b><span>Rolling deploy; rollback = <code>kubectl rollout undo</code> (§8).</span></div>
   </div>
@@ -611,7 +611,7 @@ rule "monthly-cold"  { prefix = "monthly/"
       <tr><td>S3 backups (+ Glacier)</td><td>$3</td><td>$15</td><td>$50</td></tr>
       <tr><td>Secrets Manager</td><td>$3</td><td>$25</td><td>$85</td></tr>
       <tr><td>CloudWatch · Route 53 · ECR</td><td>$10</td><td>$27</td><td>$60</td></tr>
-      <tr><td>Staging environment</td><td>—</td><td>$80</td><td>$120</td></tr>
+      <tr><td>Sandbox environment</td><td>—</td><td>$80</td><td>$120</td></tr>
       <tr><td><b>Total ≈</b></td><td><b>$230 / mo (~₹19k)</b></td><td><b>$640 / mo (~₹54k)</b></td><td><b>$1,810 / mo (~₹1.5L)</b></td></tr>
       <tr><td><b>Per school ≈</b></td><td><span class="tag a">$46</span></td><td><span class="tag b">$13</span></td><td><span class="tag g">$9</span></td></tr>
     </tbody>
@@ -624,7 +624,7 @@ rule "monthly-cold"  { prefix = "monthly/"
         <li><b>Database-per-school ≠ instance-per-school</b> — many silo databases share one RDS instance while keeping option E's isolation (separate DB + separate credentials). Promote heavy schools to their own instance only when they earn it.</li>
         <li><b>Savings Plans / reserved instances</b> once load is steady — 30–40% off EC2 + RDS.</li>
         <li><b>Graviton (t4g / m6g / r6g)</b> — already assumed in the table, ~20% cheaper than x86.</li>
-        <li><b>Spot nodes</b> for staging and the backup CronJobs.</li>
+        <li><b>Spot nodes</b> for sandbox and the backup CronJobs.</li>
         <li><b>VPC endpoints for S3 / ECR</b> — cuts NAT data-processing charges.</li>
         <li><b>The §7 lifecycle rules are a cost control too</b> — hourlies die at 10 days, Glacier after 60.</li>
       </ul>
@@ -1010,7 +1010,7 @@ rule "monthly-cold"  { prefix = "monthly/"
       <rect class="box" x="745" y="88" width="180" height="30" rx="7"/><text class="s" x="835" y="107" text-anchor="middle">lint · unit tests · audit</text>
       <rect class="box" x="745" y="126" width="180" height="30" rx="7"/><text class="s" x="835" y="145" text-anchor="middle">docker build — SHA tag</text>
       <rect class="box" x="745" y="164" width="180" height="30" rx="7"/><text class="s" x="835" y="183" text-anchor="middle">ECR push (scan)</text>
-      <rect class="box" x="745" y="202" width="180" height="30" rx="7"/><text class="s" x="835" y="221" text-anchor="middle">staging deploy + smoke</text>
+      <rect class="box" x="745" y="202" width="180" height="30" rx="7"/><text class="s" x="835" y="221" text-anchor="middle">sandbox deploy + smoke</text>
       <rect class="box" x="745" y="240" width="180" height="30" rx="7"/><text class="s" x="835" y="259" text-anchor="middle">मंजुरी → prod rollout</text>
       <path class="ln" d="M835 80 V85" marker-end="url(#arr-mr)"/><path class="ln" d="M835 118 V123" marker-end="url(#arr-mr)"/><path class="ln" d="M835 156 V161" marker-end="url(#arr-mr)"/><path class="ln" d="M835 194 V199" marker-end="url(#arr-mr)"/><path class="ln" d="M835 232 V237" marker-end="url(#arr-mr)"/>
 
@@ -1148,15 +1148,15 @@ rule "monthly-cold"  { prefix = "monthly/"
         <li><b>सगळी infrastructure Terraform च्या मालकीची</b> — VPC, EKS, RDS, S3 lifecycle, WAF, Route 53. State S3 मध्ये, DynamoDB locking सह; AWS console फक्त वाचण्यासाठी.</li>
         <li><b>Kubernetes manifests (Helm) त्याच repo मध्ये</b> — इतर code प्रमाणेच review व version होतात.</li>
         <li><b>शाळेचे onboarding हा pipeline job</b>, checklist नाही: DB + user + secret तयार, migrations, catalog मध्ये नोंद.</li>
-        <li><b>prod, staging व DR region साठी तेच modules</b> — फक्त tfvars वेगळे. यामुळेच §8 चा runbook म्हणजे एक variable बदल — आठवणीतून पुनर्बांधणी नाही.</li>
+        <li><b>production, sandbox व DR region साठी तेच modules</b> — फक्त tfvars वेगळे. यामुळेच §8 चा runbook म्हणजे एक variable बदल — आठवणीतून पुनर्बांधणी नाही.</li>
       </ul>
     </div>
     <div class="panel">
       <b>Environments</b>
       <ul class="check">
-        <li><b>dev</b> — laptop वर docker-compose (Postgres + app); मोफत.</li>
-        <li><b>staging</b> — छोटी प्रतिकृती: single-AZ RDS, spot nodes, दोन demo शाळा. प्रत्येक merge वर आपोआप deploy.</li>
-        <li><b>prod</b> — सर्व काही multi-AZ; बदल फक्त pipeline च्या manual gate मधूनच येतात.</li>
+        <li><b>फक्त दोनच cloud environments.</b> Local dev म्हणजे laptop वरचे docker-compose — मोफत, deploy केलेले environment नव्हे.</li>
+        <li><b>sandbox</b> — production च्याच आकाराची पण छोटी प्रतिकृती: single-AZ RDS, spot nodes, दोन demo शाळा. प्रत्येक merge वर आपोआप deploy; restore drills व demos इथेच चालतात.</li>
+        <li><b>production</b> — सर्व काही multi-AZ; बदल फक्त pipeline च्या manual gate मधूनच येतात.</li>
         <li><b>DR</b> — कायमस्वरूपी environment नाही: code (git) + replicate झालेल्या images (ECR) + बॅकअप (S3) हीच संपूर्ण system — त्यामुळे कायम खर्च जवळपास शून्य.</li>
       </ul>
     </div>
@@ -1166,7 +1166,7 @@ rule "monthly-cold"  { prefix = "monthly/"
     <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Push / PR</b><span>CI मध्ये lint, unit tests, <code>npm audit</code> — लाल असल्यास merge अडते.</span></div>
     <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Build</b><span>Docker image ला git SHA चा tag — कधीही <code>latest</code> नाही; rollback ला नेमके tags लागतात.</span></div>
     <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Publish</b><span>ECR वर push; scan-on-push गंभीर CVEs अडवते.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Staging</b><span>आपोआप deploy; migrations catalog फिरून प्रत्येक शाळेवर; smoke suite चालते.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Sandbox</b><span>आपोआप deploy; migrations catalog फिरून प्रत्येक शाळेवर; smoke suite चालते.</span></div>
     <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>मंजुरी</b><span>एक-क्लिक manual gate — merge आणि prod मधली एकमेव मानवी पायरी.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Prod</b><span>Rolling deploy; rollback = <code>kubectl rollout undo</code> (§8).</span></div>
   </div>
@@ -1193,7 +1193,7 @@ rule "monthly-cold"  { prefix = "monthly/"
       <tr><td>S3 बॅकअप (+ Glacier)</td><td>$3</td><td>$15</td><td>$50</td></tr>
       <tr><td>Secrets Manager</td><td>$3</td><td>$25</td><td>$85</td></tr>
       <tr><td>CloudWatch · Route 53 · ECR</td><td>$10</td><td>$27</td><td>$60</td></tr>
-      <tr><td>Staging environment</td><td>—</td><td>$80</td><td>$120</td></tr>
+      <tr><td>Sandbox environment</td><td>—</td><td>$80</td><td>$120</td></tr>
       <tr><td><b>एकूण ≈</b></td><td><b>$230 / महिना (~₹१९ हजार)</b></td><td><b>$640 / महिना (~₹५४ हजार)</b></td><td><b>$1,810 / महिना (~₹१.५ लाख)</b></td></tr>
       <tr><td><b>प्रति शाळा ≈</b></td><td><span class="tag a">$46</span></td><td><span class="tag b">$13</span></td><td><span class="tag g">$9</span></td></tr>
     </tbody>
@@ -1206,7 +1206,7 @@ rule "monthly-cold"  { prefix = "monthly/"
         <li><b>Database-per-school ≠ instance-per-school</b> — अनेक शाळांचे silo databases एकाच RDS instance वर राहतात, तरी पर्याय E चे isolation कायम (वेगळा DB + वेगळी credentials). मोठ्या शाळांना गरज पडेल तेव्हाच स्वतंत्र instance.</li>
         <li><b>Savings Plans / reserved instances</b> — वापर स्थिर झाल्यावर EC2 + RDS वर ३०–४०% सूट.</li>
         <li><b>Graviton (t4g / m6g / r6g)</b> — टेबलात आधीच गृहीत, x86 पेक्षा ~२०% स्वस्त.</li>
-        <li><b>Spot nodes</b> — staging व backup CronJobs साठी.</li>
+        <li><b>Spot nodes</b> — sandbox व backup CronJobs साठी.</li>
         <li><b>S3 / ECR साठी VPC endpoints</b> — NAT चा data-processing खर्च कमी होतो.</li>
         <li><b>§7 चे lifecycle नियम हेही खर्च-नियंत्रणच</b> — तासागणिक १० दिवसांत जातात, ६० दिवसांनी Glacier.</li>
       </ul>
