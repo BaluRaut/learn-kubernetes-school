@@ -71,7 +71,7 @@
   <rect x="1900" y="780" width="450" height="200" rx="18" fill="#ffffff" stroke="#326CE5" stroke-width="4"/>
   <text x="2125" y="850" font-size="38" font-weight="bold" fill="#0f172a" text-anchor="middle">CronJobs</text>
   <text x="2125" y="905" font-size="32" fill="#334155" text-anchor="middle">per-silo backups · window roll</text>
-  <text x="2125" y="950" font-size="32" fill="#334155" text-anchor="middle">scheduler · PA/FVA loaders</text>
+  <text x="2125" y="950" font-size="32" fill="#334155" text-anchor="middle">scheduler · per-LFG zone batch</text>
 
   <!-- 6. SQS inside-ish bottom of EKS -->
   <rect x="1410" y="1080" width="940" height="300" rx="18" fill="#fffbeb" stroke="#d97706" stroke-width="5"/>
@@ -136,8 +136,8 @@
   <text x="3560" y="700" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">AgInsights</text>
   <text x="3560" y="745" font-size="25" fill="#334155" text-anchor="middle">zones / field variability</text>
   <text x="3560" y="788" font-size="27" fill="#334155" text-anchor="middle">by field (FVA)</text>
-  <text x="3560" y="870" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">Product Analyzer</text>
-  <text x="3560" y="915" font-size="27" fill="#334155" text-anchor="middle">variety + performance</text>
+  <text x="3560" y="870" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">Grower files</text>
+  <text x="3560" y="915" font-size="27" fill="#334155" text-anchor="middle">field + variety uploads</text>
   <text x="3560" y="1000" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">scheduled batch per</text>
   <text x="3560" y="1045" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">grower · login-triggered</text>
   <text x="3560" y="1090" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">for new fields · never</text>
@@ -148,10 +148,10 @@
 
   <!-- ===================== 9. Phase 2 gate ===================== -->
   <rect x="1350" y="1560" width="2370" height="420" rx="28" fill="#fef2f2" stroke="#dc2626" stroke-width="6" stroke-dasharray="24 18"/>
-  <text x="1420" y="1650" font-size="44" font-weight="bold" fill="#dc2626">Phase 2 — deferred: the F gate</text>
-  <text x="1420" y="1730" font-size="36" fill="#334155">aggregation gate: minimum cohort in code · every export audited · no row-level egress</text>
-  <text x="1420" y="1790" font-size="36" fill="#334155">→ shared benchmark / model layer → recommendations returned into each silo</text>
-  <text x="1420" y="1880" font-size="36" font-weight="bold" fill="#dc2626">governance signed before any code — until then this box does not exist</text>
+  <text x="1420" y="1650" font-size="44" font-weight="bold" fill="#dc2626">No cross-LFG data path</text>
+  <text x="1420" y="1730" font-size="36" fill="#334155">no service, job or credential reads two silos — isolation is structural, not policy</text>
+  <text x="1420" y="1790" font-size="36" fill="#334155">any future cross-LFG benchmarking = a separate governance decision + design</text>
+  <text x="1420" y="1880" font-size="36" font-weight="bold" fill="#dc2626">out of scope for this RFC — the boundary stays closed</text>
   <circle cx="1350" cy="1560" r="48" fill="#dc2626"/>
   <text x="1350" y="1580" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">9</text>
   <line x1="2910" y1="1380" x2="2910" y2="1550" stroke="#dc2626" stroke-width="7" stroke-dasharray="16 12" marker-end="url(#arrow)"/>

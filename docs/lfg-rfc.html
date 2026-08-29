@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RFC — LFG Platform: Architecture, Phases &amp; Delivery Backlog</title>
-<meta name="description" content="RFC: Cropwise Base (login/orgs/properties/fields) + AgInsights (FVA/zones) + Seed Selector UI feeding the LFG platform. Phase 1 (E) and Phase 2 (F) steps, NestJS tech stack with alternatives, and a sequenced Jira backlog.">
+<title>RFC — LFG Platform (Large Farm Grower)</title>
+<meta name="description" content="Clean RFC for the LFG platform: variety layer per country/crop/LFG, upload-UI schema mapping, AgInsights FVA/zone batch pipeline stored by season windows, Cropwise Base reference-IDs only, per-LFG routes and personas.">
 <style>
   :root {
     --bg:#f8fafc; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
@@ -38,8 +38,9 @@
   .tag.r { background:color-mix(in srgb,var(--red) 12%,transparent); color:var(--red); }
   .tag.a { background:color-mix(in srgb,var(--amber) 15%,transparent); color:var(--amber); }
   .tag.b { background:color-mix(in srgb,var(--blue) 12%,transparent); color:var(--blue); }
-  .tag.v { background:color-mix(in srgb,var(--violet) 12%,transparent); color:var(--violet); }
   code { font-family:Menlo,Consolas,monospace; font-size:.86em; background:color-mix(in srgb,var(--ink) 8%,transparent); padding:1px 6px; border-radius:6px; }
+  pre { background:#0f172a; color:#e2e8f0; border-radius:12px; padding:14px 16px; overflow-x:auto; font-size:.82rem; line-height:1.5; margin:10px 0; }
+  pre code { background:none; padding:0; }
   .flow { display:flex; flex-wrap:wrap; margin:12px 0; }
   .fstep { flex:1 1 160px; min-width:160px; background:var(--card); border:1.5px solid var(--line); border-top:5px solid var(--c,var(--blue)); border-radius:12px; padding:12px 14px; margin:6px; position:relative; }
   .fstep b { display:block; font-size:.9rem; }
@@ -47,14 +48,17 @@
   .fstep .n { position:absolute; top:-13px; left:-8px; width:26px; height:26px; border-radius:50%; background:var(--c,var(--blue)); color:#fff; font-size:.8rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
   ol.steps { padding-left:24px; }
   ol.steps li { margin:8px 0; }
-  ol.steps li b { color:var(--ink); }
   ol.steps li small { color:var(--muted); display:block; }
+  ul.check { list-style:none; }
+  ul.check li { padding:6px 0 6px 28px; position:relative; border-bottom:1px dashed var(--line); font-size:.93rem; }
+  ul.check li:last-child { border-bottom:none; }
+  ul.check li::before { content:"✔"; position:absolute; left:2px; color:var(--green); font-weight:800; }
   .callout { border-left:5px solid var(--amber); background:color-mix(in srgb,var(--amber) 8%,transparent); border-radius:10px; padding:12px 16px; margin:12px 0; font-size:.92rem; }
   .callout.green { border-color:var(--green); background:color-mix(in srgb,var(--green) 8%,transparent); }
+  .callout.red { border-color:var(--red); background:color-mix(in srgb,var(--red) 8%,transparent); }
   .epic { border-left:6px solid var(--c,var(--blue)); }
-  .epic h3 { font-size:1.05rem; margin-bottom:4px; }
-  .epic .muted { color:var(--muted); font-size:.85rem; }
-  .ac { margin:4px 0 0 0; padding-left:18px; font-size:.85rem; color:var(--muted); }
+  .epic h3 { font-size:1.02rem; margin-bottom:4px; }
+  .ac { margin:4px 0 0 0; padding-left:18px; font-size:.84rem; color:var(--muted); }
   .ac li { margin:2px 0; }
   footer { text-align:center; color:var(--muted); font-size:.85rem; padding:28px 0 48px; }
 </style>
@@ -63,282 +67,330 @@
 <div class="wrap">
 
 <header class="hero">
-  <h1>RFC — LFG Platform: Architecture, Phases &amp; Delivery Backlog</h1>
+  <h1>RFC — LFG Platform (Large Farm Grower)</h1>
   <div class="meta">
-    <span class="chip">Status <b>Draft v3.1 — ready for review</b></span>
-    <span class="chip">Decision <b>Phase 1 = E · Phase 2 = F (deferred)</b></span>
-    <span class="chip">Backend <b>NestJS</b></span>
-    <span class="chip">Companions <b><a href="architecture-lfg.html">engineering design</a> · <a href="LFG%20Data%20Architecture.html">RFC figures</a></b></span>
+    <span class="chip">Status <b>Draft v4 — clean rewrite (descoped &amp; clarified)</b></span>
+    <span class="chip">Backend <b>NestJS</b> · UI <b>React (in Seed Selector)</b></span>
+    <span class="chip">Isolation <b>silo per LFG · no cross-LFG data path</b></span>
+    <span class="chip">Supersedes <b>v3.x (Product Analyzer removed; option lettering dropped)</b></span>
   </div>
 </header>
 
 <nav class="toc">
-  <a href="#context">1 Context</a> <a href="#integration">2 Ecosystem integration</a>
-  <a href="#phase1">3 Phase 1 steps</a> <a href="#phase2">4 Phase 2 steps</a>
-  <a href="#stack">5 Tech stack + alternatives</a> <a href="#backlog">6 Jira backlog (sequenced)</a>
-  <a href="#challenges">7 Anticipated challenges</a>
+  <a href="#summary">1 Summary</a> <a href="#boundaries">2 Systems &amp; boundaries</a>
+  <a href="#model">3 Data model</a> <a href="#ingest">4 Upload UI ingest</a>
+  <a href="#zones">5 Zones / FVA pipeline</a> <a href="#tenancy">6 Routes, tenancy &amp; personas</a>
+  <a href="#stack">7 Tech stack</a> <a href="#milestones">8 Milestones</a>
+  <a href="#backlog">9 Backlog</a> <a href="#risks">10 Risks</a> <a href="#questions">11 Open questions</a>
 </nav>
 
 <!-- ============================================================ 1 -->
-<section id="context">
-  <h2><span class="secnum">1</span> Context and goal</h2>
-  <p class="lead">Seed Selector today joins Product Analyzer and FVA data <b>in the browser</b> —
-  two key spaces reconciled by hand, filters applied after the response arrives. A real Large Farm
-  Grower's volumes break that. The goal: one standalone LFG service (UI + backend) with one query
-  contract, per-grower isolation from day one, and every external system consumed as a
-  <b>scheduled, one-way, inbound feed</b> — never called at request time.</p>
-  <p><img src="images/11-lfg-architecture-4k.png" alt="LFG platform architecture overview" style="width:100%;height:auto;border-radius:14px;border:1px solid var(--line)"></p>
+<section id="summary">
+  <h2><span class="secnum">1</span> Summary</h2>
+  <p class="lead">A standalone LFG platform (UI inside Seed Selector + NestJS backend) for large
+  farm growers. Each LFG gets its own data silo and its own route in Seed Selector
+  (<code>…/bgf</code>, <code>…/kio</code>). The LFG uploads its <b>field + variety data</b> through a
+  mapping UI; the platform then runs <b>AgInsights batch jobs</b> to compute <b>FVA / zones</b> per
+  field and stores every historical season window. Varieties are managed as a
+  <b>layer per country / crop / LFG</b>. Cropwise Base provides login and field identity —
+  <b>we store only its reference IDs, never field geometry</b>. LFG admins control who sees what
+  via <b>personas</b>. No data ever crosses between LFGs.</p>
 </section>
 
 <!-- ============================================================ 2 -->
-<section id="integration">
-  <h2><span class="secnum">2</span> Ecosystem integration — Cropwise Base → AgInsights → Seed Selector UI</h2>
-
+<section id="boundaries">
+  <h2><span class="secnum">2</span> Systems &amp; boundaries</h2>
   <div class="flow">
-    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Cropwise Base</b><span>the platform's source of truth for <b>login, orgs, properties, fields, user profiles, licenses</b>. LFG re-implements none of it.</span></div>
-    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Identity path</b><span>user logs into <b>Seed Selector</b> via Cropwise Base → LFG verifies the token (JWKS) → membership table maps <code>sub</code> → grower + role, checked every request.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Master-data sync</b><span>orgs / properties / fields sync <b>inbound on a schedule</b> into the control-plane registry — field identity comes from Cropwise Base, aliases map grower file names onto it.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>AgInsights (FVA / zones)</b><span>zones &amp; field variability <b>by field</b>, fetched by zone jobs: a <b>scheduled batch per grower</b> + a <b>login-triggered</b> run for that grower's newly created fields.</span></div>
-    <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Grower data in</b><span>variety-performance records (the <code>bgf-records.json</code> shape) via <b>UI upload (Route 1)</b> or <b>direct inject from the grower's database (Route 2)</b>.</span></div>
-    <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Seed Selector UI out</b><span>one server-side query contract: join + variability + PD filters at the source. The browser renders; it never joins.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Cropwise Base</b><span>login (JWKS-verified token) + identity for orgs/properties/fields. LFG stores <b>reference IDs only</b> (<code>sysFieldId</code>, <code>orgId</code>) — no field geometry, no mirrored master data.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">2</span><b>LFG (the grower)</b><span>provides field data <b>with crop variety</b> — file uploads through the mapping UI. Their data, their silo.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>AgInsights</b><span>batch job API returning <b>FVA + zones per field</b> (imagery-derived variability). Called by our workers on schedule/trigger — never during a user request.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">4</span><b>Seed Selector UI</b><span>hosts the LFG experience on a <b>dynamic route per LFG</b> (<code>/bgf</code>, <code>/kio</code>). Renders; never joins.</span></div>
   </div>
-
-  <div class="panel">
-    <table>
-      <thead><tr><th>System</th><th>Direction</th><th>Cadence</th><th>What crosses</th></tr></thead>
-      <tbody>
-        <tr><td><b>Cropwise Base</b> — login/orgs/properties/fields</td><td><span class="tag b">inbound</span></td><td>token per request (verify only) · master-data sync scheduled</td><td>identity claims; org/property/field records → control plane</td></tr>
-        <tr><td><b>AgInsights</b> — FVA / zones per field</td><td><span class="tag b">inbound</span></td><td>batch per grower + login-triggered (new fields)</td><td>zone geometries + variability metrics → immutable window vintages</td></tr>
-        <tr><td><b>Product Analyzer</b> — variety + performance</td><td><span class="tag b">inbound</span></td><td>scheduled</td><td>variety/performance records + divergence report (Q4)</td></tr>
-        <tr><td><b>Grower uploads / DB</b></td><td><span class="tag b">inbound</span></td><td>ad hoc (Route 1) · scheduled (Route 2)</td><td>bgf-shaped rows through mapping → validation → <code>batch_id</code> commit</td></tr>
-        <tr><td><b>Seed Selector UI</b></td><td><span class="tag g">serving</span></td><td>per request</td><td>query results from ONE silo only; tenant-guard enforced</td></tr>
-        <tr><td><b>Anything cross-grower</b></td><td><span class="tag r">blocked</span></td><td>—</td><td>nothing until the Phase 2 gate exists (governance first)</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="callout"><b>The one rule that holds it together:</b> no user request is ever
-  <i>resolved</i> by calling Cropwise Base, AgInsights or PA live. All data movement is inbound and
-  asynchronous. <b>One precise distinction:</b> the Seed Selector login trigger does not fetch
-  anything in the request path — it only <i>enqueues</i> a zone job (fire-and-forget, at-least-once,
-  can never block or slow login); the fetch itself happens on the worker, exactly like the scheduled
-  batch. So "login-triggered" is a <i>scheduling signal</i>, not a runtime dependency — isolation
-  level 3 (neither data <i>nor query patterns</i> leave at request time) holds by construction.</div>
+  <table>
+    <thead><tr><th>Boundary rule</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag b">Reference-ID only</span></td><td>Cropwise Base remains the owner of field identity and geometry. LFG keeps <code>cb_field_ref</code> / <code>cb_org_ref</code> and resolves display/geometry from CB when the UI needs it — nothing to sync, nothing to drift.</td></tr>
+      <tr><td><span class="tag b">Inbound &amp; async</span></td><td>AgInsights is called by batch workers only. A user request never waits on an external system.</td></tr>
+      <tr><td><span class="tag r">No cross-LFG path</span></td><td>No service, job or credential reads two silos. Any future cross-LFG benchmarking is a separate governance decision + design — explicitly out of scope here.</td></tr>
+    </tbody>
+  </table>
 </section>
 
 <!-- ============================================================ 3 -->
-<section id="phase1">
-  <h2><span class="secnum">3</span> Phase 1 — clean steps (option E)</h2>
-  <p class="lead">Standalone LFG service on Seeds infra, silo per grower from day one. Each step is
-  releasable; nothing later reworks anything earlier. Phase 1 is deliberately split into
-  <b>two milestones</b> so it doesn't read (or plan) as one monolith:</p>
+<section id="model">
+  <h2><span class="secnum">3</span> Data model — variety layer, fields, zone windows</h2>
+  <p class="lead">The chain is: <b>variety → field → zones/FVA</b>. Varieties are a managed layer per
+  <b>country / crop / LFG</b>; every variety record points at a field (<code>cb_field_ref</code>);
+  every field accumulates zone/FVA results per <b>season window</b>. The reference dataset for the
+  shape is <code>bgf-records.json</code> (fetched and profiled: 391 records, 2023–2026, 6 regions,
+  65 varieties).</p>
+
   <div class="grid2">
     <div class="panel">
-      <b><span class="tag g">Milestone P1-MVP · pilot-ready</span></b>
-      <p style="font-size:.9rem;color:var(--muted);margin-top:6px">Steps 1–7 (epics A–F): foundations,
-      identity, sync, model, <b>Route 1 only</b>, zones, serving contract — enough to run the pilot
-      grower end to end with UI upload. ~95 points.</p>
+      <b>Per-LFG silo (PostgreSQL)</b>
+      <pre><code>variety_layer      (country, crop, lfg-scoped)
+  variety, variety_tags[], catalog_ref?
+field_ref
+  cb_field_ref (sysFieldId)  ← identity from CB
+  cb_org_ref, display_name, region, area_ha
+  match_meta (matched_by, confidence)
+field_season_variety           -- variety ⟷ field per season
+  field_ref, season_year, variety
+fact_rows                      -- metrics as rows, batch_id on each
+  (field_ref, season_year, metric_key, value, batch_id)
+zone_window                    -- one row per field × window
+  field_ref, label ("2018-2023"),
+  date_start, date_end         -- e.g. 15 Apr 2026 → 15 Oct 2026
+  vxc, heterogeneity, consistency,
+  zone_count, paf_spread, ndvi_p10..p90,
+  is_record_year, geometry_s3_key, batch_id</code></pre>
     </div>
     <div class="panel">
-      <b><span class="tag a">Milestone P1-PROD · production-hardening</span></b>
-      <p style="font-size:.9rem;color:var(--muted);margin-top:6px">Steps 8–9 (epics G–I): Route 2
-      <i>only after the pilot validates Route 1's templates</i> (unless a signed business requirement
-      says otherwise), then hardening + pilot sign-off. ~35 points.</p>
+      <b>Per-LFG S3 prefixes</b>
+      <pre><code>s3://lfg-&lt;id&gt;/raw/&lt;batch&gt;.csv      -- uploads, versioned
+s3://lfg-&lt;id&gt;/fva-zones/
+  &lt;cb_field_ref&gt;-&lt;window&gt;.json     -- full zone dump:
+                                      geometries + per-zone
+                                      PAF + NDVI percentiles</code></pre>
+      <b style="display:block;margin-top:8px">Storage split — confirming your S3 idea</b>
+      <p style="font-size:.88rem;color:var(--muted);margin-top:4px">Yes — S3 for zone storage is the
+      right call, and your data already works this way (<code>geometryFile:
+      "fva-zones/&lt;sysFieldId&gt;-2018-2023.json"</code>). The rule: <b>Postgres holds what you
+      filter/sort on</b> (vxc, pafSpread, NDVI percentiles, window dates — small, indexed rows);
+      <b>S3 holds the heavy immutable payloads</b> (zone geometries, full AgInsights responses, raw
+      uploads). Benefits: cheap versioned storage, lifecycle rules = the backup policy,
+      replay-from-raw recovery — and PostGIS stays optional until real spatial queries appear.</p>
     </div>
   </div>
+
   <div class="panel">
-    <ol class="steps">
-      <li><b>Foundations</b> — Terraform: VPC, EKS, RDS, S3, SQS, ECR; two environments (sandbox · production); CI/CD with a manual gate before prod.<small>Exit: a hello-world deploys to sandbox through the pipeline.</small></li>
-      <li><b>Identity &amp; control plane</b> — Cropwise Base JWKS verification; grower registry; memberships (<code>sub</code> → grower, role); tenant guard on <code>X-Grower-Id</code>; silo provisioning automation (DB → user → migrations → secret → registry row).<small>Exit: non-member gets 403; "create grower" produces a working silo.</small></li>
-      <li><b>Master-data sync</b> — scheduled inbound job: Cropwise Base orgs/properties/fields → control plane; canonical field identity established.<small>Exit: a field created in Cropwise Base appears in LFG without manual entry.</small></li>
-      <li><b>Canonical model</b> — farm/field/field_season + <code>metric_definition</code> registry (metrics as rows; country-scoped; seeded with the bgf keys) + catalog-driven migrations across silos.<small>Exit: same migration applied to every silo by one command.</small></li>
-      <li><b>Route 1 ingest</b> — upload → profile → mapping UI → entity worklist (<code>entity_alias</code>) → validation → single commit boundary (<code>batch_id</code>) with per-row rejects and batch rollback.<small>Exit: a real bgf file becomes fact rows; rollback removes exactly its rows.</small></li>
-      <li><b>Zones via AgInsights</b> — SQS lanes (interactive/backfill, DLQ); workers fetch FVA/zones per field; immutable <code>variability_window</code> vintages; batch-per-grower scheduler; <b>Seed Selector login trigger for newly created fields</b>.<small>Exit: login → new field zoned while the session is still open.</small></li>
-      <li><b>Serving contract</b> — the one query API for Seed Selector: join + variability + PD filters at source (fig-4 fan-out as a <code>SELECT</code>).<small>Exit: the UI renders the analysis with zero client-side joins.</small></li>
-      <li><b>Route 2 direct inject</b> — scheduled runner, service identity, template reuse, idempotency by file hash, DLQ; grower-database connector.<small>Exit: a dropped file loads unattended; a re-drop doesn't double-load.</small></li>
-      <li><b>Hardening + pilot</b> — backups (PITR + hourly→daily→monthly) with a restore drill, WAF/rotation/pgAudit, dashboards + alarms, DR tabletop; then the first real grower end to end.<small>Exit: pilot grower's own data answers a fig-4 query in production.</small></li>
-    </ol>
+    <b>How a bgf record maps</b>
+    <table>
+      <thead><tr><th>bgf keys</th><th>Lands in</th></tr></thead>
+      <tbody>
+        <tr><td><code>sysFieldId</code>, <code>orgId</code>, <code>field</code>, <code>region</code>, <code>areaHa</code>, <code>sysFieldMatchedBy/Confidence</code></td><td><code>field_ref</code> — CB reference + display metadata + match provenance</td></tr>
+        <tr><td><code>variety</code>, <code>varietyTags</code>, <code>year</code></td><td><code>variety_layer</code> + <code>field_season_variety</code></td></tr>
+        <tr><td><code>yieldPerAc</code>, <code>tuberScore</code>, <code>returnPerAc</code>, <code>solids</code>, soil attributes (<code>ph</code>, <code>cec</code>, <code>omPct</code>, <code>soilP/K</code>, soil-type percentages…), rotation, irrigation, distances</td><td><code>fact_rows</code> — one row per metric, validated by the country/crop registry, stamped <code>batch_id</code></td></tr>
+        <tr><td><code>fva["2018-2023"]</code> → vxc / heterogeneity / consistency, <code>zoneCount</code>, <code>pafSpread</code>, <code>ndviMean.p10–p90</code>, <code>isRecordYear</code></td><td><code>zone_window</code> rows (label + canonical dates)</td></tr>
+        <tr><td><code>fva[..].zones[]</code> (per-zone PAF + NDVI percentiles) + geometry</td><td>S3 <code>fva-zones/&lt;ref&gt;-&lt;window&gt;.json</code>; <code>geometry_s3_key</code> points at it</td></tr>
+        <tr><td><code>productivityByYear</code>, <code>zoneSummary</code>, <code>indicesSource/Status</code>, <code>dataTrust</code></td><td>derived/serving projections — computed from zone_window + S3 dumps, never hand-stored</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.86rem;color:var(--muted)">Window keys in the wild are year-ranges
+    ("2017-2022" … "2021-2026") <i>and</i> the business speaks in date spans ("15 Apr–15 Oct 2026";
+    "12 Oct–15 Jan 2027" for southern-hemisphere seasons). <code>zone_window</code> therefore stores
+    <b>both</b>: the label for display/compat, and canonical <code>date_start/date_end</code> for
+    querying — cross-hemisphere seasons cost nothing.</p>
   </div>
 </section>
 
 <!-- ============================================================ 4 -->
-<section id="phase2">
-  <h2><span class="secnum">4</span> Phase 2 — clean steps (option F, deferred)</h2>
-  <p class="lead">Reads exactly what Phase 1 built. Deferring costs nothing; retrofitting silos onto
-  a pooled store is the migration nobody wants.</p>
+<section id="ingest">
+  <h2><span class="secnum">4</span> Upload UI ingest — file → mapping → submit</h2>
+  <div class="flow">
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Upload</b><span>LFG user uploads CSV/XLSX (presigned S3 PUT; async processing; streamed parsing, bounded memory).</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Profile</b><span>headers + sample rows parsed; types/units inferred.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Map columns</b><span>the UI shows grower columns → canonical fields; the user maps and can save the mapping as a reusable template.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">4</span><b>Resolve</b><span>unknown field/variety names → worklist; fixes saved as aliases (map to <code>cb_field_ref</code> / variety layer).</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>Submit → validate</b><span>user submits for processing; per-row validation against the country/crop metric registry; per-row reject report.</span></div>
+    <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Commit</b><span>transactional chunk commits under one <code>batch_id</code>; FK-safe rollback as a unit; raw file stays in S3 for replay.</span></div>
+  </div>
+  <div class="callout"><b>Scope note:</b> the upload UI is the intake for now. A scheduled
+  direct-inject from the grower's own database can reuse the saved templates later — listed as an
+  open question (§11), not designed here.</div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section id="zones">
+  <h2><span class="secnum">5</span> Zones / FVA pipeline — after the data lands</h2>
+  <ol class="steps">
+    <li><b>Trigger</b> — once field + variety data is committed for an LFG: a <b>batch job per LFG</b> (scheduled) walks its fields; a Seed Selector login also enqueues that LFG's newly added fields (interactive lane). Enqueue-only at request time — the fetch always runs on workers.<small>Idempotency key: (lfg, cb_field_ref, window, method_version).</small></li>
+    <li><b>Call the AgInsights batch API</b> — imagery-derived FVA + zones per field; rate-limited, retried with backoff, responses cached in S3 so retries never re-pay a call.</li>
+    <li><b>Store</b> — full response to <code>s3://lfg-&lt;id&gt;/fva-zones/&lt;ref&gt;-&lt;window&gt;.json</code>; indexed metrics (vxc, heterogeneity, consistency, pafSpread, NDVI percentiles, zone_count) into <code>zone_window</code> with label + canonical dates.</li>
+    <li><b>Keep all history</b> — every window ever computed stays (the bgf sample carries five: 2017-2022 … 2021-2026). Values change per season/request → a re-run <b>supersedes</b>, never edits; "what did zoning say then" is always answerable.</li>
+    <li><b>Serve honestly</b> — every window shows its dates + computed-at; "zoning pending" for new fields is distinct from an error; AgInsights downtime = staleness badge, queued jobs drain on recovery.</li>
+  </ol>
+  <div class="callout green"><b>Same format per crop</b> — the zone/FVA record structure is identical
+  across crops; only values and season windows differ. That is what lets <code>zone_window</code> be
+  one table and the S3 dump one schema — country- and crop-agnostic.</div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section id="tenancy">
+  <h2><span class="secnum">6</span> Routes, tenancy &amp; personas</h2>
+  <div class="grid2">
+    <div class="panel">
+      <b>Dynamic route per LFG</b>
+      <ul class="check">
+        <li>Seed Selector serves each LFG at its own path: <code>…/bgf</code>, <code>…/kio</code> — the slug resolves to an LFG in the registry.</li>
+        <li>The slug is <b>display routing only</b>: the backend validates <code>(user sub, lfg)</code> membership on every request — a guessed URL 403s before any handler.</li>
+        <li>Users in two LFGs switch by route; the wrong route is harmless by construction.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <b>Personas — LFG-managed visibility</b>
+      <ul class="check">
+        <li>Each LFG's admin manages its own users and personas: e.g. <b>lfg_admin</b> (everything + user management), <b>agronomist</b> (fields/zones/uploads), <b>analyst</b> (read-only metrics), <b>region-scoped viewer</b> (assigned regions/farms only).</li>
+        <li>A persona = role + <b>data scope</b> (regions, farms, or field sets). Enforced server-side in the query layer — scope filters attach to every silo query, never only hidden in the UI.</li>
+        <li>Persona changes are audited and effective ≤60 s (guard cache TTL).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section id="stack">
+  <h2><span class="secnum">7</span> Tech stack</h2>
+  <table>
+    <thead><tr><th>Layer</th><th>Picked</th><th>Note / alternative</th></tr></thead>
+    <tbody>
+      <tr><td>Backend</td><td><span class="tag g">NestJS (TypeScript)</span></td><td>guards/DI map to tenant-guard + pool-per-silo; alternative: plain Fastify if Nest feels heavy</td></tr>
+      <tr><td>UI</td><td><span class="tag g">React in Seed Selector</span></td><td>per-LFG dynamic routes in the SS shell; Cropwise design system</td></tr>
+      <tr><td>Silo store</td><td><span class="tag g">RDS PostgreSQL</span></td><td>logical DB per LFG on shared pooled Multi-AZ hosts (not instance-per-LFG). <b>PostGIS optional</b> — geometry lives in S3; add PostGIS only when spatial queries appear</td></tr>
+      <tr><td>Zone dumps / raw</td><td><span class="tag g">S3 (versioned + lifecycle)</span></td><td>your instinct confirmed (§3): heavy immutable payloads, backup-by-lifecycle, per-LFG prefixes with scoped IAM</td></tr>
+      <tr><td>Jobs</td><td><span class="tag g">SQS + EKS workers (KEDA)</span></td><td>interactive/backfill lanes, DLQ, per-LFG in-flight caps; EKS chosen for existing team/IaC capability, not superiority (ECS is the simpler greenfield pick)</td></tr>
+      <tr><td>Identity</td><td><span class="tag g">Cropwise Base (JWKS)</span></td><td>token = who; personas/memberships = ours; near-real-time revocation (≤60 s)</td></tr>
+      <tr><td>IaC / CI</td><td><span class="tag g">Terraform · CircleCI</span></td><td>sandbox + production; manual gate before prod</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ 8 -->
+<section id="milestones">
+  <h2><span class="secnum">8</span> Milestones</h2>
   <div class="panel">
     <ol class="steps">
-      <li><b>Governance first, no code</b> — cohort threshold, audit policy, export review, sign-off owners. The threshold is a policy decision (set too low, repeated aggregate queries leak). <b>Engineering waits for the signature; the drafting does not wait for Phase 1</b> — it runs in parallel with P1-PROD.<small>Exit: signed governance doc.</small></li>
-      <li><b>Aggregation gate</b> — the only cross-silo reader: computes above-threshold cohort statistics; minimum cohort enforced in code; every export audited; no row-level egress path exists.<small>Exit: gate refuses any aggregate under the cohort minimum, with an audit row.</small></li>
-      <li><b>Benchmark / model layer</b> — the successful-field benchmark (PD threshold parameterises it); similarity scoring with per-attribute favourable-direction semantics from <code>metric_definition</code>.<small>Exit: benchmark reproducible from gate outputs alone.</small></li>
-      <li><b>Recommendations back into silos</b> — results delivered <i>into</i> each grower's silo; the UI explains verdicts ("matches successful fields on VxC, irrigation…").<small>Exit: a grower sees cohort-informed recommendations with explanations, and raw rows still never crossed.</small></li>
+      <li><b>M1 · Foundations</b> — Terraform (VPC, EKS, RDS, S3, SQS, ECR), sandbox + production, CI/CD, observability baseline.<small>Exit: hello-world through the pipeline to sandbox.</small></li>
+      <li><b>M2 · Identity &amp; tenancy</b> — CB JWKS verify, LFG registry + slugs, memberships, tenant guard, silo provisioning automation, per-LFG route resolution.<small>Exit: /bgf and /kio resolve; non-member 403s; "create LFG" yields a working silo.</small></li>
+      <li><b>M3 · Variety &amp; field layer</b> — silo schema (§3), metric registry seeded with bgf keys per country/crop, variety-layer admin.<small>Exit: the bgf sample's entities representable end to end.</small></li>
+      <li><b>M4 · Upload UI</b> — upload → profile → mapping UI → worklist → validate → chunked commit + FK-safe rollback.<small>Exit: the real 391-row bgf file loads with per-row rejects and clean rollback.</small></li>
+      <li><b>M5 · Zones/FVA</b> — SQS lanes, AgInsights batch client, zone_window + S3 dumps, per-LFG scheduler + login trigger, staleness states.<small>Exit: a new field zoned during a session; five historical windows queryable side by side.</small></li>
+      <li><b>M6 · Serving + personas</b> — the one query API (variety ⟷ field ⟷ zone_window, filters at source), SS UI views, persona admin + scope enforcement.<small>Exit: a region-scoped viewer provably sees only their regions.</small></li>
+      <li><b>M7 · Hardening &amp; pilot</b> — backups (PG PITR + S3 lifecycle) with restore drill, security pass, dashboards/alarms, DR tabletop, first LFG live.<small>Exit: pilot LFG answers real queries in production; ops cadence started.</small></li>
     </ol>
   </div>
 </section>
 
-<!-- ============================================================ 5 -->
-<section id="stack">
-  <h2><span class="secnum">5</span> Tech stack — picked, with alternatives</h2>
-  <table>
-    <thead><tr><th>Layer</th><th>Picked</th><th>Alternative</th><th>Why the pick / when the alternative wins</th></tr></thead>
-    <tbody>
-      <tr><td>Backend framework</td><td><span class="tag g">NestJS (TypeScript)</span></td><td>Fastify (plain) · Spring Boot</td><td>guards/middleware/DI map 1:1 to tenant-guard + pool-per-grower; team TS skills. Plain Fastify if Nest's structure ever feels heavy; Spring only if the org mandates JVM.</td></tr>
-      <tr><td>Frontend</td><td><span class="tag g">React + TypeScript</span></td><td>keep the static console</td><td>Seed Selector is the host app — matching its stack (and Cropwise design system) makes embedding natural. The zero-build console stays for internal ops.</td></tr>
-      <tr><td>Database</td><td><span class="tag g">RDS PostgreSQL + PostGIS</span></td><td>Aurora PostgreSQL</td><td>PostGIS required. Silo = a <i>logical database</i> per grower; several share one pooled Multi-AZ host (not instance-per-grower), which is cheapest on RDS. Aurora when a pooled host nears ~1 TB or needs read replicas.</td></tr>
-      <tr><td>Queue</td><td><span class="tag g">SQS + DLQ</span></td><td>MSK (Kafka)</td><td>work distribution ≠ event streaming. MSK only if multiple consumers ever need replayable history — alongside, not instead.</td></tr>
-      <tr><td>Compute</td><td><span class="tag g">EKS + KEDA workers</span></td><td>ECS Fargate</td><td><b>Chosen for existing team, IaC and Kubernetes capability — not because EKS is inherently superior.</b> ECS Fargate is the simpler greenfield pick; CronJobs + KEDA workers happen to map 1:1 to what we run. Revisit if cluster upkeep exceeds ~10% of team time.</td></tr>
-      <tr><td>Identity</td><td><span class="tag g">Cropwise Base (JWKS verify)</span></td><td>—</td><td>no alternative by design: token = WHO only; roles and grower scoping live in OUR membership table (near-real-time revocation, ≤60 s — the guard cache TTL; no claim coupling).</td></tr>
-      <tr><td>IaC / CI</td><td><span class="tag g">Terraform · CircleCI</span></td><td>CDK · CodePipeline/GH Actions</td><td>existing code and contexts; stages are portable if a mandate changes.</td></tr>
-      <tr><td>Local dev</td><td><span class="tag g">docker-compose: Postgres + LocalStack</span></td><td>shared dev AWS account</td><td>the same SDK calls hit LocalStack locally and AWS in prod; zero cloud cost per developer. A dev account only for integration testing against real IAM.</td></tr>
-      <tr><td>Observability</td><td><span class="tag g">CloudWatch first</span></td><td>Managed Prometheus/Grafana</td><td>zero extra infra now; adopt AMP/AMG at high-cardinality per-grower metrics.</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- ============================================================ 6 -->
+<!-- ============================================================ 9 -->
 <section id="backlog">
-  <h2><span class="secnum">6</span> Jira backlog — epics and tickets, in build sequence</h2>
-  <p class="lead">Nine phase-1 epics (A–I) + one phase-2 epic (J), strictly ordered; tickets inside
-  an epic can parallelize unless a dependency says otherwise. Points are relative (1 ≈ half a day,
-  8 ≈ a week). Every ticket inherits the global Definition of Done
-  (<a href="architecture-lfg.html#dod">§15 of the engineering doc</a>).</p>
+  <h2><span class="secnum">9</span> Backlog — epics &amp; tickets in sequence</h2>
+  <p class="lead">Fresh numbering (supersedes the v3 backlog). Points: 1 ≈ half a day, 8 ≈ a week.
+  Global DoD applies (tests on real Postgres, dashboards shipped with the feature, tenant-isolation
+  test, provenance in one query).</p>
 
   <div class="panel epic" style="--c:var(--blue)">
-    <h3>EPIC A — Foundations <span class="tag b">sequence 1</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-1</b></td><td><b>Terraform baseline</b> — VPC (public/private), EKS + node group, RDS host, S3 (raw/backups, versioned), SQS, ECR; sandbox + production from one codebase.</td><td><ul class="ac"><li>`terraform apply` builds sandbox from empty account</li><li>tfvars are the only difference between envs</li><li>state in S3 + lock</li></ul></td><td>—</td><td>8</td></tr>
-      <tr><td><b>LFG-2</b></td><td><b>CI/CD pipeline</b> — test → build → push ECR (SHA tag) → deploy sandbox → manual gate → deploy prod.</td><td><ul class="ac"><li>hello-world reaches sandbox on merge</li><li>prod deploy impossible without approval</li><li>rollback = previous SHA, one command</li></ul></td><td>LFG-1</td><td>5</td></tr>
-      <tr><td><b>LFG-3</b></td><td><b>Observability baseline</b> — structured JSON logs (grower_id + request id), base dashboards, alarm plumbing (5xx, pod restarts).</td><td><ul class="ac"><li>one CloudWatch query answers "what happened for grower X at T"</li><li>test alarm fires to the ops channel</li></ul></td><td>LFG-2</td><td>3</td></tr>
+    <h3>EPIC A — Foundations <span class="tag b">M1</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-1</b></td><td>Terraform baseline (VPC, EKS, RDS, S3, SQS, ECR; sandbox + prod)</td><td><ul class="ac"><li>sandbox from empty account via apply; tfvars-only env diff</li></ul></td><td>—</td><td>8</td></tr>
+      <tr><td><b>LFG-2</b></td><td>CI/CD: test → build → ECR (SHA) → sandbox → gate → prod</td><td><ul class="ac"><li>prod unreachable without approval; one-command rollback</li></ul></td><td>LFG-1</td><td>5</td></tr>
+      <tr><td><b>LFG-3</b></td><td>Observability baseline (structured logs with lfg + request id; alarm plumbing)</td><td><ul class="ac"><li>one query answers "what happened for LFG X at time T"</li></ul></td><td>LFG-2</td><td>3</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--violet)">
-    <h3>EPIC B — Identity &amp; control plane <span class="tag b">sequence 2</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-4</b></td><td><b>Cropwise Base token verification</b> — JWKS fetch + cache, issuer/audience/expiry checks; extract <code>sub</code>, email.</td><td><ul class="ac"><li>valid CB token accepted; tampered/expired → 401</li><li>JWKS rotation handled without deploy</li><li>no custom claims assumed</li></ul></td><td>LFG-2</td><td>5</td></tr>
-      <tr><td><b>LFG-5</b></td><td><b>Registry, memberships, tenant guard</b> — grower registry (region/tier); memberships (<code>sub</code>→grower, role); guard validates <code>X-Grower-Id</code> per request (cached ≤60 s).</td><td><ul class="ac"><li>non-member → 403 before any handler</li><li>membership delete effective ≤60 s</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
-      <tr><td><b>LFG-6</b></td><td><b>Silo provisioning automation</b> — create DB → DML-only user → migrations → Secrets Manager entry → registry row; catalog-driven migration job for all silos.</td><td><ul class="ac"><li>"create grower" is one call, idempotent</li><li>migration job walks every silo; failures reported per silo</li><li>silo creds never in env/code</li></ul></td><td>LFG-5</td><td>8</td></tr>
-      <tr><td><b>LFG-7</b></td><td><b>Cropwise Base master-data sync</b> — scheduled inbound job: orgs/properties/fields → control plane; conflict rules (CB wins for identity).</td><td><ul class="ac"><li>field created in CB visible in LFG ≤ sync interval</li><li>delete → soft-delete + orphan report; rename keeps id; duplicates → reconciliation worklist (§7.6)</li><li>re-run idempotent; every run emits a diff report; failures alarm, never block serving</li></ul></td><td>LFG-6</td><td>5</td></tr>
+    <h3>EPIC B — Identity, routes &amp; silos <span class="tag b">M2</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-4</b></td><td>Cropwise Base JWKS verification (token = identity only)</td><td><ul class="ac"><li>tampered/expired → 401; key rotation without deploy</li></ul></td><td>LFG-2</td><td>5</td></tr>
+      <tr><td><b>LFG-5</b></td><td>LFG registry (+ route slug), memberships, tenant guard</td><td><ul class="ac"><li>slug→LFG resolution; non-member 403 pre-handler; revocation ≤60 s</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
+      <tr><td><b>LFG-6</b></td><td>Silo provisioning + catalog-driven migrations</td><td><ul class="ac"><li>one idempotent call: DB → user → migrations → secret → registry</li><li>migration job reports per silo, resumable on partial failure</li></ul></td><td>LFG-5</td><td>8</td></tr>
+      <tr><td><b>LFG-7</b></td><td>Per-LFG dynamic route in Seed Selector (<code>/bgf</code>, <code>/kio</code>)</td><td><ul class="ac"><li>route renders that LFG's context only; guessed slugs 403</li></ul></td><td>LFG-5</td><td>3</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--green)">
-    <h3>EPIC C — Canonical model <span class="tag b">sequence 3</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-8</b></td><td><b>Core silo schema</b> — grower/farm(country)/field(boundary)/field_season; <code>fact_rows</code> with <code>batch_id</code>; vintages; aliases; batches (per the RFC fig-3 model).</td><td><ul class="ac"><li>migrations apply across 2+ demo silos via LFG-6 job</li><li>every fact row carries batch_id (NOT NULL)</li><li>PostGIS enabled, boundary validated</li></ul></td><td>LFG-6</td><td>5</td></tr>
-      <tr><td><b>LFG-9</b></td><td><b>metric_definition registry</b> — key/unit/type/min-max/enum, crop + country scoping, <code>since_season</code>; seeded with the bgf keys (yieldPerAc, tuberScore, returnPerAc, pd*, vxc, heterogeneity, consistency, …).</td><td><ul class="ac"><li>most-specific-wins lookup (country+crop &gt; crop &gt; global) unit-tested</li><li>new country = rows, no migration</li><li>registry served with definitions for typed UI rendering</li></ul></td><td>LFG-8</td><td>3</td></tr>
+    <h3>EPIC C — Variety &amp; field layer <span class="tag b">M3</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-8</b></td><td>Silo schema: field_ref (CB reference-ID only), variety_layer, field_season_variety, fact_rows, zone_window</td><td><ul class="ac"><li>no CB geometry stored anywhere (schema-level check)</li><li>every fact/zone row carries batch_id</li></ul></td><td>LFG-6</td><td>5</td></tr>
+      <tr><td><b>LFG-9</b></td><td>Metric registry per country/crop, seeded with the bgf keys (yield, tuber, return, soil, NDVI, rotation…)</td><td><ul class="ac"><li>most-specific-wins lookup tested; new country = rows, not migration</li></ul></td><td>LFG-8</td><td>3</td></tr>
+      <tr><td><b>LFG-10</b></td><td>Variety-layer admin (per country/crop/LFG; tags; aliasing)</td><td><ul class="ac"><li>variety resolves within LFG scope; duplicates flagged to worklist</li></ul></td><td>LFG-8</td><td>3</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--amber)">
-    <h3>EPIC D — Route 1 ingest <span class="tag b">sequence 4</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-10</b></td><td><b>Raw upload path</b> — presigned S3 PUT to <code>lfg-raw/&lt;grower&gt;/raw/</code>; <code>ingest_batch</code> row registered; async processing via queue.</td><td><ul class="ac"><li>2 GB file uploads without holding an HTTP request</li><li>streamed parsing — bounded worker memory, never whole-file in RAM; resume-from-chunk on retry (§7.3)</li><li>raw object immutable + versioned; batch status pollable</li></ul></td><td>LFG-8</td><td>5</td></tr>
-      <tr><td><b>LFG-11</b></td><td><b>Profile + mapping UI + template save</b> — header parse, sample rows, type/unit inference; column→canonical mapping screen; template stored per grower (versioned).</td><td><ul class="ac"><li>template pre-fills on re-upload</li><li>saved template records version used per batch</li><li>unit conversions declared in the template</li></ul></td><td>LFG-10</td><td>8</td></tr>
-      <tr><td><b>LFG-12</b></td><td><b>Entity resolution worklist</b> — unknown field/variety names queue to a worklist; each fix stored as <code>entity_alias</code>; aliases shared by both routes.</td><td><ul class="ac"><li>unknown name rejects the row, not the batch</li><li>resolved alias applies to future batches automatically</li><li>worklist UI shows pending count per grower</li></ul></td><td>LFG-11</td><td>5</td></tr>
-      <tr><td><b>LFG-13</b></td><td><b>Validation engine + reject report</b> — required/units/duplicates/ranges from metric_definition (country-aware); geometry checks; per-row verdicts; downloadable report.</td><td><ul class="ac"><li>row all-or-nothing (one bad metric rejects the row)</li><li>reasons name key, value and violated rule; nothing silently dropped</li><li>chunked transactions under one batch_id — rollback stays a single delete-by-batch (§7.3)</li></ul></td><td>LFG-11</td><td>5</td></tr>
-      <tr><td><b>LFG-14</b></td><td><b>Commit boundary + rollback</b> — transactional <b>chunk commits</b>, every chunk stamped with the same <code>batch_id</code> (consistent with LFG-13); the batch still rolls back <b>as a unit</b> (one delete-by-batch); provenance query (row → batch → file → actor → template version).</td><td><ul class="ac"><li>failed validation leaves zero canonical rows</li><li>rollback removes exactly the batch's rows, is <b>FK-safe</b>, and leaves no orphaned canonical or derived records</li><li>provenance answered in one query</li></ul></td><td>LFG-12, LFG-13</td><td>5</td></tr>
+    <h3>EPIC D — Upload UI ingest <span class="tag b">M4</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-11</b></td><td>Upload path (presigned S3, async, streamed parsing, bounded memory)</td><td><ul class="ac"><li>2 GB file never held in RAM or an open request; resume on retry</li></ul></td><td>LFG-8</td><td>5</td></tr>
+      <tr><td><b>LFG-12</b></td><td>Mapping UI (profile → columns→canonical → save template) + submit for processing</td><td><ul class="ac"><li>template pre-fills the next upload; version recorded per batch</li></ul></td><td>LFG-11</td><td>8</td></tr>
+      <tr><td><b>LFG-13</b></td><td>Entity resolution worklist (fields → cb_field_ref, varieties → layer)</td><td><ul class="ac"><li>unknown name rejects the row, not the batch; alias reused forever after</li></ul></td><td>LFG-12</td><td>5</td></tr>
+      <tr><td><b>LFG-14</b></td><td>Validation + reject report; chunked commit; FK-safe rollback</td><td><ul class="ac"><li>row all-or-nothing; reasons name key/value/rule</li><li>chunk commits share one batch_id; rollback FK-safe, no orphaned canonical or derived records</li></ul></td><td>LFG-12</td><td>5</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--violet)">
-    <h3>EPIC E — Zones via AgInsights <span class="tag b">sequence 5</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-15</b></td><td><b>SQS lanes + worker skeleton</b> — interactive + backfill queues, DLQ + alarm, KEDA scaling, idempotency tuple (grower, field, window, method_version), <code>zone_jobs</code> status.</td><td><ul class="ac"><li>interactive job overtakes 1k queued backfill jobs</li><li>per-grower in-flight caps — one tenant cannot occupy the fleet; queue-AGE alarmed, not just depth (§7.9)</li><li>poison → DLQ + alarm; duplicate enqueue short-circuits</li></ul></td><td>LFG-8</td><td>5</td></tr>
-      <tr><td><b>LFG-16</b></td><td><b>AgInsights client</b> — fetch zones/variability by field; auth; rate-limit token bucket; S3 response cache so retries never re-pay a call.</td><td><ul class="ac"><li>429/5xx retried with backoff, capped</li><li>cache hit skips the external call</li><li>client never invoked in an HTTP request path</li></ul></td><td>LFG-15</td><td>5</td></tr>
-      <tr><td><b>LFG-17</b></td><td><b>Window vintages + compare API</b> — immutable <code>variability_window</code> versions; supersede on recompute; latest-window default; side-by-side compare endpoint; zone metrics (pd_spread, weighted_pd) as fact rows.</td><td><ul class="ac"><li>recompute never edits an old vintage</li><li>"what did zoning say at time T" answerable</li><li>fig-4 fan-out row selectable in SQL</li></ul></td><td>LFG-16</td><td>5</td></tr>
-      <tr><td><b>LFG-18</b></td><td><b>Batch-per-grower scheduler</b> — EventBridge cron walks a grower's fields, enqueues missing/next windows on backfill lane, throttled; per-grower progress visible.</td><td><ul class="ac"><li>"fields zoned for window W: n/m, k failed" from zone_jobs, no log diving</li><li>throttle protects AgInsights rate limits</li></ul></td><td>LFG-17</td><td>3</td></tr>
-      <tr><td><b>LFG-19</b></td><td><b>Seed Selector login trigger</b> — login event → enqueue that grower's newly created fields (no vintage yet) on the interactive lane.</td><td><ul class="ac"><li>new field zoned during the user's session (sandbox-verified)</li><li>event is at-least-once safe (idempotency absorbs duplicates)</li><li>no login event ever blocks login itself</li></ul></td><td>LFG-17, LFG-7</td><td>3</td></tr>
+    <h3>EPIC E — Zones / FVA <span class="tag b">M5</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-15</b></td><td>SQS lanes + workers (interactive/backfill, DLQ, KEDA, per-LFG in-flight caps)</td><td><ul class="ac"><li>interactive overtakes bulk; queue-age alarmed; idempotent enqueue</li></ul></td><td>LFG-8</td><td>5</td></tr>
+      <tr><td><b>LFG-16</b></td><td>AgInsights batch client (rate-limited, backoff, S3 response cache)</td><td><ul class="ac"><li>never called in a request path; a retry never re-pays a call</li></ul></td><td>LFG-15</td><td>5</td></tr>
+      <tr><td><b>LFG-17</b></td><td>zone_window store: label + canonical dates, indexed metrics, geometry dump to S3, supersede-not-edit</td><td><ul class="ac"><li>the five bgf windows load and query side by side</li><li>date-span windows ("15 Apr–15 Oct 2026") first-class</li></ul></td><td>LFG-16</td><td>5</td></tr>
+      <tr><td><b>LFG-18</b></td><td>Per-LFG batch scheduler + Seed Selector login trigger (new fields → interactive lane)</td><td><ul class="ac"><li>new field zoned during the session (sandbox-verified); login never blocks on it</li></ul></td><td>LFG-17</td><td>3</td></tr>
+      <tr><td><b>LFG-19</b></td><td>Freshness/staleness UI states (computed-at badge, "zoning pending", outage = stale not broken)</td><td><ul class="ac"><li>&gt;24 h feed staleness pages ops, not users</li></ul></td><td>LFG-17</td><td>3</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--green)">
-    <h3>EPIC F — Serving contract <span class="tag b">sequence 6</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-20</b></td><td><b>The one query API</b> — join + variability + PD-threshold filters at source; pagination; the fig-4 fan-out (PD spread, weighted PD) in a single request.</td><td><ul class="ac"><li>UI needs zero client-side joins</li><li>PD threshold re-selects the result set server-side</li><li>p95 &lt; 800 ms on the defined benchmark: 250 fields × 6 seasons × 65 varieties (~100k metric rows, 1,500 vintages) at 20 concurrent requests; generator committed (§7.4)</li></ul></td><td>LFG-14, LFG-17</td><td>8</td></tr>
-      <tr><td><b>LFG-21</b></td><td><b>Seed Selector UI integration</b> — React views on the contract: analysis chart/table, upload flow (LFG-11), worklist, zone status; embedded in Seed Selector's shell.</td><td><ul class="ac"><li>login → grower context → analysis without leaving SS</li><li>renders any country's metrics from definitions (no hardcoded columns)</li></ul></td><td>LFG-20</td><td>8</td></tr>
-    </tbody></table>
-  </div>
-
-  <div class="panel epic" style="--c:var(--amber)">
-    <h3>EPIC G — Route 2 direct inject <span class="tag b">sequence 7</span> <span class="tag a">gated: starts after the pilot validates Route 1 templates, or on a signed business requirement</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-22</b></td><td><b>Scheduled runner</b> — service identity, saved-template reuse, idempotency by file hash + template version, DLQ for failed batches.</td><td><ul class="ac"><li>drop file → loaded unattended, zero human steps</li><li>re-drop doesn't double-load</li><li>failed validation leaves nothing behind + alert</li></ul></td><td>LFG-14</td><td>5</td></tr>
-      <tr><td><b>LFG-23</b></td><td><b>Grower DB/FMS connector</b> — pull bgf-shaped records from a grower database/endpoint on schedule; unresolved names to the worklist without blocking.</td><td><ul class="ac"><li>391-record bgf sample loads end to end</li><li>connector config per grower, secret-stored</li><li>partial failures isolated per batch</li></ul></td><td>LFG-22, LFG-12</td><td>5</td></tr>
+    <h3>EPIC F — Serving &amp; personas <span class="tag b">M6</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-20</b></td><td>Query API: variety ⟷ field ⟷ zone_window joins, filters at source, pagination</td><td><ul class="ac"><li>zero client-side joins; p95 &lt; 800 ms on the benchmark silo (250 fields × 6 seasons × 65 varieties, 20 concurrent; generator committed)</li></ul></td><td>LFG-14, LFG-17</td><td>8</td></tr>
+      <tr><td><b>LFG-21</b></td><td>SS UI views on the per-LFG route (analysis, uploads, worklist, zone status)</td><td><ul class="ac"><li>renders any country's metrics from the registry — no hardcoded columns</li></ul></td><td>LFG-20, LFG-7</td><td>8</td></tr>
+      <tr><td><b>LFG-22</b></td><td>Personas: LFG-managed roles + data scopes (region/farm/field sets), enforced in the query layer</td><td><ul class="ac"><li>scope filters applied server-side to every silo query</li><li>region-scoped viewer provably cannot read other regions (test)</li><li>persona changes audited; effective ≤60 s</li></ul></td><td>LFG-20</td><td>8</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--red)">
-    <h3>EPIC H — Hardening <span class="tag b">sequence 8</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-24</b></td><td><b>Backups + restore drill</b> — per-silo hourly(10 d)/daily(30 d)/monthly(12 mo) + PITR; freshness alarm; one silo restored in sandbox.</td><td><ul class="ac"><li>every silo has a fresh backup marker daily</li><li>drill: restore + row-count check documented</li><li>raw-replay recovery path exercised once</li></ul></td><td>LFG-14</td><td>5</td></tr>
-      <tr><td><b>LFG-25</b></td><td><b>Security pass</b> — WAF rules, throttling, secrets rotation, pgAudit, immutable audit log, sandboxed file parsing review.</td><td><ul class="ac"><li>rotation proven without downtime</li><li>audit log has no UPDATE/DELETE grants</li><li>pen-style checklist from the engineering doc all green</li></ul></td><td>LFG-20</td><td>5</td></tr>
-      <tr><td><b>LFG-26</b></td><td><b>Dashboards + alarms</b> — ingest failure rate, queue depth/age, DLQ non-empty, pool saturation, backup freshness, AgInsights error rate.</td><td><ul class="ac"><li>each §16 daily-cadence check is a dashboard, not a hunt</li><li>alarms tested by fault injection</li></ul></td><td>LFG-15</td><td>3</td></tr>
-      <tr><td><b>LFG-27</b></td><td><b>DR runbook + tabletop</b> — region-loss runbook written; ECR + S3 cross-region replication verified; tabletop exercise held.</td><td><ul class="ac"><li>runbook executable by someone who didn't write it</li><li>replication lag measured and alarmed</li></ul></td><td>LFG-24</td><td>3</td></tr>
+    <h3>EPIC G — Hardening &amp; pilot <span class="tag b">M7</span></h3>
+    <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>LFG-23</b></td><td>Backups: PG PITR + hourly→daily→monthly; S3 lifecycle as the zone-dump backup policy; restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li></ul></td><td>LFG-14</td><td>5</td></tr>
+      <tr><td><b>LFG-24</b></td><td>Security pass (WAF, throttling, rotation, pgAudit, immutable audit log, sandboxed file parsing)</td><td><ul class="ac"><li>rotation without downtime; audit log append-only</li></ul></td><td>LFG-20</td><td>5</td></tr>
+      <tr><td><b>LFG-25</b></td><td>Dashboards + alarms (ingest failures, queue age, DLQ, pool saturation, AgInsights errors, backup freshness)</td><td><ul class="ac"><li>every daily ops check is a dashboard; alarms fault-injection tested</li></ul></td><td>LFG-15</td><td>3</td></tr>
+      <tr><td><b>LFG-26</b></td><td>Pilot LFG live end to end + sign-off (reconciliation vs source files; ops cadence started)</td><td><ul class="ac"><li>pilot answers real queries in prod; row counts reconcile</li></ul></td><td>all</td><td>5</td></tr>
     </tbody></table>
   </div>
 
-  <div class="panel epic" style="--c:var(--green)">
-    <h3>EPIC I — Pilot <span class="tag b">sequence 9</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-28</b></td><td><b>Pilot grower onboarding</b> — real grower through the full path: provision → CB sync → Route 1 upload → zones → serving API.</td><td><ul class="ac"><li>grower's own data answers a fig-4 query in production</li><li>onboarding time measured (target: same day)</li></ul></td><td>all A–H</td><td>5</td></tr>
-      <tr><td><b>LFG-29</b></td><td><b>Pilot verification &amp; sign-off</b> — reconciliation vs source files; PA-divergence report reviewed (Q4); ops cadence started; go/no-go review.</td><td><ul class="ac"><li>row counts reconcile to source</li><li>divergence quantified, not felt</li><li>§16 cadence on the calendar</li></ul></td><td>LFG-28</td><td>3</td></tr>
-    </tbody></table>
-  </div>
-
-  <div class="panel epic" style="--c:var(--red)">
-    <h3>EPIC J — Phase 2: the F gate <span class="tag r">after governance sign-off only</span></h3>
-    <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-30</b></td><td><b>Governance package (no code)</b> — cohort threshold, audit/export policy, review cadence, sign-off owners. <i>Runs in parallel with P1-PROD (planning-independent); only LFG-31+ waits for its signature.</i></td><td><ul class="ac"><li>signed document; threshold justified against repeated-query leakage</li><li>started no later than Epic H kickoff</li></ul></td><td>— (parallel)</td><td>3</td></tr>
-      <tr><td><b>LFG-31</b></td><td><b>Aggregation gate service</b> — the only cross-silo credential; min-cohort in code; audited exports; no row egress path.</td><td><ul class="ac"><li>below-cohort aggregate refused + audited</li><li>attempted row-level read impossible by construction (no API exists)</li></ul></td><td>LFG-30</td><td>8</td></tr>
-      <tr><td><b>LFG-32</b></td><td><b>Benchmark / model layer</b> — successful-field benchmark from gate outputs; similarity scoring with favourable-direction semantics.</td><td><ul class="ac"><li>benchmark rebuildable from audited aggregates alone</li><li>threshold change re-selects the cohort correctly</li></ul></td><td>LFG-31</td><td>8</td></tr>
-      <tr><td><b>LFG-33</b></td><td><b>Recommendations into silos</b> — results delivered per grower with explanations (matches/gaps/analogues).</td><td><ul class="ac"><li>verdicts explain themselves in UI copy</li><li>raw rows still provably never crossed (audit review)</li></ul></td><td>LFG-32</td><td>5</td></tr>
-    </tbody></table>
-  </div>
-
-  <div class="callout green"><b>Totals:</b> Phase 1 ≈ 29 tickets / ~130 points; Phase 2 ≈ 4 tickets / 24 points.
-  <b>Critical path: A → B → C → D → E → F</b> (F needs E's zone/variability data). G starts after D and runs in parallel with E/F once the pilot validates Route 1 primitives.</div>
+  <div class="callout green"><b>Totals:</b> 26 tickets / ~125 points.
+  <b>Critical path: A → B → C → D → E → F</b> (serving needs both ingest and zones);
+  G hardens in parallel from M5 onward. Pilot-ready = A–F; production = + G.</div>
 </section>
 
-<!-- ============================================================ 7 -->
-<section id="challenges">
-  <h2><span class="secnum">7</span> Anticipated reviewer challenges — with answers</h2>
-  <p class="lead">The ten questions a design review should ask, answered in advance. (Several were
-  raised in pre-review and are incorporated above.)</p>
+<!-- ============================================================ 10 -->
+<section id="risks">
+  <h2><span class="secnum">10</span> Risks &amp; mitigations (carried from review)</h2>
   <table>
-    <thead><tr><th>#</th><th>Challenge</th><th>Answer</th></tr></thead>
+    <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td><b>Silo-per-grower is an operational burden — provisioning, migrations, backups, credentials, monitoring across many DBs.</b></td><td><b>Definition first:</b> <i>logical</i> isolation = one PostgreSQL <b>database</b> per grower (own user, KMS key, S3 prefix, backup line); <i>physical</i> = many databases sharing a few pooled Multi-AZ RDS hosts — <b>not</b> instance-per-grower. Target: <b>tens of growers at pilot, low hundreds at scale</b>. Every per-silo operation is a catalog-driven job, never a human task (provisioning LFG-6; migrations with per-silo failure reporting; backup-freshness alarms LFG-24/26). Beyond hundreds: silo tiering behind the same registry — a placement policy, not a redesign. Pooled-then-migrate was rejected as strictly worse. <i>Ops detail: <a href="architecture-lfg.html">engineering design</a> §10/§17.</i></td></tr>
-      <tr><td>2</td><td><b>"Everything is scheduled" contradicts the login-triggered AgInsights job.</b></td><td>Fixed in §2: login only <i>enqueues</i> (fire-and-forget, at-least-once, idempotency-absorbed); the fetch runs on the worker exactly like the batch. Login-triggered is a scheduling signal, not a runtime dependency — login can never block or slow on it.</td></tr>
-      <tr><td>3</td><td><b>2 GB uploads: profiling, validation and rollback need a resource strategy, not just "async".</b></td><td>Added to LFG-10/13 scope: <b>streamed parsing</b> (never whole-file in memory; profiling reads the first N MB), chunked validation with bounded worker memory (requests/limits + one file per worker at a time), batch commit in <b>chunked transactions grouped under one batch_id</b> (rollback stays a single <code>DELETE WHERE batch_id</code>), per-stage timeouts, and resume-from-chunk on retry keyed by file hash + offset.</td></tr>
-      <tr><td>4</td><td><b>p95 &lt; 800 ms is asserted against a vague "LFG-sized silo".</b></td><td>Benchmark now defined (LFG-20 AC): synthetic silo of <b>250 fields × 6 seasons × 65 varieties ≈ 100k field_season_metric rows + 1,500 zoning vintages</b> (≈ 20× the 391-row bgf sample), at <b>20 concurrent requests</b>, PD-threshold changed per request (worst case: benchmark re-selection). This is tractable because zone metrics are pre-computed <i>rows</i> — the query is indexed SQL, not geometry math at request time. Load test is part of the ticket's DoD, with the dataset generator committed.</td></tr>
-      <tr><td>5</td><td><b>What if AgInsights is down for hours or days?</b></td><td>Serving never touches AgInsights, so nothing breaks — data goes <i>stale</i>, which the UI must say honestly: every vintage carries its window + computed-at date; the UI shows a <b>freshness badge</b> ("zones as of &lt;date&gt;") and an explicit <b>"zoning pending"</b> state for never-zoned fields — distinct from an error state. Jobs stay queued and drain when AgInsights returns; the backfill scheduler self-heals missed runs; a &gt;24 h feed-staleness alarm pages ops, not the user.</td></tr>
-      <tr><td>6</td><td><b>Master-data sync only says "CB wins" — what about deletes, renames, moves, duplicates?</b></td><td>Explicit rules added to LFG-7: <b>delete in CB → soft-delete in LFG</b> (fact rows keep their field reference; field hidden from pickers; orphan report generated — grower data is never cascaded away). <b>Rename</b> → update display name, keep id + aliases. <b>Property move</b> → re-parent, history retained. <b>Duplicate identity</b> → sync flags it to a reconciliation worklist (human decision, like entity aliases). Every sync run emits a diff report; inconsistent states are surfaced, never silently merged.</td></tr>
-      <tr><td>7</td><td><b>Phase 1 is too big to be called one phase (~130 points).</b></td><td>Agreed — split in §3 into <b>P1-MVP (pilot-ready, epics A–F, ~95 pts)</b> and <b>P1-PROD (hardening + Route 2 + pilot, ~35 pts)</b>. The go/no-go review sits between them; scope cuts land on P1-PROD, never on the isolation or commit-boundary foundations.</td></tr>
-      <tr><td>8</td><td><b>Route 2 may be over-designed before Route 1 is validated.</b></td><td>Epic G is now gated: it starts only after the pilot proves the mapping templates on real files — or on a signed business requirement. The primitives Route 2 needs (templates, aliases, commit boundary, idempotency) are all Route 1 deliverables anyway, so deferral costs nothing.</td></tr>
-      <tr><td>9</td><td><b>Noisy neighbours: one giant grower's upload or window roll starves everyone else.</b></td><td>Fair-share added to LFG-15: <b>per-grower in-flight caps</b> on both ingest and zone lanes (a grower can occupy at most K workers), the interactive/backfill lane split already protects users from bulk, and queue-age (not just depth) is the alarm metric so starvation is visible. A pathological tenant degrades <i>their own</i> throughput first.</td></tr>
-      <tr><td>10</td><td><b>Phase 2 stalls on governance (cohort threshold is legally/mathematically hard).</b></td><td>Two different dependencies, stated explicitly: <b>engineering dependency</b> — no Phase 2 code (LFG-31+) starts before the governance signature; <b>planning dependency</b> — none: the governance workstream (LFG-30) <b>starts during P1-PROD, in parallel</b>, owned outside engineering, so nobody is "waiting for Phase 1 to finish to start the Phase 2 requirement". And a stalled gate blocks nothing — Phase 1 delivers full value per grower without it. the threshold question is framed with established practice (minimum cell size + audited query budget, à la statistical disclosure control) rather than invented from scratch. Code (LFG-31+) waits for signature — that constraint is the feature, not the bug.</td></tr>
+      <tr><td>Silo ops at scale</td><td>silo = <i>logical DB</i> per LFG on shared pooled hosts (not instance-per-LFG); all per-silo operations are catalog-driven jobs; tiering later is a placement policy, not a redesign</td></tr>
+      <tr><td>AgInsights outage</td><td>serving never depends on it — staleness badges, queued jobs drain on recovery, &gt;24 h alarm to ops</td></tr>
+      <tr><td>Huge uploads</td><td>streamed parsing, bounded memory, chunked transactions under one batch_id, resume-from-chunk, FK-safe rollback</td></tr>
+      <tr><td>Noisy neighbours</td><td>per-LFG in-flight caps on both lanes; queue-<i>age</i> (not depth) is the alarm metric</td></tr>
+      <tr><td>Serving latency</td><td>zone metrics pre-computed as rows → indexed SQL; defined benchmark in LFG-20, load test in DoD</td></tr>
+      <tr><td>Field identity drift over years</td><td>CB reference-IDs only + stored match provenance (<code>matched_by</code>, <code>confidence</code>); low-confidence matches go to the worklist, never auto-merged</td></tr>
     </tbody>
   </table>
-  <div class="panel">
-    <b>Questions we expect at the <i>implementation</i> review (and where the answers will live)</b>
-    <ul class="ac" style="font-size:.9rem">
-      <li><b>RDS connection pooling at N silos</b> — pool-per-silo sizing, LRU cap, PgBouncer threshold → engineering design §4/§17, measured in LFG-20's load test</li>
-      <li><b>Migration failure recovery</b> — per-silo resume, partial-failure reporting, rollback of a bad migration → LFG-6 runbook</li>
-      <li><b>Exact SQS/KEDA scaling limits</b> — max in-flight per lane, per-grower caps, scale-to-zero behaviour → LFG-15 config + fault-injection test</li>
-      <li><b>S3 2 GB processing behaviour</b> — chunk size, memory ceiling, resume keys, observed throughput → LFG-10/13 load test artifacts</li>
-      <li><b>Security model of the Phase 2 cross-silo credential</b> — the gate's IAM/DB identity, scope, audit — designed in LFG-30/31, reviewed before any code runs</li>
-    </ul>
-  </div>
-  <div class="callout green"><b>What review already endorsed:</b> silo isolation from day one (instead
-  of pooled-then-migrate), the gate sitting <i>outside</i> the silos as a clean security boundary,
-  governance-before-code for Phase 2, and the unified TypeScript stack. Those are the load-bearing
-  decisions; the ten answers above are the operational envelope around them.</div>
+</section>
+
+<!-- ============================================================ 11 -->
+<section id="questions">
+  <h2><span class="secnum">11</span> Open questions</h2>
+  <table>
+    <thead><tr><th>#</th><th>Question</th><th>Why it matters / current lean</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>AgInsights batch API contract</b> — auth, quotas, batch size, SLA, cost per call?</td><td>sizes the scheduler throttle and the S3 cache strategy; blocks LFG-16 detail design</td></tr>
+      <tr><td>2</td><td><b>Who defines season windows</b> per country/crop (15 Apr–15 Oct vs 12 Oct–15 Jan)?</td><td>agronomy decision, stored as data; needs an owner and a change process</td></tr>
+      <tr><td>3</td><td><b>Variety master source</b> — seeded from a catalogue, purely LFG-provided, or both (with aliasing)?</td><td>affects dedup rules within the layer and any future comparability</td></tr>
+      <tr><td>4</td><td><b>One LFG ↔ many CB orgs?</b> (bgf carries <code>orgId</code> per record)</td><td>if yes, the registry needs an org-set and persona scopes may follow org lines</td></tr>
+      <tr><td>5</td><td><b>Direct inject (grower DB → us)</b> — hard requirement now, or wait for pilot feedback?</td><td>upload-UI templates are the prerequisite either way; lean: after the pilot</td></tr>
+      <tr><td>6</td><td><b><code>dataTrust</code> / correction workflow</b> — who may override a suspect record and how is it audited?</td><td>the flag exists in the data today; needs a persona + audit answer</td></tr>
+      <tr><td>7</td><td><b>Zone-dump retention</b> — keep every historical window hot forever, or lifecycle to Glacier after N years?</td><td>cost vs "what did zoning say then"; lean: Glacier-IR after 2 years, never delete</td></tr>
+      <tr><td>8</td><td><b>Low-confidence field matches</b> (<code>sysFieldMatchedBy: "family+name"</code>) — who resolves them, where, with what SLA?</td><td>provenance is stored (§10); the human workflow needs an owner</td></tr>
+      <tr><td>9</td><td><b>Cross-LFG benchmarking</b> — permanently out of scope, or a future governance track?</td><td>the architecture keeps the boundary either way; the answer only decides whether governance ever gets drafted</td></tr>
+      <tr><td>10</td><td><b>Per-LFG route branding</b> (<code>/bgf</code>, <code>/kio</code>) — slug naming rules, custom theming, or plain?</td><td>cheap now, annoying to retrofit; needs product input</td></tr>
+    </tbody>
+  </table>
 </section>
 
 <footer>
-  RFC · LFG Platform · Phase 1 E → Phase 2 F ·
+  RFC v4 · LFG Platform · silo per LFG · no cross-LFG path ·
   <a href="architecture-lfg.html">engineering design</a> ·
-  <a href="LFG%20Data%20Architecture.html">RFC figures</a> ·
+  <a href="LFG%20Data%20Architecture.html">earlier RFC figures</a> ·
   <a href="https://github.com/BaluRaut/cloud-2026-eks-docker-terraform">repo</a>
 </footer>
 </div>
