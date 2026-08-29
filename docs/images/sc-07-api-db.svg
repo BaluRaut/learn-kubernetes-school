@@ -36,7 +36,7 @@
   <text x="3324" y="762" font-size="31" fill="#334155" text-anchor="middle">bounded + tunable</text>
   <text x="3324" y="814" font-size="31" fill="#334155" text-anchor="middle">only that grower's DB</text>
   <rect x="480" y="1300" width="2880" height="96" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
-  <text x="1920" y="1360" font-size="36" font-weight="bold" fill="#334155" text-anchor="middle">No global pool exists in request code — a cross-silo query is unwritable</text>
+  <text x="1920" y="1360" font-size="36" font-weight="bold" fill="#334155" text-anchor="middle">No global pool exists in request code — cross-silo queries are structurally prevented</text>
   <rect x="480" y="1430" width="2880" height="96" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
   <text x="1920" y="1490" font-size="36" font-weight="bold" fill="#334155" text-anchor="middle">Pool sizing is load-test configuration, not an architectural commitment</text>
   <text x="1920" y="2090" font-size="32" fill="#64748b" text-anchor="middle">LFG Platform · scenario 7 of 10 · RFC v4.1 appendix</text>

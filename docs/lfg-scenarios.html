@@ -67,7 +67,7 @@
 </section>
 <section>
   <h2>7 · API ⟷ database connection</h2>
-  <p class="cap">CB token + encrypted route → tenant guard 403s first → persona scope attached → a bounded, cached pool for that LFG only. A cross-silo query is unwritable.</p>
+  <p class="cap">CB token + encrypted route → tenant guard 403s first → persona scope attached → a bounded, cached pool for that LFG only. Cross-silo queries are structurally prevented.</p>
   <p><img src="images/sc-07-api-db-4k.png" alt="7 · API ⟷ database connection" loading="lazy"> <span class="links"><a href="images/sc-07-api-db-4k.png">4K PNG</a> · <a href="images/sc-07-api-db.svg">SVG</a></span></p>
 </section>
 <section>
@@ -77,7 +77,7 @@
 </section>
 <section>
   <h2>9 · Data encryption</h2>
-  <p class="cap">TLS on every hop; KMS key per LFG for RDS and S3; rotated secrets never in code. Offboarding = key deletion makes the silo cryptographically dead.</p>
+  <p class="cap">TLS on every hop; KMS key per LFG for RDS and S3; rotated secrets never in code. Offboarding → KMS key deletion renders retained silo data unrecoverable.</p>
   <p><img src="images/sc-09-encryption-4k.png" alt="9 · Data encryption" loading="lazy"> <span class="links"><a href="images/sc-09-encryption-4k.png">4K PNG</a> · <a href="images/sc-09-encryption.svg">SVG</a></span></p>
 </section>
 <section>

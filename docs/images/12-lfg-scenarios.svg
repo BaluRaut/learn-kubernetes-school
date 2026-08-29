@@ -138,7 +138,7 @@
   <text x="1195" y="1670" font-size="27" fill="#475569" text-anchor="middle">(bounded + tunable)</text>
   <text x="1195" y="1704" font-size="27" fill="#475569" text-anchor="middle">only that grower's DB reachable</text>
   <text x="1195" y="2014" font-size="25" font-style="italic" fill="#64748b" text-anchor="middle">No global pool exists in code —</text>
-  <text x="1195" y="2046" font-size="25" font-style="italic" fill="#64748b" text-anchor="middle">a cross-silo query is unwritable.</text>
+  <text x="1195" y="2046" font-size="25" font-style="italic" fill="#64748b" text-anchor="middle">cross-silo queries: structurally prevented.</text>
   <rect x="1600" y="1250" width="690" height="830" rx="22" fill="#ffffff" stroke="#dc2626" stroke-width="5"/>
   <rect x="1600" y="1250" width="690" height="74" rx="22" fill="#dc2626"/>
   <text x="1945" y="1300" font-size="30" font-weight="bold" fill="#ffffff" text-anchor="middle">Rate limits &amp; security</text>

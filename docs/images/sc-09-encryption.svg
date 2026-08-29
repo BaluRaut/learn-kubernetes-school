@@ -39,6 +39,6 @@
   <rect x="480" y="1300" width="2880" height="96" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
   <text x="1920" y="1360" font-size="36" font-weight="bold" fill="#334155" text-anchor="middle">One leaked key = one grower's blast radius — never all of them</text>
   <rect x="480" y="1430" width="2880" height="96" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
-  <text x="1920" y="1490" font-size="36" font-weight="bold" fill="#334155" text-anchor="middle">Key deletion (offboarding) makes a silo's data cryptographically dead</text>
+  <text x="1920" y="1490" font-size="36" font-weight="bold" fill="#334155" text-anchor="middle">Offboarding → KMS key deletion renders retained silo data unrecoverable</text>
   <text x="1920" y="2090" font-size="32" fill="#64748b" text-anchor="middle">LFG Platform · scenario 9 of 10 · RFC v4.1 appendix</text>
 </svg>
