@@ -65,7 +65,7 @@
 <header class="hero">
   <h1>RFC — LFG Platform: Architecture, Phases &amp; Delivery Backlog</h1>
   <div class="meta">
-    <span class="chip">Status <b>Draft, for review</b></span>
+    <span class="chip">Status <b>Draft v2 — pre-review feedback incorporated (§7)</b></span>
     <span class="chip">Decision <b>Phase 1 = E · Phase 2 = F (deferred)</b></span>
     <span class="chip">Backend <b>NestJS</b></span>
     <span class="chip">Companions <b><a href="architecture-lfg.html">engineering design</a> · <a href="LFG%20Data%20Architecture.html">RFC figures</a></b></span>
@@ -76,6 +76,7 @@
   <a href="#context">1 Context</a> <a href="#integration">2 Ecosystem integration</a>
   <a href="#phase1">3 Phase 1 steps</a> <a href="#phase2">4 Phase 2 steps</a>
   <a href="#stack">5 Tech stack + alternatives</a> <a href="#backlog">6 Jira backlog (sequenced)</a>
+  <a href="#challenges">7 Anticipated challenges</a>
 </nav>
 
 <!-- ============================================================ 1 -->
@@ -115,16 +116,35 @@
       </tbody>
     </table>
   </div>
-  <div class="callout"><b>The one rule that holds it together:</b> every integration is inbound and
-  scheduled. No request is ever resolved by calling Cropwise Base, AgInsights or PA live — that is
-  what keeps isolation level 3 (neither data <i>nor query patterns</i> leave) true by construction.</div>
+  <div class="callout"><b>The one rule that holds it together:</b> no user request is ever
+  <i>resolved</i> by calling Cropwise Base, AgInsights or PA live. All data movement is inbound and
+  asynchronous. <b>One precise distinction:</b> the Seed Selector login trigger does not fetch
+  anything in the request path — it only <i>enqueues</i> a zone job (fire-and-forget, at-least-once,
+  can never block or slow login); the fetch itself happens on the worker, exactly like the scheduled
+  batch. So "login-triggered" is a <i>scheduling signal</i>, not a runtime dependency — isolation
+  level 3 (neither data <i>nor query patterns</i> leave at request time) holds by construction.</div>
 </section>
 
 <!-- ============================================================ 3 -->
 <section id="phase1">
   <h2><span class="secnum">3</span> Phase 1 — clean steps (option E)</h2>
   <p class="lead">Standalone LFG service on Seeds infra, silo per grower from day one. Each step is
-  releasable; nothing later reworks anything earlier.</p>
+  releasable; nothing later reworks anything earlier. Phase 1 is deliberately split into
+  <b>two milestones</b> so it doesn't read (or plan) as one monolith:</p>
+  <div class="grid2">
+    <div class="panel">
+      <b><span class="tag g">Milestone P1-MVP · pilot-ready</span></b>
+      <p style="font-size:.9rem;color:var(--muted);margin-top:6px">Steps 1–7 (epics A–F): foundations,
+      identity, sync, model, <b>Route 1 only</b>, zones, serving contract — enough to run the pilot
+      grower end to end with UI upload. ~95 points.</p>
+    </div>
+    <div class="panel">
+      <b><span class="tag a">Milestone P1-PROD · production-hardening</span></b>
+      <p style="font-size:.9rem;color:var(--muted);margin-top:6px">Steps 8–9 (epics G–I): Route 2
+      <i>only after the pilot validates Route 1's templates</i> (unless a signed business requirement
+      says otherwise), then hardening + pilot sign-off. ~35 points.</p>
+    </div>
+  </div>
   <div class="panel">
     <ol class="steps">
       <li><b>Foundations</b> — Terraform: VPC, EKS, RDS, S3, SQS, ECR; two environments (sandbox · production); CI/CD with a manual gate before prod.<small>Exit: a hello-world deploys to sandbox through the pipeline.</small></li>
@@ -197,7 +217,7 @@
       <tr><td><b>LFG-4</b></td><td><b>Cropwise Base token verification</b> — JWKS fetch + cache, issuer/audience/expiry checks; extract <code>sub</code>, email.</td><td><ul class="ac"><li>valid CB token accepted; tampered/expired → 401</li><li>JWKS rotation handled without deploy</li><li>no custom claims assumed</li></ul></td><td>LFG-2</td><td>5</td></tr>
       <tr><td><b>LFG-5</b></td><td><b>Registry, memberships, tenant guard</b> — grower registry (region/tier); memberships (<code>sub</code>→grower, role); guard validates <code>X-Grower-Id</code> per request (cached ≤60 s).</td><td><ul class="ac"><li>non-member → 403 before any handler</li><li>membership delete effective ≤60 s</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
       <tr><td><b>LFG-6</b></td><td><b>Silo provisioning automation</b> — create DB → DML-only user → migrations → Secrets Manager entry → registry row; catalog-driven migration job for all silos.</td><td><ul class="ac"><li>"create grower" is one call, idempotent</li><li>migration job walks every silo; failures reported per silo</li><li>silo creds never in env/code</li></ul></td><td>LFG-5</td><td>8</td></tr>
-      <tr><td><b>LFG-7</b></td><td><b>Cropwise Base master-data sync</b> — scheduled inbound job: orgs/properties/fields → control plane; conflict rules (CB wins for identity).</td><td><ul class="ac"><li>field created in CB visible in LFG ≤ sync interval</li><li>re-run is idempotent</li><li>sync failures alarm, never block serving</li></ul></td><td>LFG-6</td><td>5</td></tr>
+      <tr><td><b>LFG-7</b></td><td><b>Cropwise Base master-data sync</b> — scheduled inbound job: orgs/properties/fields → control plane; conflict rules (CB wins for identity).</td><td><ul class="ac"><li>field created in CB visible in LFG ≤ sync interval</li><li>delete → soft-delete + orphan report; rename keeps id; duplicates → reconciliation worklist (§7.6)</li><li>re-run idempotent; every run emits a diff report; failures alarm, never block serving</li></ul></td><td>LFG-6</td><td>5</td></tr>
     </tbody></table>
   </div>
 
@@ -212,10 +232,10 @@
   <div class="panel epic" style="--c:var(--amber)">
     <h3>EPIC D — Route 1 ingest <span class="tag b">sequence 4</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-10</b></td><td><b>Raw upload path</b> — presigned S3 PUT to <code>lfg-raw/&lt;grower&gt;/raw/</code>; <code>ingest_batch</code> row registered; async processing via queue.</td><td><ul class="ac"><li>2 GB file uploads without holding an HTTP request</li><li>raw object immutable + versioned</li><li>batch status pollable</li></ul></td><td>LFG-8</td><td>5</td></tr>
+      <tr><td><b>LFG-10</b></td><td><b>Raw upload path</b> — presigned S3 PUT to <code>lfg-raw/&lt;grower&gt;/raw/</code>; <code>ingest_batch</code> row registered; async processing via queue.</td><td><ul class="ac"><li>2 GB file uploads without holding an HTTP request</li><li>streamed parsing — bounded worker memory, never whole-file in RAM; resume-from-chunk on retry (§7.3)</li><li>raw object immutable + versioned; batch status pollable</li></ul></td><td>LFG-8</td><td>5</td></tr>
       <tr><td><b>LFG-11</b></td><td><b>Profile + mapping UI + template save</b> — header parse, sample rows, type/unit inference; column→canonical mapping screen; template stored per grower (versioned).</td><td><ul class="ac"><li>template pre-fills on re-upload</li><li>saved template records version used per batch</li><li>unit conversions declared in the template</li></ul></td><td>LFG-10</td><td>8</td></tr>
       <tr><td><b>LFG-12</b></td><td><b>Entity resolution worklist</b> — unknown field/variety names queue to a worklist; each fix stored as <code>entity_alias</code>; aliases shared by both routes.</td><td><ul class="ac"><li>unknown name rejects the row, not the batch</li><li>resolved alias applies to future batches automatically</li><li>worklist UI shows pending count per grower</li></ul></td><td>LFG-11</td><td>5</td></tr>
-      <tr><td><b>LFG-13</b></td><td><b>Validation engine + reject report</b> — required/units/duplicates/ranges from metric_definition (country-aware); geometry checks; per-row verdicts; downloadable report.</td><td><ul class="ac"><li>row all-or-nothing (one bad metric rejects the row)</li><li>reasons name key, value and violated rule</li><li>nothing silently dropped</li></ul></td><td>LFG-11</td><td>5</td></tr>
+      <tr><td><b>LFG-13</b></td><td><b>Validation engine + reject report</b> — required/units/duplicates/ranges from metric_definition (country-aware); geometry checks; per-row verdicts; downloadable report.</td><td><ul class="ac"><li>row all-or-nothing (one bad metric rejects the row)</li><li>reasons name key, value and violated rule; nothing silently dropped</li><li>chunked transactions under one batch_id — rollback stays a single delete-by-batch (§7.3)</li></ul></td><td>LFG-11</td><td>5</td></tr>
       <tr><td><b>LFG-14</b></td><td><b>Commit boundary + rollback</b> — single transactional commit stamped <code>batch_id</code>; batch rollback as a unit; provenance query (row → batch → file → actor → template version).</td><td><ul class="ac"><li>failed validation leaves zero canonical rows</li><li>rollback removes exactly the batch's rows</li><li>provenance answered in one query</li></ul></td><td>LFG-12, LFG-13</td><td>5</td></tr>
     </tbody></table>
   </div>
@@ -223,7 +243,7 @@
   <div class="panel epic" style="--c:var(--violet)">
     <h3>EPIC E — Zones via AgInsights <span class="tag b">sequence 5</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-15</b></td><td><b>SQS lanes + worker skeleton</b> — interactive + backfill queues, DLQ + alarm, KEDA scaling, idempotency tuple (grower, field, window, method_version), <code>zone_jobs</code> status.</td><td><ul class="ac"><li>interactive job overtakes 1k queued backfill jobs</li><li>poison message lands in DLQ with error, alarm fires</li><li>duplicate enqueue short-circuits</li></ul></td><td>LFG-8</td><td>5</td></tr>
+      <tr><td><b>LFG-15</b></td><td><b>SQS lanes + worker skeleton</b> — interactive + backfill queues, DLQ + alarm, KEDA scaling, idempotency tuple (grower, field, window, method_version), <code>zone_jobs</code> status.</td><td><ul class="ac"><li>interactive job overtakes 1k queued backfill jobs</li><li>per-grower in-flight caps — one tenant cannot occupy the fleet; queue-AGE alarmed, not just depth (§7.9)</li><li>poison → DLQ + alarm; duplicate enqueue short-circuits</li></ul></td><td>LFG-8</td><td>5</td></tr>
       <tr><td><b>LFG-16</b></td><td><b>AgInsights client</b> — fetch zones/variability by field; auth; rate-limit token bucket; S3 response cache so retries never re-pay a call.</td><td><ul class="ac"><li>429/5xx retried with backoff, capped</li><li>cache hit skips the external call</li><li>client never invoked in an HTTP request path</li></ul></td><td>LFG-15</td><td>5</td></tr>
       <tr><td><b>LFG-17</b></td><td><b>Window vintages + compare API</b> — immutable <code>variability_window</code> versions; supersede on recompute; latest-window default; side-by-side compare endpoint; zone metrics (pd_spread, weighted_pd) as fact rows.</td><td><ul class="ac"><li>recompute never edits an old vintage</li><li>"what did zoning say at time T" answerable</li><li>fig-4 fan-out row selectable in SQL</li></ul></td><td>LFG-16</td><td>5</td></tr>
       <tr><td><b>LFG-18</b></td><td><b>Batch-per-grower scheduler</b> — EventBridge cron walks a grower's fields, enqueues missing/next windows on backfill lane, throttled; per-grower progress visible.</td><td><ul class="ac"><li>"fields zoned for window W: n/m, k failed" from zone_jobs, no log diving</li><li>throttle protects AgInsights rate limits</li></ul></td><td>LFG-17</td><td>3</td></tr>
@@ -234,13 +254,13 @@
   <div class="panel epic" style="--c:var(--green)">
     <h3>EPIC F — Serving contract <span class="tag b">sequence 6</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-20</b></td><td><b>The one query API</b> — join + variability + PD-threshold filters at source; pagination; the fig-4 fan-out (PD spread, weighted PD) in a single request.</td><td><ul class="ac"><li>UI needs zero client-side joins</li><li>PD threshold re-selects the result set server-side</li><li>p95 &lt; 800 ms on an LFG-sized silo (perf-tested)</li></ul></td><td>LFG-14, LFG-17</td><td>8</td></tr>
+      <tr><td><b>LFG-20</b></td><td><b>The one query API</b> — join + variability + PD-threshold filters at source; pagination; the fig-4 fan-out (PD spread, weighted PD) in a single request.</td><td><ul class="ac"><li>UI needs zero client-side joins</li><li>PD threshold re-selects the result set server-side</li><li>p95 &lt; 800 ms on the defined benchmark: 250 fields × 6 seasons × 65 varieties (~100k metric rows, 1,500 vintages) at 20 concurrent requests; generator committed (§7.4)</li></ul></td><td>LFG-14, LFG-17</td><td>8</td></tr>
       <tr><td><b>LFG-21</b></td><td><b>Seed Selector UI integration</b> — React views on the contract: analysis chart/table, upload flow (LFG-11), worklist, zone status; embedded in Seed Selector's shell.</td><td><ul class="ac"><li>login → grower context → analysis without leaving SS</li><li>renders any country's metrics from definitions (no hardcoded columns)</li></ul></td><td>LFG-20</td><td>8</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--amber)">
-    <h3>EPIC G — Route 2 direct inject <span class="tag b">sequence 7</span></h3>
+    <h3>EPIC G — Route 2 direct inject <span class="tag b">sequence 7</span> <span class="tag a">gated: starts after the pilot validates Route 1 templates, or on a signed business requirement</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
       <tr><td><b>LFG-22</b></td><td><b>Scheduled runner</b> — service identity, saved-template reuse, idempotency by file hash + template version, DLQ for failed batches.</td><td><ul class="ac"><li>drop file → loaded unattended, zero human steps</li><li>re-drop doesn't double-load</li><li>failed validation leaves nothing behind + alert</li></ul></td><td>LFG-14</td><td>5</td></tr>
       <tr><td><b>LFG-23</b></td><td><b>Grower DB/FMS connector</b> — pull bgf-shaped records from a grower database/endpoint on schedule; unresolved names to the worklist without blocking.</td><td><ul class="ac"><li>391-record bgf sample loads end to end</li><li>connector config per grower, secret-stored</li><li>partial failures isolated per batch</li></ul></td><td>LFG-22, LFG-12</td><td>5</td></tr>
@@ -277,6 +297,32 @@
 
   <div class="callout green"><b>Totals:</b> Phase 1 ≈ 29 tickets / ~130 points; Phase 2 ≈ 4 tickets / 24 points.
   The critical path is A → B → C → D → F; epics E and G can run in parallel lanes once C and D land.</div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section id="challenges">
+  <h2><span class="secnum">7</span> Anticipated reviewer challenges — with answers</h2>
+  <p class="lead">The ten questions a design review should ask, answered in advance. (Several were
+  raised in pre-review and are incorporated above.)</p>
+  <table>
+    <thead><tr><th>#</th><th>Challenge</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>Silo-per-grower is an operational burden — provisioning, migrations, backups, credentials, monitoring across many DBs.</b></td><td>Quantified: design target is <b>tens of growers at pilot, low hundreds at scale</b> — many single-grower databases on a few pooled Multi-AZ hosts, not hundreds of instances. Every per-silo operation is a catalog-driven job, never a human task: provisioning (LFG-6), migrations with <b>per-silo success/failure reporting and resumable partial-failure handling</b>, backup-freshness markers per silo with a daily alarm (LFG-24/26). Beyond hundreds: silo <i>tiering</i> (dedicated / pooled / schema-level) behind the same registry — a placement policy, not a redesign. The alternative (pooled store now, silos later) was rejected because that migration is strictly worse than this ops burden.</td></tr>
+      <tr><td>2</td><td><b>"Everything is scheduled" contradicts the login-triggered AgInsights job.</b></td><td>Fixed in §2: login only <i>enqueues</i> (fire-and-forget, at-least-once, idempotency-absorbed); the fetch runs on the worker exactly like the batch. Login-triggered is a scheduling signal, not a runtime dependency — login can never block or slow on it.</td></tr>
+      <tr><td>3</td><td><b>2 GB uploads: profiling, validation and rollback need a resource strategy, not just "async".</b></td><td>Added to LFG-10/13 scope: <b>streamed parsing</b> (never whole-file in memory; profiling reads the first N MB), chunked validation with bounded worker memory (requests/limits + one file per worker at a time), batch commit in <b>chunked transactions grouped under one batch_id</b> (rollback stays a single <code>DELETE WHERE batch_id</code>), per-stage timeouts, and resume-from-chunk on retry keyed by file hash + offset.</td></tr>
+      <tr><td>4</td><td><b>p95 &lt; 800 ms is asserted against a vague "LFG-sized silo".</b></td><td>Benchmark now defined (LFG-20 AC): synthetic silo of <b>250 fields × 6 seasons × 65 varieties ≈ 100k field_season_metric rows + 1,500 zoning vintages</b> (≈ 20× the 391-row bgf sample), at <b>20 concurrent requests</b>, PD-threshold changed per request (worst case: benchmark re-selection). This is tractable because zone metrics are pre-computed <i>rows</i> — the query is indexed SQL, not geometry math at request time. Load test is part of the ticket's DoD, with the dataset generator committed.</td></tr>
+      <tr><td>5</td><td><b>What if AgInsights is down for hours or days?</b></td><td>Serving never touches AgInsights, so nothing breaks — data goes <i>stale</i>, which the UI must say honestly: every vintage carries its window + computed-at date; the UI shows a <b>freshness badge</b> ("zones as of &lt;date&gt;") and an explicit <b>"zoning pending"</b> state for never-zoned fields — distinct from an error state. Jobs stay queued and drain when AgInsights returns; the backfill scheduler self-heals missed runs; a &gt;24 h feed-staleness alarm pages ops, not the user.</td></tr>
+      <tr><td>6</td><td><b>Master-data sync only says "CB wins" — what about deletes, renames, moves, duplicates?</b></td><td>Explicit rules added to LFG-7: <b>delete in CB → soft-delete in LFG</b> (fact rows keep their field reference; field hidden from pickers; orphan report generated — grower data is never cascaded away). <b>Rename</b> → update display name, keep id + aliases. <b>Property move</b> → re-parent, history retained. <b>Duplicate identity</b> → sync flags it to a reconciliation worklist (human decision, like entity aliases). Every sync run emits a diff report; inconsistent states are surfaced, never silently merged.</td></tr>
+      <tr><td>7</td><td><b>Phase 1 is too big to be called one phase (~130 points).</b></td><td>Agreed — split in §3 into <b>P1-MVP (pilot-ready, epics A–F, ~95 pts)</b> and <b>P1-PROD (hardening + Route 2 + pilot, ~35 pts)</b>. The go/no-go review sits between them; scope cuts land on P1-PROD, never on the isolation or commit-boundary foundations.</td></tr>
+      <tr><td>8</td><td><b>Route 2 may be over-designed before Route 1 is validated.</b></td><td>Epic G is now gated: it starts only after the pilot proves the mapping templates on real files — or on a signed business requirement. The primitives Route 2 needs (templates, aliases, commit boundary, idempotency) are all Route 1 deliverables anyway, so deferral costs nothing.</td></tr>
+      <tr><td>9</td><td><b>Noisy neighbours: one giant grower's upload or window roll starves everyone else.</b></td><td>Fair-share added to LFG-15: <b>per-grower in-flight caps</b> on both ingest and zone lanes (a grower can occupy at most K workers), the interactive/backfill lane split already protects users from bulk, and queue-age (not just depth) is the alarm metric so starvation is visible. A pathological tenant degrades <i>their own</i> throughput first.</td></tr>
+      <tr><td>10</td><td><b>Phase 2 stalls on governance (cohort threshold is legally/mathematically hard).</b></td><td>By design, a stalled gate blocks nothing — Phase 1 delivers full value per grower without it. To de-risk the timeline: the governance draft (LFG-30) <b>starts during P1-PROD in parallel</b>, owned outside engineering; the threshold question is framed with established practice (minimum cell size + audited query budget, à la statistical disclosure control) rather than invented from scratch. Code (LFG-31+) waits for signature — that constraint is the feature, not the bug.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout green"><b>What review already endorsed:</b> silo isolation from day one (instead
+  of pooled-then-migrate), the gate sitting <i>outside</i> the silos as a clean security boundary,
+  governance-before-code for Phase 2, and the unified TypeScript stack. Those are the load-bearing
+  decisions; the ten answers above are the operational envelope around them.</div>
 </section>
 
 <footer>
