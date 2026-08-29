@@ -16,7 +16,7 @@
   <text x="380" y="455" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Seed Selector UI</text>
   <text x="380" y="545" font-size="36" fill="#334155" text-anchor="middle">growers &amp; agronomists</text>
   <text x="380" y="600" font-size="36" fill="#334155" text-anchor="middle">queries + Route 1 uploads</text>
-  <text x="380" y="660" font-size="34" fill="#64748b" text-anchor="middle">one domain, auth via external IdP</text>
+  <text x="380" y="660" font-size="34" fill="#64748b" text-anchor="middle">login via Cropwise Base</text>
   <circle cx="120" cy="400" r="48" fill="#dc2626"/>
   <text x="120" y="420" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
 
@@ -129,18 +129,19 @@
 
   <!-- ===================== 8. External inputs ===================== -->
   <rect x="3400" y="380" width="320" height="1000" rx="24" fill="#ffffff" stroke="#7c3aed" stroke-width="5" stroke-dasharray="18 12"/>
-  <text x="3560" y="460" font-size="36" font-weight="bold" fill="#7c3aed" text-anchor="middle">External inputs</text>
-  <text x="3560" y="560" font-size="30" fill="#334155" text-anchor="middle">Imagery API</text>
-  <text x="3560" y="610" font-size="30" fill="#334155" text-anchor="middle">soil · terrain</text>
-  <text x="3560" y="660" font-size="30" fill="#334155" text-anchor="middle">weather</text>
-  <text x="3560" y="760" font-size="30" fill="#334155" text-anchor="middle">PA · FVA</text>
-  <text x="3560" y="810" font-size="30" fill="#334155" text-anchor="middle">scheduled</text>
-  <text x="3560" y="860" font-size="30" fill="#334155" text-anchor="middle">one-way</text>
-  <text x="3560" y="910" font-size="30" fill="#334155" text-anchor="middle">inbound</text>
-  <text x="3560" y="1010" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">never in the</text>
-  <text x="3560" y="1055" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">request path —</text>
-  <text x="3560" y="1100" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">no query pattern</text>
-  <text x="3560" y="1145" font-size="28" font-weight="bold" fill="#7c3aed" text-anchor="middle">ever leaves</text>
+  <text x="3560" y="450" font-size="30" font-weight="bold" fill="#7c3aed" text-anchor="middle">Cropwise ecosystem</text>
+  <text x="3560" y="530" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">Cropwise Base</text>
+  <text x="3560" y="575" font-size="27" fill="#334155" text-anchor="middle">auth · orgs · properties</text>
+  <text x="3560" y="618" font-size="25" fill="#334155" text-anchor="middle">fields · profiles · licenses</text>
+  <text x="3560" y="700" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">AgInsights</text>
+  <text x="3560" y="745" font-size="25" fill="#334155" text-anchor="middle">zones / field variability</text>
+  <text x="3560" y="788" font-size="27" fill="#334155" text-anchor="middle">by field (FVA)</text>
+  <text x="3560" y="870" font-size="30" font-weight="bold" fill="#0f172a" text-anchor="middle">Product Analyzer</text>
+  <text x="3560" y="915" font-size="27" fill="#334155" text-anchor="middle">variety + performance</text>
+  <text x="3560" y="1000" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">scheduled batch per</text>
+  <text x="3560" y="1045" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">grower · login-triggered</text>
+  <text x="3560" y="1090" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">for new fields · never</text>
+  <text x="3560" y="1135" font-size="25" font-weight="bold" fill="#7c3aed" text-anchor="middle">in the request path</text>
   <circle cx="3400" cy="380" r="48" fill="#dc2626"/>
   <text x="3400" y="400" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">8</text>
   <polyline points="3400,700 3360,700 3360,240 1635,240 1635,370" fill="none" stroke="#7c3aed" stroke-width="7" stroke-dasharray="16 12" marker-end="url(#arrow)"/>

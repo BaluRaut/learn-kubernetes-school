@@ -105,16 +105,30 @@
   <div class="panel">
     <b>What each number does</b>
     <ul class="check">
-      <li><b>1 · Seed Selector UI</b> — growers and agronomists on one domain, authenticated by the external IdP. All queries and Route 1 uploads start here; the UI holds no join logic (that was RFC figure 1's whole problem).</li>
+      <li><b>1 · Seed Selector UI</b> — growers and agronomists on one domain, authenticated via <b>Cropwise Base</b> (Seed Selector already uses it for login, orgs, properties, fields and user profiles). All queries and Route 1 uploads start here; the UI holds no join logic (that was RFC figure 1's whole problem).</li>
       <li><b>2 · Direct inject (Route 2)</b> — Excel drops, FMS connections and bulk API pushes on a schedule, running under a service identity. No human in the loop because the saved mapping template answers the human questions in advance (§5).</li>
       <li><b>3 · ALB + WAF</b> — the single public entry point. Every request's <code>X-Grower-Id</code> is membership-checked against the control plane before any handler runs; a non-member gets 403 (§8 security).</li>
       <li><b>4 · LFG service, one shared fleet (EKS)</b> — the same pods serve every grower: API pods (tenant guard + the one query contract), ingest workers (profile → map → resolve → validate → commit), KEDA-scaled zone workers, and CronJobs for backups, the window-roll scheduler and PA/FVA loaders.</li>
       <li><b>5 · Control plane</b> — its own small database holding <i>reference data only</i>: grower registry (region, tier), memberships, mapping templates, the country-scoped <code>metric_definition</code> registry, audit log and <code>zone_jobs</code> status. No grower rows live here — it answers "who are you, which silo is yours", nothing more (§1, §3).</li>
       <li><b>6 · SQS job lanes</b> — ingest lane plus the two zone lanes (interactive / backfill) with DLQ + alarms. Idempotency key <code>(grower, field, window, method_version)</code>; staging commits nothing — everything crosses one commit boundary stamped with <code>batch_id</code> (§5, §13).</li>
       <li><b>7 · Per-grower silos</b> — pooled Multi-AZ RDS hosts carrying many single-grower databases, plus dedicated instances for top-tier growers (a registry change, not a migration). Every silo: own DB user, own KMS key, own S3 prefix, own backup line — <i>no query can name two growers</i> (§2 isolation).</li>
-      <li><b>8 · External inputs</b> — imagery, soil/terrain/weather context, and the PA/FVA feeds: all <b>scheduled, one-way, inbound</b>. Nothing resolves a live request by calling out, so no grower query pattern ever leaves the boundary (isolation level 3).</li>
+      <li><b>8 · The Cropwise ecosystem</b> — three inbound feeds, all <b>scheduled, one-way</b>: <b>Cropwise Base</b> (identity + master data: orgs, properties, fields, profiles, licenses — synced into the control plane), <b>AgInsights</b> (zones / field variability by field — pulled by the zone jobs, §13), and <b>Product Analyzer</b> (variety + performance). Nothing resolves a live request by calling out, so no grower query pattern ever leaves the boundary (isolation level 3).</li>
       <li><b>9 · Phase 2 — the F gate (deferred)</b> — drawn dashed because it does not exist yet: the governed aggregation gate (minimum cohort in code, audited, no row egress) feeding the shared benchmark layer. Governance is signed before any code; until then the only thing crossing this line is nothing (§1).</li>
     </ul>
+  </div>
+  <div class="panel">
+    <b>Where LFG sits in the Cropwise ecosystem</b>
+    <table>
+      <thead><tr><th>System</th><th>Provides</th><th>How LFG consumes it</th></tr></thead>
+      <tbody>
+        <tr><td><b>Cropwise Base</b></td><td>auth · orgs · properties · fields · user profiles · workspaces · licenses</td><td>identity (login token → <code>sub</code>) + master-data sync into the control plane; LFG never re-implements login or field registration</td></tr>
+        <tr><td><b>Cropwise Seed Selector</b></td><td>the grower-facing app (already logging in via Cropwise Base)</td><td>the front door: hosts the LFG UI; a login event also triggers zone jobs for the grower's newly created fields (§13)</td></tr>
+        <tr><td><b>AgInsights (FVA)</b></td><td>zones / field variability by field</td><td>pulled by the zone-job queue — scheduled batch per grower + login-triggered for new fields; results become immutable window vintages (§4, §13)</td></tr>
+        <tr><td><b>Product Analyzer</b></td><td>variety + performance data</td><td>scheduled, one-way, inbound feed (with the Q4 reconciliation report)</td></tr>
+        <tr><td><b>Grower's own data</b></td><td>variety-performance records (the <code>bgf-records.json</code> shape)</td><td>Route 1 UI upload or Route 2 direct inject from their database (§5)</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="color:var(--muted);font-size:.88rem">LFG = <b>UI LFG + Backend LFG</b> in the sketch — the standalone service pair; everything above feeds it, nothing queries out of it at request time.</p>
   </div>
 </section>
 
@@ -231,10 +245,17 @@ metric_definition              ingest_row   (raw JSONB · error)
 <section id="ingest">
   <h2><span class="secnum">5</span> Two intake routes, one pipeline (RFC fig 2)</h2>
   <p class="lead"><b>Route 1</b>: a grower uploads a CSV/XLSX through the UI and maps it once.
-  <b>Route 2</b>: direct inject — an Excel drop, an FMS connection or a bulk API push on a schedule,
-  no human in the loop. They differ only in where they enter: Route 2 reuses the saved mapping
-  template and starts at entity resolution. From validation down, the path and the commit boundary
-  are identical.</p>
+  <b>Route 2</b>: direct inject — an Excel drop, an FMS/database connection or a bulk API push on a
+  schedule, no human in the loop. They differ only in where they enter: Route 2 reuses the saved
+  mapping template and starts at entity resolution. From validation down, the path and the commit
+  boundary are identical.</p>
+  <div class="callout"><b>The real payload shape</b> — the grower's variety-performance records
+  (see <code>bgf-records.json</code>): per field-year-variety rows carrying <code>yieldPerAc</code>,
+  <code>tuberScore</code>, <code>returnPerAc</code>, <code>pdYield / pdTuber / pdReturn</code>,
+  <code>vxc</code>, <code>heterogeneity</code>, <code>consistency</code>, irrigation/water/power
+  attributes, area and abandonment. Every one of these becomes a <code>metric_definition</code> row
+  (§3) and lands as fact rows — uploaded via the UI (Route 1) or pushed straight from the grower's
+  own database (Route 2).</div>
 
   <div class="flow">
     <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Upload</b><span>File stored (per-silo S3 prefix); one <code>ingest_batch</code> row created. Route 2 enters here on a schedule with a service identity.</span></div>
@@ -479,8 +500,8 @@ metric_definition              ingest_row   (raw JSONB · error)
   asynchronous job queue on SQS, with worker pods on EKS.</p>
 
   <div class="flow">
-    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Enqueue</b><span>Triggers: a new field commits its boundary · the annual window roll (scheduler) · a manual re-run. Message = <code>(grower, field, window, method_version)</code> — that tuple is the <b>idempotency key</b>.</span></div>
-    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Fetch inputs</b><span>Imagery API + public soil/drainage/terrain context. Rate-limited per provider token bucket; responses cached in S3 so a retry never re-pays the API call.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Enqueue</b><span>Triggers: the <b>scheduled batch per grower</b> · a <b>Seed Selector login</b> enqueues that grower's newly created fields (interactive lane) · a manual re-run. Message = <code>(grower, field, window, method_version)</code> — the <b>idempotency key</b>.</span></div>
+    <div class="fstep" style="--c:var(--blue)"><span class="n">2</span><b>Fetch from AgInsights</b><span>Zones / field variability by field come from <b>AgInsights (FVA)</b>, not raw imagery. Rate-limited per token bucket; responses cached in S3 so a retry never re-pays the call.</span></div>
     <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>Compute zones</b><span>Worker pod derives zone geometries + per-zone metrics (PD, PAF) for the window. CPU-heavy; workers scale on queue depth (KEDA/HPA), not on HTTP traffic.</span></div>
     <div class="fstep" style="--c:var(--amber)"><span class="n">4</span><b>Validate</b><span>Same gates as ingest: valid polygons, within field boundary, metric ranges from <code>metric_definition</code>. Failures → job error state, not partial data.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">5</span><b>Commit</b><span>One transaction: new <code>variability_window</code> version + zones + <code>zone_metric</code> rows, stamped <code>batch_id</code>. Previous version superseded, never edited (§4).</span></div>
@@ -498,9 +519,10 @@ metric_definition              ingest_row   (raw JSONB · error)
       </ul>
     </div>
     <div class="panel">
-      <b>The annual window roll</b>
+      <b>Batch per grower + login triggers</b>
       <ul class="check">
-        <li>A scheduler (EventBridge cron) walks the registry once per season: for every active field, enqueue the next window (e.g. 2019–2024 once 2024 closes) on the backfill lane, throttled.</li>
+        <li><b>Scheduled batch per grower</b> (EventBridge cron): walk that grower's fields, enqueue any missing/next window (e.g. 2019–2024 once 2024 closes) on the backfill lane, throttled.</li>
+        <li><b>Login-triggered:</b> when a user logs into Seed Selector, an event enqueues zone jobs for that grower's <i>newly created fields</i> on the interactive lane — fresh fields get zones while the user is still in the session, without waiting for the nightly batch.</li>
         <li>New method version (algorithm change) = optional re-enqueue of recent windows with the new <code>method_version</code> — old vintages stay, comparisons stay honest.</li>
         <li>Progress is observable per grower: "fields zoned for window W: 1,240 / 1,300, 4 failed" — from the <code>zone_jobs</code> table, no log-diving.</li>
       </ul>
