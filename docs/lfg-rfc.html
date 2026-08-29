@@ -65,7 +65,7 @@
 <header class="hero">
   <h1>RFC — LFG Platform: Architecture, Phases &amp; Delivery Backlog</h1>
   <div class="meta">
-    <span class="chip">Status <b>Draft v3 — review fixes applied</b></span>
+    <span class="chip">Status <b>Draft v3.1 — ready for review</b></span>
     <span class="chip">Decision <b>Phase 1 = E · Phase 2 = F (deferred)</b></span>
     <span class="chip">Backend <b>NestJS</b></span>
     <span class="chip">Companions <b><a href="architecture-lfg.html">engineering design</a> · <a href="LFG%20Data%20Architecture.html">RFC figures</a></b></span>
@@ -236,7 +236,7 @@
       <tr><td><b>LFG-11</b></td><td><b>Profile + mapping UI + template save</b> — header parse, sample rows, type/unit inference; column→canonical mapping screen; template stored per grower (versioned).</td><td><ul class="ac"><li>template pre-fills on re-upload</li><li>saved template records version used per batch</li><li>unit conversions declared in the template</li></ul></td><td>LFG-10</td><td>8</td></tr>
       <tr><td><b>LFG-12</b></td><td><b>Entity resolution worklist</b> — unknown field/variety names queue to a worklist; each fix stored as <code>entity_alias</code>; aliases shared by both routes.</td><td><ul class="ac"><li>unknown name rejects the row, not the batch</li><li>resolved alias applies to future batches automatically</li><li>worklist UI shows pending count per grower</li></ul></td><td>LFG-11</td><td>5</td></tr>
       <tr><td><b>LFG-13</b></td><td><b>Validation engine + reject report</b> — required/units/duplicates/ranges from metric_definition (country-aware); geometry checks; per-row verdicts; downloadable report.</td><td><ul class="ac"><li>row all-or-nothing (one bad metric rejects the row)</li><li>reasons name key, value and violated rule; nothing silently dropped</li><li>chunked transactions under one batch_id — rollback stays a single delete-by-batch (§7.3)</li></ul></td><td>LFG-11</td><td>5</td></tr>
-      <tr><td><b>LFG-14</b></td><td><b>Commit boundary + rollback</b> — transactional <b>chunk commits</b>, every chunk stamped with the same <code>batch_id</code> (consistent with LFG-13); the batch still rolls back <b>as a unit</b> (one delete-by-batch); provenance query (row → batch → file → actor → template version).</td><td><ul class="ac"><li>failed validation leaves zero canonical rows</li><li>rollback removes exactly the batch's rows</li><li>provenance answered in one query</li></ul></td><td>LFG-12, LFG-13</td><td>5</td></tr>
+      <tr><td><b>LFG-14</b></td><td><b>Commit boundary + rollback</b> — transactional <b>chunk commits</b>, every chunk stamped with the same <code>batch_id</code> (consistent with LFG-13); the batch still rolls back <b>as a unit</b> (one delete-by-batch); provenance query (row → batch → file → actor → template version).</td><td><ul class="ac"><li>failed validation leaves zero canonical rows</li><li>rollback removes exactly the batch's rows, is <b>FK-safe</b>, and leaves no orphaned canonical or derived records</li><li>provenance answered in one query</li></ul></td><td>LFG-12, LFG-13</td><td>5</td></tr>
     </tbody></table>
   </div>
 
@@ -296,7 +296,7 @@
   </div>
 
   <div class="callout green"><b>Totals:</b> Phase 1 ≈ 29 tickets / ~130 points; Phase 2 ≈ 4 tickets / 24 points.
-  The critical path is A → B → C → D → F; epics E and G can run in parallel lanes once C and D land.</div>
+  <b>Critical path: A → B → C → D → E → F</b> (F needs E's zone/variability data). G starts after D and runs in parallel with E/F once the pilot validates Route 1 primitives.</div>
 </section>
 
 <!-- ============================================================ 7 -->
@@ -307,7 +307,7 @@
   <table>
     <thead><tr><th>#</th><th>Challenge</th><th>Answer</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td><b>Silo-per-grower is an operational burden — provisioning, migrations, backups, credentials, monitoring across many DBs.</b></td><td><b>Definition first, because "silo" is doing two jobs:</b> <i>logical</i> isolation = one PostgreSQL <b>database</b> per grower (own DML-only user, own KMS key, own S3 prefix, own backup line); <i>physical</i> infrastructure = many such databases share a few pooled Multi-AZ RDS <b>hosts</b>. It is <b>not</b> one RDS instance per grower — that misreading is where the cost objection comes from. Quantified: design target is <b>tens of growers at pilot, low hundreds at scale</b>. Every per-silo operation is a catalog-driven job, never a human task: provisioning (LFG-6), migrations with <b>per-silo success/failure reporting and resumable partial-failure handling</b>, backup-freshness markers per silo with a daily alarm (LFG-24/26). Beyond hundreds: silo <i>tiering</i> (dedicated / pooled / schema-level) behind the same registry — a placement policy, not a redesign. The alternative (pooled store now, silos later) was rejected because that migration is strictly worse than this ops burden.</td></tr>
+      <tr><td>1</td><td><b>Silo-per-grower is an operational burden — provisioning, migrations, backups, credentials, monitoring across many DBs.</b></td><td><b>Definition first:</b> <i>logical</i> isolation = one PostgreSQL <b>database</b> per grower (own user, KMS key, S3 prefix, backup line); <i>physical</i> = many databases sharing a few pooled Multi-AZ RDS hosts — <b>not</b> instance-per-grower. Target: <b>tens of growers at pilot, low hundreds at scale</b>. Every per-silo operation is a catalog-driven job, never a human task (provisioning LFG-6; migrations with per-silo failure reporting; backup-freshness alarms LFG-24/26). Beyond hundreds: silo tiering behind the same registry — a placement policy, not a redesign. Pooled-then-migrate was rejected as strictly worse. <i>Ops detail: <a href="architecture-lfg.html">engineering design</a> §10/§17.</i></td></tr>
       <tr><td>2</td><td><b>"Everything is scheduled" contradicts the login-triggered AgInsights job.</b></td><td>Fixed in §2: login only <i>enqueues</i> (fire-and-forget, at-least-once, idempotency-absorbed); the fetch runs on the worker exactly like the batch. Login-triggered is a scheduling signal, not a runtime dependency — login can never block or slow on it.</td></tr>
       <tr><td>3</td><td><b>2 GB uploads: profiling, validation and rollback need a resource strategy, not just "async".</b></td><td>Added to LFG-10/13 scope: <b>streamed parsing</b> (never whole-file in memory; profiling reads the first N MB), chunked validation with bounded worker memory (requests/limits + one file per worker at a time), batch commit in <b>chunked transactions grouped under one batch_id</b> (rollback stays a single <code>DELETE WHERE batch_id</code>), per-stage timeouts, and resume-from-chunk on retry keyed by file hash + offset.</td></tr>
       <tr><td>4</td><td><b>p95 &lt; 800 ms is asserted against a vague "LFG-sized silo".</b></td><td>Benchmark now defined (LFG-20 AC): synthetic silo of <b>250 fields × 6 seasons × 65 varieties ≈ 100k field_season_metric rows + 1,500 zoning vintages</b> (≈ 20× the 391-row bgf sample), at <b>20 concurrent requests</b>, PD-threshold changed per request (worst case: benchmark re-selection). This is tractable because zone metrics are pre-computed <i>rows</i> — the query is indexed SQL, not geometry math at request time. Load test is part of the ticket's DoD, with the dataset generator committed.</td></tr>
@@ -319,6 +319,16 @@
       <tr><td>10</td><td><b>Phase 2 stalls on governance (cohort threshold is legally/mathematically hard).</b></td><td>Two different dependencies, stated explicitly: <b>engineering dependency</b> — no Phase 2 code (LFG-31+) starts before the governance signature; <b>planning dependency</b> — none: the governance workstream (LFG-30) <b>starts during P1-PROD, in parallel</b>, owned outside engineering, so nobody is "waiting for Phase 1 to finish to start the Phase 2 requirement". And a stalled gate blocks nothing — Phase 1 delivers full value per grower without it. the threshold question is framed with established practice (minimum cell size + audited query budget, à la statistical disclosure control) rather than invented from scratch. Code (LFG-31+) waits for signature — that constraint is the feature, not the bug.</td></tr>
     </tbody>
   </table>
+  <div class="panel">
+    <b>Questions we expect at the <i>implementation</i> review (and where the answers will live)</b>
+    <ul class="ac" style="font-size:.9rem">
+      <li><b>RDS connection pooling at N silos</b> — pool-per-silo sizing, LRU cap, PgBouncer threshold → engineering design §4/§17, measured in LFG-20's load test</li>
+      <li><b>Migration failure recovery</b> — per-silo resume, partial-failure reporting, rollback of a bad migration → LFG-6 runbook</li>
+      <li><b>Exact SQS/KEDA scaling limits</b> — max in-flight per lane, per-grower caps, scale-to-zero behaviour → LFG-15 config + fault-injection test</li>
+      <li><b>S3 2 GB processing behaviour</b> — chunk size, memory ceiling, resume keys, observed throughput → LFG-10/13 load test artifacts</li>
+      <li><b>Security model of the Phase 2 cross-silo credential</b> — the gate's IAM/DB identity, scope, audit — designed in LFG-30/31, reviewed before any code runs</li>
+    </ul>
+  </div>
   <div class="callout green"><b>What review already endorsed:</b> silo isolation from day one (instead
   of pooled-then-migrate), the gate sitting <i>outside</i> the silos as a clean security boundary,
   governance-before-code for Phase 2, and the unified TypeScript stack. Those are the load-bearing
