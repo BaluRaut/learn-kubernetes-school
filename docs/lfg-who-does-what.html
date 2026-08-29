@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LFG Platform — Who Does What</title>
+<meta name="description" content="Ownership map for the LFG platform: what the grower does, what the platform team does, what runs automatically — for build and for production, plus escalation paths.">
+<style>
+  :root {
+    --bg:#f8fafc; --card:#ffffff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
+    --blue:#2563eb; --green:#16a34a; --red:#dc2626; --amber:#d97706; --violet:#7c3aed; --cyan:#0891b2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0b1220; --card:#131c2e; --ink:#e2e8f0; --muted:#94a3b8; --line:#253349; }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.6; }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px; }
+  header { padding:40px 0 10px; text-align:center; }
+  h1 { font-size:clamp(1.5rem,4vw,2.4rem); letter-spacing:-.02em; }
+  .sub { color:var(--muted); margin:10px auto 0; max-width:760px; }
+  .sub a { color:var(--blue); }
+  section { margin:40px 0; }
+  section > h2 { font-size:1.3rem; margin-bottom:6px; display:flex; align-items:center; gap:10px; }
+  .secnum { flex:none; width:32px; height:32px; border-radius:50%; background:var(--red); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:.95rem; }
+  section > p.lead { color:var(--muted); margin-bottom:14px; }
+  .grid3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-top:6px solid var(--c,var(--blue)); border-radius:14px; padding:18px; }
+  .panel h3 { font-size:1.05rem; margin-bottom:8px; }
+  .panel h3 .tagline { display:block; font-size:.8rem; font-weight:400; color:var(--muted); }
+  ul.check { list-style:none; }
+  ul.check li { padding:6px 0 6px 26px; position:relative; border-bottom:1px dashed var(--line); font-size:.92rem; }
+  ul.check li:last-child { border-bottom:none; }
+  ul.check li::before { content:"•"; position:absolute; left:6px; color:var(--c,var(--blue)); font-weight:800; font-size:1.2em; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin:10px 0; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:.74rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  .tag { display:inline-block; border-radius:999px; padding:1px 10px; font-size:.75rem; font-weight:700; white-space:nowrap; }
+  .tag.lfg { background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); }
+  .tag.eng { background:color-mix(in srgb,var(--blue) 12%,transparent); color:var(--blue); }
+  .tag.ops { background:color-mix(in srgb,var(--violet) 12%,transparent); color:var(--violet); }
+  .tag.auto { background:color-mix(in srgb,var(--amber) 15%,transparent); color:var(--amber); }
+  .tag.ext { background:color-mix(in srgb,var(--cyan) 12%,transparent); color:var(--cyan); }
+  code { font-family:Menlo,Consolas,monospace; font-size:.86em; background:color-mix(in srgb,var(--ink) 8%,transparent); padding:1px 6px; border-radius:6px; }
+  .callout { border-left:5px solid var(--amber); background:color-mix(in srgb,var(--amber) 8%,transparent); border-radius:10px; padding:12px 16px; margin:12px 0; font-size:.92rem; }
+  .legend { display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 4px; font-size:.85rem; color:var(--muted); align-items:center; }
+  footer { text-align:center; color:var(--muted); font-size:.85rem; padding:30px 0 50px; }
+  footer a { color:var(--blue); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>🧑‍🌾 Who Does What</h1>
+  <p class="sub">The ownership map for the LFG platform — what the grower's people do, what the
+  platform team does, and what runs by itself. Companion to the <a href="lfg-rfc.html">RFC</a>;
+  terms explained in the <a href="lfg-dictionary.html">dictionary</a>.</p>
+</header>
+
+<!-- ============================================================ 1 -->
+<section>
+  <h2><span class="secnum">1</span> The short version — three owners</h2>
+  <div class="grid3">
+    <div class="panel" style="--c:var(--green)">
+      <h3>🧑‍🌾 The LFG (grower's own people)<span class="tagline">their data, their decisions</span></h3>
+      <ul class="check">
+        <li>Upload field + variety files; map columns in the UI; submit</li>
+        <li>Resolve unknown field/variety names in the worklist</li>
+        <li>Maintain their variety list (per country/crop)</li>
+        <li>Provide season-window dates per country/crop</li>
+        <li>Provide the exact field names</li>
+        <li>Manage their own users &amp; personas (who sees what)</li>
+        <li>Review <code>dataTrust</code> — override suspect records (audited)</li>
+        <li>Request rollbacks of their own bad uploads</li>
+      </ul>
+    </div>
+    <div class="panel" style="--c:var(--blue)">
+      <h3>🛠️ The platform team<span class="tagline">build, operate, protect</span></h3>
+      <ul class="check">
+        <li>Build &amp; deploy the service (CI/CD; human gate before production)</li>
+        <li>Onboard each new LFG (run the provisioning automation)</li>
+        <li>Enter LFG-provided reference data (windows, registry rules) — audited</li>
+        <li>Own the metric registry's structure and validation engine</li>
+        <li>Watch dashboards; respond to alarms; run the on-call rota</li>
+        <li>Run restore drills, security rotation, DR exercises</li>
+        <li>Execute recovery when something breaks (silo restore, region runbook)</li>
+        <li>Rotate route ids / credentials on request or on schedule</li>
+      </ul>
+    </div>
+    <div class="panel" style="--c:var(--amber)">
+      <h3>⚙️ The system (automatic)<span class="tagline">nobody lifts a finger</span></h3>
+      <ul class="check">
+        <li>Silo provisioning steps (DB, user, migrations, KMS, S3, secret)</li>
+        <li>Validation of every uploaded row against the registry</li>
+        <li>Zone/FVA batch jobs — scheduled per LFG + login-triggered</li>
+        <li>Queue management: retries, DLQ parking, worker auto-scaling</li>
+        <li>Backups (PITR + hourly/daily/monthly) and S3 lifecycle</li>
+        <li>Tenant guard + persona scope on every request</li>
+        <li>Audit logging of every mutation and auth event</li>
+        <li>Alarms when anything above stops being true</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout"><b>The rule of thumb:</b> the LFG owns <i>meaning</i> (what the data says,
+  who may see it), the platform owns <i>machinery</i> (that it runs, safely), and the system owns
+  <i>repetition</i> (anything that happens more than once a week is automated).</div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section>
+  <h2><span class="secnum">2</span> Everyone in the story</h2>
+  <table>
+    <thead><tr><th>Actor</th><th>Who they are</th><th>Their part</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag lfg">LFG admin</span></td><td>the grower's platform owner</td><td>manages users &amp; personas; approves dataTrust overrides; the escalation contact on the grower side</td></tr>
+      <tr><td><span class="tag lfg">LFG agronomist</span></td><td>the grower's crop expert</td><td>uploads files, maps columns, resolves the worklist, reads zone/FVA results</td></tr>
+      <tr><td><span class="tag lfg">LFG analyst / viewer</span></td><td>scoped read-only staff</td><td>consumes dashboards within their persona's data scope — nothing else</td></tr>
+      <tr><td><span class="tag eng">Platform engineering</span></td><td>backend, frontend, DevOps</td><td>builds features, owns the pipeline, fixes defects, tunes performance</td></tr>
+      <tr><td><span class="tag ops">Platform ops / on-call</span></td><td>the pager holders</td><td>alarms, drills, restores, incident command, capacity &amp; cost review</td></tr>
+      <tr><td><span class="tag eng">Product owner</span></td><td>priority setter</td><td>orders the backlog, accepts milestones, decides scope questions</td></tr>
+      <tr><td><span class="tag ext">Cropwise Base team</span></td><td>external — identity &amp; master data</td><td>runs login and field identity; we consume tokens + reference IDs only</td></tr>
+      <tr><td><span class="tag ext">AgInsights team</span></td><td>external — FVA/zones</td><td>runs the internal batch API our zone workers call</td></tr>
+      <tr><td><span class="tag ext">Seed Selector team</span></td><td>external — the host app</td><td>hosts the per-LFG routes; emits the login event that triggers zone jobs</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ 3 -->
+<section>
+  <h2><span class="secnum">3</span> Activity by activity</h2>
+  <div class="legend"><b>Legend:</b>
+    <span class="tag lfg">LFG</span> grower's people ·
+    <span class="tag eng">ENG</span> platform engineering ·
+    <span class="tag ops">OPS</span> platform ops ·
+    <span class="tag auto">AUTO</span> the system ·
+    <span class="tag ext">EXT</span> external team
+  </div>
+  <table>
+    <thead><tr><th>Activity</th><th>Does it</th><th>Helps / approves</th><th>How often</th></tr></thead>
+    <tbody>
+      <tr><td>Create a new LFG (provisioning)</td><td><span class="tag ops">OPS</span> triggers → <span class="tag auto">AUTO</span> executes</td><td><span class="tag eng">ENG</span> if automation fails</td><td>per new grower</td></tr>
+      <tr><td>Invite users, assign personas</td><td><span class="tag lfg">LFG</span> admin</td><td><span class="tag ops">OPS</span> for the first admin only</td><td>as needed</td></tr>
+      <tr><td>Upload files, map columns, submit</td><td><span class="tag lfg">LFG</span> agronomist</td><td>UI pre-fills from saved templates</td><td>per season / per file</td></tr>
+      <tr><td>Scripted ingest (cron / internal API)</td><td><span class="tag auto">AUTO</span></td><td><span class="tag eng">ENG</span> configures schedule per LFG</td><td>scheduled</td></tr>
+      <tr><td>Validate rows, reject report</td><td><span class="tag auto">AUTO</span></td><td>—</td><td>every batch</td></tr>
+      <tr><td>Resolve worklist (unknown names)</td><td><span class="tag lfg">LFG</span> agronomist</td><td>aliases remembered forever after</td><td>mostly first uploads</td></tr>
+      <tr><td>Rollback a bad batch</td><td><span class="tag lfg">LFG</span> (own data) or <span class="tag ops">OPS</span></td><td>audited either way</td><td>rare</td></tr>
+      <tr><td>Season windows / registry rules entry</td><td><span class="tag eng">ENG</span> via audited admin screen</td><td><span class="tag lfg">LFG</span> provides the values</td><td>per country/crop, then rarely</td></tr>
+      <tr><td>Zone/FVA computation</td><td><span class="tag auto">AUTO</span> (batch + login trigger)</td><td><span class="tag ext">EXT</span> AgInsights serves the API</td><td>scheduled + on new fields</td></tr>
+      <tr><td>dataTrust review / overrides</td><td><span class="tag lfg">LFG</span> admin/agronomist</td><td>every override audited</td><td>as flagged</td></tr>
+      <tr><td>Deploy a release to production</td><td><span class="tag eng">ENG</span></td><td>manual gate — a human always clicks</td><td>per release</td></tr>
+      <tr><td>Watch alarms, hold the pager</td><td><span class="tag ops">OPS</span></td><td><span class="tag eng">ENG</span> escalation</td><td>continuous</td></tr>
+      <tr><td>Backups + lifecycle</td><td><span class="tag auto">AUTO</span></td><td><span class="tag ops">OPS</span> watches freshness alarms</td><td>hourly/daily/monthly</td></tr>
+      <tr><td>Restore drill (one random silo)</td><td><span class="tag ops">OPS</span></td><td>documented result each time</td><td>monthly</td></tr>
+      <tr><td>Secret / key rotation</td><td><span class="tag auto">AUTO</span></td><td><span class="tag ops">OPS</span> verifies</td><td>scheduled</td></tr>
+      <tr><td>Silo restore (incident)</td><td><span class="tag ops">OPS</span></td><td><span class="tag eng">ENG</span> consulted; LFG informed</td><td>incident only</td></tr>
+      <tr><td>Region DR runbook</td><td><span class="tag ops">OPS</span> commands</td><td><span class="tag eng">ENG</span> executes IaC steps</td><td>drill 2×/year; incident only</td></tr>
+      <tr><td>Offboarding an LFG (key deletion)</td><td><span class="tag ops">OPS</span></td><td>product owner approves; irreversible — documented procedure</td><td>rare</td></tr>
+      <tr><td>Login &amp; identity issues</td><td><span class="tag ext">EXT</span> Cropwise Base</td><td><span class="tag ops">OPS</span> confirms it's not us first</td><td>as reported</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================================ 4 -->
+<section>
+  <h2><span class="secnum">4</span> During the build (milestones M1–M7)</h2>
+  <table>
+    <thead><tr><th>Milestone</th><th>Platform engineering builds</th><th>Others contribute</th></tr></thead>
+    <tbody>
+      <tr><td><b>M1</b> Foundations</td><td>Terraform, CI/CD, observability</td><td>ops reviews alarms &amp; runbook skeletons</td></tr>
+      <tr><td><b>M2</b> Identity &amp; tenancy</td><td>JWKS verify, registry, guard, provisioning, routes</td><td>Cropwise Base team: token/JWKS details</td></tr>
+      <tr><td><b>M3</b> Variety &amp; field layer</td><td>schema, metric registry, variety admin</td><td><b>pilot LFG: variety list + season windows + metric ranges</b></td></tr>
+      <tr><td><b>M4</b> Upload UI</td><td>upload, mapping UI, worklist, commit/rollback</td><td><b>pilot LFG: real files to test mapping against</b></td></tr>
+      <tr><td><b>M5</b> Zones / FVA</td><td>queues, AgInsights client, windows, triggers</td><td>AgInsights team: batch API access + contract</td></tr>
+      <tr><td><b>M6</b> Serving &amp; personas</td><td>query API, UI views, persona enforcement</td><td>Seed Selector team: route embedding + login event; <b>pilot LFG: persona definitions</b></td></tr>
+      <tr><td><b>M7</b> Hardening &amp; pilot</td><td>security pass, dashboards</td><td>ops: drills + DR tabletop; <b>pilot LFG: go-live + reconciliation sign-off</b></td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><b>What the pilot LFG must bring</b> (worth agreeing early): their variety
+  list, season-window dates, exact field names, a few real data files, their persona/user list,
+  and a person empowered to sign off reconciliation. Everything else is on the platform side.</div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section>
+  <h2><span class="secnum">5</span> When something goes wrong — who to call</h2>
+  <table>
+    <thead><tr><th>Symptom</th><th>First responder</th><th>What happens</th></tr></thead>
+    <tbody>
+      <tr><td>"My upload was rejected"</td><td><span class="tag lfg">LFG</span> reads the reject report</td><td>reasons are per-row and specific; fix the file or resolve the worklist; re-upload</td></tr>
+      <tr><td>"I can't see fields I should see"</td><td><span class="tag lfg">LFG</span> admin checks personas</td><td>nine times out of ten it's a data-scope setting; otherwise raise to platform</td></tr>
+      <tr><td>"I can't log in"</td><td><span class="tag ext">EXT</span> Cropwise Base</td><td>login is CB's; platform ops confirms the guard isn't the cause, then hands over</td></tr>
+      <tr><td>"Zones look stale / missing"</td><td><span class="tag ops">OPS</span></td><td>freshness badge tells the story; ops checks queue age + AgInsights alarms; jobs drain on recovery</td></tr>
+      <tr><td>"We loaded wrong data yesterday"</td><td><span class="tag lfg">LFG</span> → rollback</td><td>one action per batch, FK-safe; audited; nothing else touched</td></tr>
+      <tr><td>Platform alarm fires (any)</td><td><span class="tag ops">OPS</span> on-call</td><td>runbook per alarm; escalate to engineering if code is at fault</td></tr>
+      <tr><td>Silo corruption suspected</td><td><span class="tag ops">OPS</span> incident</td><td>restore ONE silo (&lt; 1 h), repoint registry, notify the affected LFG only</td></tr>
+      <tr><td>Region outage</td><td><span class="tag ops">OPS</span> incident commander</td><td>region runbook: IaC rebuild + replicas; RTO &lt; 4 h; status page first</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>LFG Platform · who does what ·
+<a href="lfg-rfc.html">RFC</a> · <a href="lfg-dictionary.html">dictionary</a> ·
+<a href="lfg-scenarios.html">diagrams</a> · <a href="architecture-lfg.html">engineering design</a></footer>
+</div>
+</body>
+</html>
