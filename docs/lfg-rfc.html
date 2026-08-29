@@ -348,7 +348,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
   <div class="panel epic" style="--c:var(--red)">
     <h3>EPIC G — Hardening &amp; pilot <span class="tag b">M7</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-23</b></td><td>Backups: PG PITR + hourly→daily→monthly; S3 lifecycle = zone-dump policy (<b>Glacier-IR at 2 y, retain 20 y</b>); restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li><li>lifecycle rules assert 20-year retention, no silent expiry</li></ul></td><td>LFG-14</td><td>5</td></tr>
+      <tr><td><b>LFG-23</b></td><td>Backups &amp; DR: PG PITR + hourly→daily→monthly; S3 lifecycle = zone-dump policy (<b>Glacier-IR at 2 y, retain 20 y</b>); <b>cross-region replication for S3 + ECR</b>; region runbook; restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li><li>lifecycle rules assert 20-year retention, no silent expiry</li><li><b>RPO ≤ 1 h; single-silo restore &lt; 1 h (drill-timed); region RTO &lt; 4 h</b>; replication lag alarmed</li></ul></td><td>LFG-14</td><td>5</td></tr>
       <tr><td><b>LFG-24</b></td><td>Security pass (WAF, throttling, rotation, pgAudit, immutable audit log, sandboxed file parsing)</td><td><ul class="ac"><li>rotation without downtime; audit log append-only</li></ul></td><td>LFG-20</td><td>5</td></tr>
       <tr><td><b>LFG-25</b></td><td>Dashboards + alarms (ingest failures, queue age, DLQ, pool saturation, AgInsights errors, backup freshness)</td><td><ul class="ac"><li>every daily ops check is a dashboard; alarms fault-injection tested</li></ul></td><td>LFG-15</td><td>3</td></tr>
       <tr><td><b>LFG-26</b></td><td>Pilot LFG live end to end + sign-off (reconciliation vs source files; ops cadence started)</td><td><ul class="ac"><li>pilot answers real queries in prod; row counts reconcile</li></ul></td><td>all</td><td>5</td></tr>
@@ -371,6 +371,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
       <tr><td>Huge uploads</td><td>streamed parsing, bounded memory, chunked transactions under one batch_id, resume-from-chunk, FK-safe rollback</td></tr>
       <tr><td>Noisy neighbours</td><td>per-LFG in-flight caps on both lanes; queue-<i>age</i> (not depth) is the alarm metric</td></tr>
       <tr><td>Serving latency</td><td>zone metrics pre-computed as rows → indexed SQL; defined benchmark in LFG-20, load test in DoD</td></tr>
+      <tr><td>Region loss</td><td>runbook: rebuild from IaC + <b>cross-region ECR/S3 replicas</b> + PG backups; RPO ≤ 1 h, single-silo restore &lt; 1 h, region RTO &lt; 4 h (LFG-23)</td></tr>
       <tr><td>Field identity drift over years</td><td>CB reference-IDs only + stored match provenance (<code>matched_by</code>, <code>confidence</code>); low-confidence matches go to the worklist, never auto-merged</td></tr>
     </tbody>
   </table>
@@ -404,8 +405,11 @@ s3://lfg-&lt;id&gt;/fva-zones/
 <!-- ============================================================ 12 -->
 <section id="scenarios">
   <h2><span class="secnum">12</span> Appendix — the platform in ten real scenarios</h2>
-  <p class="lead">One picture of production life, numbered. 4K PNG below; the
-  <a href="images/12-lfg-scenarios.svg">SVG</a> zooms forever.</p>
+  <p class="lead">One picture of production life, numbered — and each scenario also exists as
+  its <b>own full-size 4K diagram</b>, plus <b>three sequence diagrams</b> (upload &amp; ingest,
+  zone/FVA job, persona-scoped read): see the
+  <a href="lfg-scenarios.html"><b>scenario &amp; sequence gallery</b></a>.
+  The <a href="images/12-lfg-scenarios.svg">SVG</a> of this poster zooms forever.</p>
   <p><img src="images/12-lfg-scenarios-4k.png" alt="Ten numbered production scenarios: onboarding, crops and varieties in one country, multiple countries, personas, zone storage and fetch, database layout, API to database connection, rate limits and security, encryption, and single-grower disaster recovery." style="width:100%;height:auto;border-radius:14px;border:1px solid var(--line)"></p>
   <div class="panel">
     <b>What each number shows</b>
