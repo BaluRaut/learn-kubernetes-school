@@ -69,7 +69,7 @@
 <header class="hero">
   <h1>RFC — LFG Platform (Large Farm Grower)</h1>
   <div class="meta">
-    <span class="chip">Status <b>Draft v4 — clean rewrite (descoped &amp; clarified)</b></span>
+    <span class="chip">Status <b>Draft v4.1 — open questions resolved</b></span>
     <span class="chip">Backend <b>NestJS</b> · UI <b>React (in Seed Selector)</b></span>
     <span class="chip">Isolation <b>silo per LFG · no cross-LFG data path</b></span>
     <span class="chip">Supersedes <b>v3.x (Product Analyzer removed; option lettering dropped)</b></span>
@@ -88,8 +88,8 @@
 <section id="summary">
   <h2><span class="secnum">1</span> Summary</h2>
   <p class="lead">A standalone LFG platform (UI inside Seed Selector + NestJS backend) for large
-  farm growers. Each LFG gets its own data silo and its own route in Seed Selector
-  (<code>…/bgf</code>, <code>…/kio</code>). The LFG uploads its <b>field + variety data</b> through a
+  farm growers. Each LFG gets its own data silo and its own route in Seed Selector — a <b>dynamic encrypted
+  route id</b> (<code>…/g/9f3ac1…</code>), no readable name and no real id in the URL. The LFG uploads its <b>field + variety data</b> through a
   mapping UI; the platform then runs <b>AgInsights batch jobs</b> to compute <b>FVA / zones</b> per
   field and stores every historical season window. Varieties are managed as a
   <b>layer per country / crop / LFG</b>. Cropwise Base provides login and field identity —
@@ -103,8 +103,8 @@
   <div class="flow">
     <div class="fstep" style="--c:var(--blue)"><span class="n">1</span><b>Cropwise Base</b><span>login (JWKS-verified token) + identity for orgs/properties/fields. LFG stores <b>reference IDs only</b> (<code>sysFieldId</code>, <code>orgId</code>) — no field geometry, no mirrored master data.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">2</span><b>LFG (the grower)</b><span>provides field data <b>with crop variety</b> — file uploads through the mapping UI. Their data, their silo.</span></div>
-    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>AgInsights</b><span>batch job API returning <b>FVA + zones per field</b> (imagery-derived variability). Called by our workers on schedule/trigger — never during a user request.</span></div>
-    <div class="fstep" style="--c:var(--amber)"><span class="n">4</span><b>Seed Selector UI</b><span>hosts the LFG experience on a <b>dynamic route per LFG</b> (<code>/bgf</code>, <code>/kio</code>). Renders; never joins.</span></div>
+    <div class="fstep" style="--c:var(--violet)"><span class="n">3</span><b>AgInsights</b><span><b>internal</b> batch job API (no quota/cost constraints) returning <b>FVA + zones per field</b>. Called by our workers on schedule/trigger — never during a user request.</span></div>
+    <div class="fstep" style="--c:var(--amber)"><span class="n">4</span><b>Seed Selector UI</b><span>hosts the LFG experience on a <b>dynamic route per LFG</b> — an encrypted opaque id (<code>/g/9f3ac1…</code>), nothing guessable. Renders; never joins.</span></div>
   </div>
   <table>
     <thead><tr><th>Boundary rule</th><th>Meaning</th></tr></thead>
@@ -133,6 +133,7 @@
 field_ref
   cb_field_ref (sysFieldId)  ← identity from CB
   cb_org_ref, display_name, region, area_ha
+  -- one LFG spans MANY CB orgs: registry holds cb_org_refs[]
   match_meta (matched_by, confidence)
 field_season_variety           -- variety ⟷ field per season
   field_ref, season_year, variety
@@ -176,7 +177,11 @@ s3://lfg-&lt;id&gt;/fva-zones/
         <tr><td><code>productivityByYear</code>, <code>zoneSummary</code>, <code>indicesSource/Status</code>, <code>dataTrust</code></td><td>derived/serving projections — computed from zone_window + S3 dumps, never hand-stored</td></tr>
       </tbody>
     </table>
-    <p style="font-size:.86rem;color:var(--muted)">Window keys in the wild are year-ranges
+    <p style="font-size:.86rem;color:var(--muted)"><b>Reference data comes from the LFG:</b> season-window
+    definitions per country/crop (delivered by the LFG — today via email, entered through an
+    audited admin screen), the variety layer (purely LFG-provided, no catalogue seeding), and
+    <b>exact field names</b> (the LFG supplies the authoritative name, so CB-ref matching is
+    expected to be exact; the worklist handles the rare mismatch). Window keys in the wild are year-ranges
     ("2017-2022" … "2021-2026") <i>and</i> the business speaks in date spans ("15 Apr–15 Oct 2026";
     "12 Oct–15 Jan 2027" for southern-hemisphere seasons). <code>zone_window</code> therefore stores
     <b>both</b>: the label for display/compat, and canonical <code>date_start/date_end</code> for
@@ -195,9 +200,10 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <div class="fstep" style="--c:var(--amber)"><span class="n">5</span><b>Submit → validate</b><span>user submits for processing; per-row validation against the country/crop metric registry; per-row reject report.</span></div>
     <div class="fstep" style="--c:var(--green)"><span class="n">6</span><b>Commit</b><span>transactional chunk commits under one <code>batch_id</code>; FK-safe rollback as a unit; raw file stays in S3 for replay.</span></div>
   </div>
-  <div class="callout"><b>Scope note:</b> the upload UI is the intake for now. A scheduled
-  direct-inject from the grower's own database can reuse the saved templates later — listed as an
-  open question (§11), not designed here.</div>
+  <div class="callout"><b>Two intake triggers, one pipeline:</b> the upload UI, plus a <b>scripted
+  ingest</b> — a cron-scheduled script or a manual internal API trigger — that reuses the saved
+  mapping templates and runs the identical validate→commit path under a service identity (LFG-27).
+  A direct connection into the grower's own database is <i>not</i> in scope.</div>
 </section>
 
 <!-- ============================================================ 5 -->
@@ -207,7 +213,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <li><b>Trigger</b> — once field + variety data is committed for an LFG: a <b>batch job per LFG</b> (scheduled) walks its fields; a Seed Selector login also enqueues that LFG's newly added fields (interactive lane). Enqueue-only at request time — the fetch always runs on workers.<small>Idempotency key: (lfg, cb_field_ref, window, method_version).</small></li>
     <li><b>Call the AgInsights batch API</b> — imagery-derived FVA + zones per field; rate-limited, retried with backoff, responses cached in S3 so retries never re-pay a call.</li>
     <li><b>Store</b> — full response to <code>s3://lfg-&lt;id&gt;/fva-zones/&lt;ref&gt;-&lt;window&gt;.json</code>; indexed metrics (vxc, heterogeneity, consistency, pafSpread, NDVI percentiles, zone_count) into <code>zone_window</code> with label + canonical dates.</li>
-    <li><b>Keep all history</b> — every window ever computed stays (the bgf sample carries five: 2017-2022 … 2021-2026). Values change per season/request → a re-run <b>supersedes</b>, never edits; "what did zoning say then" is always answerable.</li>
+    <li><b>Keep 20 years of history</b> — every window computed is retained for 20 years (S3 lifecycle: Glacier-IR after 2 years; nothing deleted before year 20, then reviewed). Values change per season/request → a re-run <b>supersedes</b>, never edits; "what did zoning say then" stays answerable for two decades.</li>
     <li><b>Serve honestly</b> — every window shows its dates + computed-at; "zoning pending" for new fields is distinct from an error; AgInsights downtime = staleness badge, queued jobs drain on recovery.</li>
   </ol>
   <div class="callout green"><b>Same format per crop</b> — the zone/FVA record structure is identical
@@ -222,17 +228,18 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <div class="panel">
       <b>Dynamic route per LFG</b>
       <ul class="check">
-        <li>Seed Selector serves each LFG at its own path: <code>…/bgf</code>, <code>…/kio</code> — the slug resolves to an LFG in the registry.</li>
-        <li>The slug is <b>display routing only</b>: the backend validates <code>(user sub, lfg)</code> membership on every request — a guessed URL 403s before any handler.</li>
-        <li>Users in two LFGs switch by route; the wrong route is harmless by construction.</li>
+        <li>Seed Selector serves each LFG at its own path — a <b>dynamic encrypted route id</b> (<code>…/g/9f3ac1…</code>): no readable string, no real internal id in the URL. The registry maps token ↔ LFG; tokens are rotatable.</li>
+        <li>The token is <b>display routing only</b>: the backend validates <code>(user sub, lfg)</code> membership on every request — a guessed or leaked URL 403s before any handler.</li>
+        <li>Users in two LFGs switch by route; the wrong route is harmless by construction. Branding lives inside the page, not in the URL.</li>
       </ul>
     </div>
     <div class="panel">
       <b>Personas — LFG-managed visibility</b>
       <ul class="check">
         <li>Each LFG's admin manages its own users and personas: e.g. <b>lfg_admin</b> (everything + user management), <b>agronomist</b> (fields/zones/uploads), <b>analyst</b> (read-only metrics), <b>region-scoped viewer</b> (assigned regions/farms only).</li>
-        <li>A persona = role + <b>data scope</b> (regions, farms, or field sets). Enforced server-side in the query layer — scope filters attach to every silo query, never only hidden in the UI.</li>
+        <li>A persona = role + <b>data scope</b> (regions, farms, org lines, or field sets — org-level scoping matters because one LFG spans many CB orgs). Enforced server-side in the query layer — scope filters attach to every silo query, never only hidden in the UI.</li>
         <li>Persona changes are audited and effective ≤60 s (guard cache TTL).</li>
+        <li><b>Data review is the LFG's job:</b> <code>dataTrust</code> flags and suspect records are reviewed/overridden by the LFG's own admin/agronomist personas, with every override audited.</li>
       </ul>
     </div>
   </div>
@@ -261,7 +268,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
   <div class="panel">
     <ol class="steps">
       <li><b>M1 · Foundations</b> — Terraform (VPC, EKS, RDS, S3, SQS, ECR), sandbox + production, CI/CD, observability baseline.<small>Exit: hello-world through the pipeline to sandbox.</small></li>
-      <li><b>M2 · Identity &amp; tenancy</b> — CB JWKS verify, LFG registry + slugs, memberships, tenant guard, silo provisioning automation, per-LFG route resolution.<small>Exit: /bgf and /kio resolve; non-member 403s; "create LFG" yields a working silo.</small></li>
+      <li><b>M2 · Identity &amp; tenancy</b> — CB JWKS verify, LFG registry + slugs, memberships, tenant guard, silo provisioning automation, per-LFG route resolution.<small>Exit: two encrypted route ids resolve to their LFGs; non-member 403s; "create LFG" yields a working silo.</small></li>
       <li><b>M3 · Variety &amp; field layer</b> — silo schema (§3), metric registry seeded with bgf keys per country/crop, variety-layer admin.<small>Exit: the bgf sample's entities representable end to end.</small></li>
       <li><b>M4 · Upload UI</b> — upload → profile → mapping UI → worklist → validate → chunked commit + FK-safe rollback.<small>Exit: the real 391-row bgf file loads with per-row rejects and clean rollback.</small></li>
       <li><b>M5 · Zones/FVA</b> — SQS lanes, AgInsights batch client, zone_window + S3 dumps, per-LFG scheduler + login trigger, staleness states.<small>Exit: a new field zoned during a session; five historical windows queryable side by side.</small></li>
@@ -291,9 +298,9 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <h3>EPIC B — Identity, routes &amp; silos <span class="tag b">M2</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
       <tr><td><b>LFG-4</b></td><td>Cropwise Base JWKS verification (token = identity only)</td><td><ul class="ac"><li>tampered/expired → 401; key rotation without deploy</li></ul></td><td>LFG-2</td><td>5</td></tr>
-      <tr><td><b>LFG-5</b></td><td>LFG registry (+ route slug), memberships, tenant guard</td><td><ul class="ac"><li>slug→LFG resolution; non-member 403 pre-handler; revocation ≤60 s</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
+      <tr><td><b>LFG-5</b></td><td>LFG registry (route token + <b>cb_org_refs[]</b> — one LFG spans many CB orgs), memberships, tenant guard</td><td><ul class="ac"><li>slug→LFG resolution; non-member 403 pre-handler; revocation ≤60 s</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
       <tr><td><b>LFG-6</b></td><td>Silo provisioning + catalog-driven migrations</td><td><ul class="ac"><li>one idempotent call: DB → user → migrations → secret → registry</li><li>migration job reports per silo, resumable on partial failure</li></ul></td><td>LFG-5</td><td>8</td></tr>
-      <tr><td><b>LFG-7</b></td><td>Per-LFG dynamic route in Seed Selector (<code>/bgf</code>, <code>/kio</code>)</td><td><ul class="ac"><li>route renders that LFG's context only; guessed slugs 403</li></ul></td><td>LFG-5</td><td>3</td></tr>
+      <tr><td><b>LFG-7</b></td><td>Per-LFG dynamic route in Seed Selector — <b>encrypted opaque route id</b> (<code>/g/…</code>), registry-mapped, rotatable</td><td><ul class="ac"><li>no readable name or real id in any URL; guessed/stale tokens 403</li><li>token rotation without breaking active sessions</li></ul></td><td>LFG-5</td><td>3</td></tr>
     </tbody></table>
   </div>
 
@@ -313,6 +320,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
       <tr><td><b>LFG-12</b></td><td>Mapping UI (profile → columns→canonical → save template) + submit for processing</td><td><ul class="ac"><li>template pre-fills the next upload; version recorded per batch</li></ul></td><td>LFG-11</td><td>8</td></tr>
       <tr><td><b>LFG-13</b></td><td>Entity resolution worklist (fields → cb_field_ref, varieties → layer)</td><td><ul class="ac"><li>unknown name rejects the row, not the batch; alias reused forever after</li></ul></td><td>LFG-12</td><td>5</td></tr>
       <tr><td><b>LFG-14</b></td><td>Validation + reject report; chunked commit; FK-safe rollback</td><td><ul class="ac"><li>row all-or-nothing; reasons name key/value/rule</li><li>chunk commits share one batch_id; rollback FK-safe, no orphaned canonical or derived records</li></ul></td><td>LFG-12</td><td>5</td></tr>
+      <tr><td><b>LFG-27</b></td><td>Scripted ingest trigger — cron schedule or manual internal API call; service identity; reuses saved templates; identical validate→commit path</td><td><ul class="ac"><li>a scheduled run loads a file with zero human steps; re-run idempotent (file hash + template version)</li><li>manual trigger restricted to internal identity, audited</li></ul></td><td>LFG-12, LFG-14</td><td>3</td></tr>
     </tbody></table>
   </div>
 
@@ -320,7 +328,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <h3>EPIC E — Zones / FVA <span class="tag b">M5</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
       <tr><td><b>LFG-15</b></td><td>SQS lanes + workers (interactive/backfill, DLQ, KEDA, per-LFG in-flight caps)</td><td><ul class="ac"><li>interactive overtakes bulk; queue-age alarmed; idempotent enqueue</li></ul></td><td>LFG-8</td><td>5</td></tr>
-      <tr><td><b>LFG-16</b></td><td>AgInsights batch client (rate-limited, backoff, S3 response cache)</td><td><ul class="ac"><li>never called in a request path; a retry never re-pays a call</li></ul></td><td>LFG-15</td><td>5</td></tr>
+      <tr><td><b>LFG-16</b></td><td>AgInsights batch client (internal API — no quota; backoff + S3 response cache kept for resilience)</td><td><ul class="ac"><li>never called in a request path; a retry never re-pays a call</li></ul></td><td>LFG-15</td><td>5</td></tr>
       <tr><td><b>LFG-17</b></td><td>zone_window store: label + canonical dates, indexed metrics, geometry dump to S3, supersede-not-edit</td><td><ul class="ac"><li>the five bgf windows load and query side by side</li><li>date-span windows ("15 Apr–15 Oct 2026") first-class</li></ul></td><td>LFG-16</td><td>5</td></tr>
       <tr><td><b>LFG-18</b></td><td>Per-LFG batch scheduler + Seed Selector login trigger (new fields → interactive lane)</td><td><ul class="ac"><li>new field zoned during the session (sandbox-verified); login never blocks on it</li></ul></td><td>LFG-17</td><td>3</td></tr>
       <tr><td><b>LFG-19</b></td><td>Freshness/staleness UI states (computed-at badge, "zoning pending", outage = stale not broken)</td><td><ul class="ac"><li>&gt;24 h feed staleness pages ops, not users</li></ul></td><td>LFG-17</td><td>3</td></tr>
@@ -332,21 +340,21 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
       <tr><td><b>LFG-20</b></td><td>Query API: variety ⟷ field ⟷ zone_window joins, filters at source, pagination</td><td><ul class="ac"><li>zero client-side joins; p95 &lt; 800 ms on the benchmark silo (250 fields × 6 seasons × 65 varieties, 20 concurrent; generator committed)</li></ul></td><td>LFG-14, LFG-17</td><td>8</td></tr>
       <tr><td><b>LFG-21</b></td><td>SS UI views on the per-LFG route (analysis, uploads, worklist, zone status)</td><td><ul class="ac"><li>renders any country's metrics from the registry — no hardcoded columns</li></ul></td><td>LFG-20, LFG-7</td><td>8</td></tr>
-      <tr><td><b>LFG-22</b></td><td>Personas: LFG-managed roles + data scopes (region/farm/field sets), enforced in the query layer</td><td><ul class="ac"><li>scope filters applied server-side to every silo query</li><li>region-scoped viewer provably cannot read other regions (test)</li><li>persona changes audited; effective ≤60 s</li></ul></td><td>LFG-20</td><td>8</td></tr>
+      <tr><td><b>LFG-22</b></td><td>Personas: LFG-managed roles + data scopes (region/farm/field sets), enforced in the query layer</td><td><ul class="ac"><li>scope filters applied server-side to every silo query</li><li>region-scoped viewer provably cannot read other regions (test)</li><li>dataTrust review/override restricted to LFG admin/agronomist, audited</li><li>persona changes audited; effective ≤60 s</li></ul></td><td>LFG-20</td><td>8</td></tr>
     </tbody></table>
   </div>
 
   <div class="panel epic" style="--c:var(--red)">
     <h3>EPIC G — Hardening &amp; pilot <span class="tag b">M7</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-23</b></td><td>Backups: PG PITR + hourly→daily→monthly; S3 lifecycle as the zone-dump backup policy; restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li></ul></td><td>LFG-14</td><td>5</td></tr>
+      <tr><td><b>LFG-23</b></td><td>Backups: PG PITR + hourly→daily→monthly; S3 lifecycle = zone-dump policy (<b>Glacier-IR at 2 y, retain 20 y</b>); restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li><li>lifecycle rules assert 20-year retention, no silent expiry</li></ul></td><td>LFG-14</td><td>5</td></tr>
       <tr><td><b>LFG-24</b></td><td>Security pass (WAF, throttling, rotation, pgAudit, immutable audit log, sandboxed file parsing)</td><td><ul class="ac"><li>rotation without downtime; audit log append-only</li></ul></td><td>LFG-20</td><td>5</td></tr>
       <tr><td><b>LFG-25</b></td><td>Dashboards + alarms (ingest failures, queue age, DLQ, pool saturation, AgInsights errors, backup freshness)</td><td><ul class="ac"><li>every daily ops check is a dashboard; alarms fault-injection tested</li></ul></td><td>LFG-15</td><td>3</td></tr>
       <tr><td><b>LFG-26</b></td><td>Pilot LFG live end to end + sign-off (reconciliation vs source files; ops cadence started)</td><td><ul class="ac"><li>pilot answers real queries in prod; row counts reconcile</li></ul></td><td>all</td><td>5</td></tr>
     </tbody></table>
   </div>
 
-  <div class="callout green"><b>Totals:</b> 26 tickets / ~125 points.
+  <div class="callout green"><b>Totals:</b> 27 tickets / ~128 points.
   <b>Critical path: A → B → C → D → E → F</b> (serving needs both ingest and zones);
   G hardens in parallel from M5 onward. Pilot-ready = A–F; production = + G.</div>
 </section>
@@ -369,22 +377,27 @@ s3://lfg-&lt;id&gt;/fva-zones/
 
 <!-- ============================================================ 11 -->
 <section id="questions">
-  <h2><span class="secnum">11</span> Open questions</h2>
+  <h2><span class="secnum">11</span> Open questions — resolved</h2>
+  <p class="lead">All ten answered (v4.1). Decisions recorded here; each consequence is already
+  applied in the section/ticket named.</p>
   <table>
-    <thead><tr><th>#</th><th>Question</th><th>Why it matters / current lean</th></tr></thead>
+    <thead><tr><th>#</th><th>Question</th><th>Decision</th><th>Applied in</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td><b>AgInsights batch API contract</b> — auth, quotas, batch size, SLA, cost per call?</td><td>sizes the scheduler throttle and the S3 cache strategy; blocks LFG-16 detail design</td></tr>
-      <tr><td>2</td><td><b>Who defines season windows</b> per country/crop (15 Apr–15 Oct vs 12 Oct–15 Jan)?</td><td>agronomy decision, stored as data; needs an owner and a change process</td></tr>
-      <tr><td>3</td><td><b>Variety master source</b> — seeded from a catalogue, purely LFG-provided, or both (with aliasing)?</td><td>affects dedup rules within the layer and any future comparability</td></tr>
-      <tr><td>4</td><td><b>One LFG ↔ many CB orgs?</b> (bgf carries <code>orgId</code> per record)</td><td>if yes, the registry needs an org-set and persona scopes may follow org lines</td></tr>
-      <tr><td>5</td><td><b>Direct inject (grower DB → us)</b> — hard requirement now, or wait for pilot feedback?</td><td>upload-UI templates are the prerequisite either way; lean: after the pilot</td></tr>
-      <tr><td>6</td><td><b><code>dataTrust</code> / correction workflow</b> — who may override a suspect record and how is it audited?</td><td>the flag exists in the data today; needs a persona + audit answer</td></tr>
-      <tr><td>7</td><td><b>Zone-dump retention</b> — keep every historical window hot forever, or lifecycle to Glacier after N years?</td><td>cost vs "what did zoning say then"; lean: Glacier-IR after 2 years, never delete</td></tr>
-      <tr><td>8</td><td><b>Low-confidence field matches</b> (<code>sysFieldMatchedBy: "family+name"</code>) — who resolves them, where, with what SLA?</td><td>provenance is stored (§10); the human workflow needs an owner</td></tr>
-      <tr><td>9</td><td><b>Cross-LFG benchmarking</b> — permanently out of scope, or a future governance track?</td><td>the architecture keeps the boundary either way; the answer only decides whether governance ever gets drafted</td></tr>
-      <tr><td>10</td><td><b>Per-LFG route branding</b> (<code>/bgf</code>, <code>/kio</code>) — slug naming rules, custom theming, or plain?</td><td>cheap now, annoying to retrofit; needs product input</td></tr>
+      <tr><td>1</td><td>AgInsights API contract</td><td><span class="tag g">resolved</span> internal API, no quota/cost limits — backoff + S3 cache kept for resilience only</td><td>§2, LFG-16</td></tr>
+      <tr><td>2</td><td>Who defines season windows</td><td><span class="tag g">resolved</span> the LFG provides them (today via email); entered as reference data through an audited admin screen</td><td>§3</td></tr>
+      <tr><td>3</td><td>Variety master source</td><td><span class="tag g">resolved</span> purely LFG-provided; no catalogue seeding; aliasing within the LFG's own layer</td><td>§3, LFG-10</td></tr>
+      <tr><td>4</td><td>One LFG ↔ many CB orgs</td><td><span class="tag g">resolved</span> yes — registry holds <code>cb_org_refs[]</code>; persona scopes can follow org lines</td><td>§3, §6, LFG-5</td></tr>
+      <tr><td>5</td><td>Direct inject</td><td><span class="tag g">resolved</span> upload UI <i>plus</i> a scripted trigger (cron or manual internal API) reusing saved templates; no direct grower-DB connection</td><td>§4, LFG-27</td></tr>
+      <tr><td>6</td><td><code>dataTrust</code> review</td><td><span class="tag g">resolved</span> the LFG reviews its own suspect records — admin/agronomist personas override, fully audited</td><td>§6, LFG-22</td></tr>
+      <tr><td>7</td><td>Zone-dump retention</td><td><span class="tag g">resolved</span> keep the last <b>20 years</b>; Glacier-IR after 2 years; nothing deleted before year 20</td><td>§5, LFG-23</td></tr>
+      <tr><td>8</td><td>Low-confidence field matches</td><td><span class="tag g">resolved</span> the LFG supplies the <b>exact field name</b> — matching to CB refs expected exact; provenance still stored; worklist for the rare mismatch</td><td>§3, LFG-13</td></tr>
+      <tr><td>9</td><td>Cross-LFG benchmarking</td><td><span class="tag a">recommendation</span> keep it <b>permanently out of scope for this version</b>; the closed boundary is a selling point ("your data is never mixed"). Revisit only on an explicit, written business case — and then as its own governance track + design, which the silo architecture already permits without rework. No standing "future track" should exist meanwhile: an open door invites scope creep and weakens the isolation pitch.</td><td>§2 boundary rule</td></tr>
+      <tr><td>10</td><td>Per-LFG route branding</td><td><span class="tag g">resolved</span> a <b>dynamic encrypted route id</b> — no readable string, no real id in the URL; registry-mapped, rotatable; branding lives inside the page</td><td>§6, LFG-7</td></tr>
     </tbody>
   </table>
+  <div class="callout"><b>One process suggestion on #2:</b> email is fine as the source, but the
+  window definitions should land in the registry through an audited admin screen (who entered what,
+  when) rather than living in an inbox — the screen is a one-day build inside LFG-10's admin scope.</div>
 </section>
 
 <footer>
