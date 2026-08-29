@@ -82,6 +82,7 @@
   <a href="#zones">5 Zones / FVA pipeline</a> <a href="#tenancy">6 Routes, tenancy &amp; personas</a>
   <a href="#stack">7 Tech stack</a> <a href="#milestones">8 Milestones</a>
   <a href="#backlog">9 Backlog</a> <a href="#risks">10 Risks</a> <a href="#questions">11 Open questions</a>
+  <a href="#scenarios">12 Scenarios (4K)</a>
 </nav>
 
 <!-- ============================================================ 1 -->
@@ -398,6 +399,29 @@ s3://lfg-&lt;id&gt;/fva-zones/
   <div class="callout"><b>One process suggestion on #2:</b> email is fine as the source, but the
   window definitions should land in the registry through an audited admin screen (who entered what,
   when) rather than living in an inbox — the screen is a one-day build inside LFG-10's admin scope.</div>
+</section>
+
+<!-- ============================================================ 12 -->
+<section id="scenarios">
+  <h2><span class="secnum">12</span> Appendix — the platform in ten real scenarios</h2>
+  <p class="lead">One picture of production life, numbered. 4K PNG below; the
+  <a href="images/12-lfg-scenarios.svg">SVG</a> zooms forever.</p>
+  <p><img src="images/12-lfg-scenarios-4k.png" alt="Ten numbered production scenarios: onboarding, crops and varieties in one country, multiple countries, personas, zone storage and fetch, database layout, API to database connection, rate limits and security, encryption, and single-grower disaster recovery." style="width:100%;height:auto;border-radius:14px;border:1px solid var(--line)"></p>
+  <div class="panel">
+    <b>What each number shows</b>
+    <ul class="check">
+      <li><b>1 · Onboard a new grower</b> — ops creates the LFG (name, countries, CB org refs); one idempotent automation call provisions the silo DB, user, migrations, KMS key, S3 prefix and secret; an encrypted route id is minted; the admin logs in via Cropwise Base and gets the first membership. Minutes, not days.</li>
+      <li><b>2 · Two crops, many varieties, one country</b> — the variety layer holds soybean and corn varieties side by side, all scoped BR; <code>field_season_variety</code> links each field to its variety per season; one country's metric rules validate both crops. Adding a variety is an insert, not a deploy.</li>
+      <li><b>3 · Two crops, multiple countries</b> — the farm carries the country, so one silo holds BR and US farms; the same metric key (<code>yield</code>) carries different rules per country and the most-specific rule wins. A new country is registry rows + season windows — zero migrations.</li>
+      <li><b>4 · Personas</b> — the LFG's own admin assigns role + data scope (regions, farms, org lines, field sets); the query layer appends the scope filter to <i>every</i> silo query, so visibility is enforced in SQL, not hidden in the UI. Audited, effective ≤ 60 s.</li>
+      <li><b>5 · Zones stored &amp; fetched</b> — indexed metrics (vxc, pafSpread, NDVI percentiles, window dates) live as <code>zone_window</code> rows in Postgres for fast lists/filters; the heavy geometry dump lives in S3 and is fetched via presigned URL only when a map opens. 20-year history, supersede-never-edit.</li>
+      <li><b>6 · Database</b> — many logical grower DBs share pooled Multi-AZ RDS hosts; the control plane keeps registry/personas/templates in its own small DB; one catalog-driven migration job loops every silo with per-silo reporting.</li>
+      <li><b>7 · API ⟷ database</b> — every request carries the CB token + encrypted route; the tenant guard 403s non-members before any handler; then a cached, per-LFG pool (max 5 connections) is the <i>only</i> handle the request code receives — a cross-silo query is unwritable.</li>
+      <li><b>8 · Rate limits &amp; security</b> — WAF at the edge, per-user + per-LFG throttles (tight on auth), whitelist validation that rejects unknown fields, and an immutable audit log. Each layer assumes the one above it failed.</li>
+      <li><b>9 · Encryption</b> — TLS on every hop (ALB → pod → RDS/S3); at rest, a KMS key per LFG for both RDS and S3; per-silo credentials in Secrets Manager, rotated, never in code or images. One leaked key exposes one grower, never all.</li>
+      <li><b>10 · DR for one grower</b> — a bad upload rolls back by <code>batch_id</code>; a corrupted silo is restored <i>alone</i> from PITR/hourly backups and repointed in the registry; a lost region rebuilds from IaC + replicated ECR images + replicated S3. RPO ≤ 1 h, silo restore &lt; 1 h — the other growers never notice.</li>
+    </ul>
+  </div>
 </section>
 
 <footer>
