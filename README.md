@@ -221,6 +221,9 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 > - [docs/architecture.html](docs/architecture.html) — **School platform**: option E→F tenancy,
 >   single-domain routing (external IdP + X-School-Id), NestJS blueprint, backup lifecycle, DR runbook,
 >   security checklists, per-school admin panels. English + मराठी toggle.
+> - [docs/lfg-rfc.html](docs/lfg-rfc.html) — **LFG RFC**: Cropwise Base → AgInsights → Seed Selector
+>   integration, clean phase 1/2 steps, tech stack with alternatives, and the sequenced Jira backlog
+>   (10 epics, 33 tickets with acceptance criteria).
 > - [docs/architecture-lfg.html](docs/architecture-lfg.html) — **LFG (Large Farm Grower) platform**:
 >   engineering companion to the [RFC figures](docs/LFG%20Data%20Architecture.html) — phase 1 D+E
 >   (per-grower silos, no cross-silo path), phase 2 F (governed aggregate gate, deferred), the
