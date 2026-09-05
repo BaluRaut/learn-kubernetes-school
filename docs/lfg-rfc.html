@@ -69,7 +69,7 @@
 <header class="hero">
   <h1>RFC — LFG Platform (Large Farm Grower)</h1>
   <div class="meta">
-    <span class="chip">Status <b>Draft v4.2 — flow-gap review folded in</b></span>
+    <span class="chip">Status <b>Draft v4.3 — multi-region cells + points-total fix</b></span>
     <span class="chip">Backend <b>NestJS</b> · UI <b>React (in Seed Selector)</b></span>
     <span class="chip">Isolation <b>silo per LFG · no cross-LFG data path</b></span>
     <span class="chip">Supersedes <b>v3.x (Product Analyzer removed; option lettering dropped)</b></span>
@@ -270,6 +270,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
       <tr><td>Jobs</td><td><span class="tag g">SQS + EKS workers (KEDA)</span></td><td>interactive/backfill lanes, DLQ, per-LFG in-flight caps; EKS chosen for existing team/IaC capability, not superiority (ECS is the simpler greenfield pick)</td></tr>
       <tr><td>Identity</td><td><span class="tag g">Cropwise Base (JWKS)</span></td><td>token = who; personas/memberships = ours; near-real-time revocation (≤60 s)</td></tr>
       <tr><td>IaC / CI</td><td><span class="tag g">Terraform · CircleCI</span></td><td>sandbox + production; manual gate before prod</td></tr>
+      <tr><td>Regions</td><td><span class="tag g">Home-region-per-LFG cells</span></td><td>the same Terraform stamps per region (region is a tfvar): <b>us-east-2</b> for US LFGs, <b>eu-central-1</b> (Frankfurt) for Ukraine/EU LFGs (no AWS region in Ukraine; ~30–40 ms from Kyiv, GDPR-modeled law, no in-country mandate). <code>lfg_registry.home_region</code> anchors each grower; the route token resolves to the home cell; silo, S3 prefixes and DR replicas never leave the jurisdiction (LFG-23). <b>Russia is not servable on AWS</b> — no region, new sign-ups suspended since 2022, 242-FZ data localization, sanctions/export controls → open question #13, owned by legal, not engineering</td></tr>
     </tbody>
   </table>
 </section>
@@ -300,7 +301,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
   <div class="panel epic" style="--c:var(--blue)">
     <h3>EPIC A — Foundations <span class="tag b">M1</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-1</b></td><td>Terraform baseline (VPC, EKS, RDS, S3, SQS, ECR; sandbox + prod)</td><td><ul class="ac"><li>sandbox from empty account via apply; tfvars-only env diff</li></ul></td><td>—</td><td>8</td></tr>
+      <tr><td><b>LFG-1</b></td><td>Terraform baseline (VPC, EKS, RDS, S3, SQS, ECR; sandbox + prod; region-cell stamping)</td><td><ul class="ac"><li>sandbox from empty account via apply; tfvars-only env diff</li><li>a second region cell (eu-central-1) comes up from the same modules, tfvars-only</li></ul></td><td>—</td><td>8</td></tr>
       <tr><td><b>LFG-2</b></td><td>CI/CD: test → build → ECR (SHA) → sandbox → gate → prod</td><td><ul class="ac"><li>prod unreachable without approval; one-command rollback</li></ul></td><td>LFG-1</td><td>5</td></tr>
       <tr><td><b>LFG-3</b></td><td>Observability baseline (structured logs with lfg + request id; alarm plumbing)</td><td><ul class="ac"><li>one query answers "what happened for LFG X at time T"</li></ul></td><td>LFG-2</td><td>3</td></tr>
     </tbody></table>
@@ -310,8 +311,8 @@ s3://lfg-&lt;id&gt;/fva-zones/
     <h3>EPIC B — Identity, routes &amp; silos <span class="tag b">M2</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
       <tr><td><b>LFG-4</b></td><td>Cropwise Base JWKS verification (token = identity only)</td><td><ul class="ac"><li>tampered/expired → 401; key rotation without deploy</li></ul></td><td>LFG-2</td><td>5</td></tr>
-      <tr><td><b>LFG-5</b></td><td>LFG registry (route token + <b>cb_org_refs[]</b> — one LFG spans many CB orgs), memberships, tenant guard</td><td><ul class="ac"><li>slug→LFG resolution; non-member 403 pre-handler; revocation ≤60 s</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
-      <tr><td><b>LFG-6</b></td><td>Silo provisioning + catalog-driven migrations</td><td><ul class="ac"><li>one idempotent call: DB → user → migrations → secret → registry</li><li>migration job reports per silo, resumable on partial failure</li></ul></td><td>LFG-5</td><td>8</td></tr>
+      <tr><td><b>LFG-5</b></td><td>LFG registry (route token + <b>cb_org_refs[]</b> — one LFG spans many CB orgs), memberships, tenant guard</td><td><ul class="ac"><li>slug→LFG resolution; non-member 403 pre-handler; revocation ≤60 s</li><li>route resolves to <code>home_region</code> — requests served by the home-region cell</li><li>isolation test: A's token + B's resource → 403, zero silo reads</li></ul></td><td>LFG-4</td><td>5</td></tr>
+      <tr><td><b>LFG-6</b></td><td>Silo provisioning + catalog-driven migrations</td><td><ul class="ac"><li>one idempotent call: DB → user → migrations → secret → registry</li><li>silo provisioned on the pooled hosts of the LFG's home-region cell — it never leaves the jurisdiction</li><li>migration job reports per silo, resumable on partial failure</li></ul></td><td>LFG-5</td><td>8</td></tr>
       <tr><td><b>LFG-7</b></td><td>Per-LFG dynamic route in Seed Selector — <b>encrypted opaque route id</b> (<code>/g/…</code>), registry-mapped, rotatable</td><td><ul class="ac"><li>no readable name or real id in any URL; guessed/stale tokens 403</li><li>token rotation without breaking active sessions</li></ul></td><td>LFG-5</td><td>3</td></tr>
     </tbody></table>
   </div>
@@ -362,14 +363,14 @@ s3://lfg-&lt;id&gt;/fva-zones/
   <div class="panel epic" style="--c:var(--red)">
     <h3>EPIC G — Hardening &amp; pilot <span class="tag b">M7</span></h3>
     <table><thead><tr><th>ID</th><th>Ticket</th><th>Key acceptance criteria</th><th>Deps</th><th>Pts</th></tr></thead><tbody>
-      <tr><td><b>LFG-23</b></td><td>Backups &amp; DR: PG PITR + hourly→daily→monthly; S3 lifecycle = zone-dump policy (<b>Glacier-IR at 2 y, retain 20 y</b>); <b>cross-region replication for S3 + ECR</b>; region runbook; restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li><li>lifecycle rules assert 20-year retention, no silent expiry</li><li><b>RPO ≤ 1 h; single-silo restore &lt; 1 h (drill-timed); region RTO &lt; 4 h</b>; replication lag alarmed</li></ul></td><td>LFG-14</td><td>5</td></tr>
+      <tr><td><b>LFG-23</b></td><td>Backups &amp; DR: PG PITR + hourly→daily→monthly; S3 lifecycle = zone-dump policy (<b>Glacier-IR at 2 y, retain 20 y</b>); <b>cross-region replication for S3 + ECR</b>; region runbook; restore drill</td><td><ul class="ac"><li>freshness marker per silo daily; drill documented; raw-replay exercised</li><li>lifecycle rules assert 20-year retention, no silent expiry</li><li>replication pairs stay <b>in-jurisdiction</b> (US→US, EU→EU) — asserted in IaC tests</li><li><b>RPO ≤ 1 h; single-silo restore &lt; 1 h (drill-timed); region RTO &lt; 4 h</b>; replication lag alarmed</li></ul></td><td>LFG-14</td><td>5</td></tr>
       <tr><td><b>LFG-24</b></td><td>Security pass (WAF, throttling, rotation, pgAudit, immutable audit log, sandboxed file parsing)</td><td><ul class="ac"><li>rotation without downtime; audit log append-only</li><li>offboarding procedure: KMS key deletion renders retained silo data unrecoverable — documented and tested</li></ul></td><td>LFG-20</td><td>5</td></tr>
       <tr><td><b>LFG-25</b></td><td>Dashboards + alarms (ingest failures, queue age, DLQ, pool saturation, AgInsights errors, backup freshness)</td><td><ul class="ac"><li>every daily ops check is a dashboard; alarms fault-injection tested</li></ul></td><td>LFG-15</td><td>3</td></tr>
       <tr><td><b>LFG-26</b></td><td>Pilot LFG live end to end + sign-off (reconciliation vs source files; ops cadence started)</td><td><ul class="ac"><li>pilot answers real queries in prod; row counts reconcile</li></ul></td><td>all</td><td>5</td></tr>
     </tbody></table>
   </div>
 
-  <div class="callout green"><b>Totals:</b> 30 tickets / ~138 points.
+  <div class="callout green"><b>Totals:</b> 30 tickets / 147 points (v4.2 headline said ~138 — the table always summed to 147; fixed).
   <b>Critical path: A → B → C → D → E → F</b> (serving needs both ingest and zones);
   G hardening activities begin in parallel from M5; production sign-off completes after A–F. Pilot-ready = A–F; production = + G.</div>
 </section>
@@ -385,7 +386,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
       <tr><td>Huge uploads</td><td>streamed parsing, bounded memory, chunked transactions under one batch_id, resume-from-chunk, FK-safe rollback</td></tr>
       <tr><td>Noisy neighbours</td><td>per-LFG in-flight caps on both lanes; queue-<i>age</i> (not depth) is the alarm metric</td></tr>
       <tr><td>Serving latency</td><td>zone metrics pre-computed as rows → indexed SQL; defined benchmark in LFG-20, load test in DoD</td></tr>
-      <tr><td>Region loss</td><td>runbook: rebuild from IaC + <b>cross-region ECR/S3 replicas</b> + PG backups; RPO ≤ 1 h, single-silo restore &lt; 1 h, region RTO &lt; 4 h (LFG-23)</td></tr>
+      <tr><td>Region loss</td><td>runbook: rebuild from IaC + <b>cross-region ECR/S3 replicas</b> + PG backups; RPO ≤ 1 h, single-silo restore &lt; 1 h, region RTO &lt; 4 h (LFG-23). Replica pairs stay <b>in-jurisdiction</b> — US→US (us-east-2→us-west-2), EU→EU (eu-central-1→eu-west-1); a backup never changes the data's legal home</td></tr>
       <tr><td>Field identity drift over years</td><td>CB reference-IDs only + stored match provenance (<code>matched_by</code>, <code>confidence</code>) + <code>prev_ref</code> succession chain; low-confidence links go to the worklist, never auto-merged; history follows the chain</td></tr>
     </tbody>
   </table>
@@ -393,9 +394,10 @@ s3://lfg-&lt;id&gt;/fva-zones/
 
 <!-- ============================================================ 11 -->
 <section id="questions">
-  <h2><span class="secnum">11</span> Open questions — 10 resolved, 2 open</h2>
+  <h2><span class="secnum">11</span> Open questions — 10 resolved, 3 open</h2>
   <p class="lead">The original ten are answered (decisions applied in the sections/tickets named).
-  The v4.2 flow-gap review added two new questions that need a product/legal owner.</p>
+  The v4.2 flow-gap review added two questions needing a product/legal owner; v4.3 adds a third
+  (the Russia market) that is legal's call, not engineering's.</p>
   <table>
     <thead><tr><th>#</th><th>Question</th><th>Decision</th><th>Applied in</th></tr></thead>
     <tbody>
@@ -411,6 +413,7 @@ s3://lfg-&lt;id&gt;/fva-zones/
       <tr><td>10</td><td>Per-LFG route branding</td><td><span class="tag g">resolved</span> a <b>dynamic encrypted route id</b> — no readable string, no real id in the URL; registry-mapped, rotatable; branding lives inside the page</td><td>§6, LFG-7</td></tr>
       <tr><td>11</td><td><b>Per-LFG storage quotas</b> — raw uploads and zone dumps have no size cap today; one grower can quietly grow costs</td><td><span class="tag a">open</span> lean: soft quota + ops alarm (no hard stop); needs a number from product/ops</td><td>affects LFG-11, LFG-25</td></tr>
       <tr><td>12</td><td><b>Targeted deletion vs 20-year retention</b> — "delete this field's data" (contract end, legal request) collides with "never delete before year 20"</td><td><span class="tag a">open</span> lean: retention wins unless legal signs off a documented exception; needs a product/legal decision</td><td>affects LFG-23, LFG-24</td></tr>
+      <tr><td>13</td><td><b>Russia market</b> — a prospective LFG in Russia cannot be served from this platform: AWS has no Russian region, suspended new Russian customers in 2022, Russia's 242-FZ requires in-country storage of citizens' personal data, and sanctions/export controls apply</td><td><span class="tag a">open</span> lean: <b>do not serve</b> on this platform; if the business ever must, it means a separate in-country deployment (effectively a fork) plus explicit legal sign-off — engineering keeps <code>home_region</code> cells (US, EU) and takes no Russia dependency</td><td>affects §7 Regions, LFG-1, LFG-23</td></tr>
     </tbody>
   </table>
   <div class="callout"><b>One process suggestion on #2:</b> email is fine as the source, but the
