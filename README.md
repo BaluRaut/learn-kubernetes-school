@@ -38,6 +38,39 @@ self-checks pass, come straight back here.
 
 ---
 
+## 🎓 Learn Kubernetes step-by-step — 13 lesson branches
+
+Kubernetes is easiest to learn **one small idea at a time**. This repo has **13 numbered
+branches**, each adding ONE lesson folder (`lessons/NN-topic/README.md`) with:
+an explain-like-I'm-5 story, a real-world analogy, a diagram, **What / Why / How**,
+and hands-on commands that use *this repo's actual files*.
+
+Branches are **sequential** — `lesson-05` contains lessons 01–05, so you can stop and
+resume anywhere. Start here:
+
+```bash
+git checkout lesson-01-containers   # read lessons/01-containers/README.md, then...
+git checkout lesson-02-pods         # ...keep going, one branch at a time
+```
+
+| # | Branch | You learn | Analogy |
+|---|---|---|---|
+| 01 | `lesson-01-containers` | Containers & images | A packed lunchbox 🍱 |
+| 02 | `lesson-02-pods` | Pods — the smallest unit | One school desk 🪑 |
+| 03 | `lesson-03-deployments` | Deployments & self-healing | A strict class monitor 🧑‍🏫 |
+| 04 | `lesson-04-services` | Services & cluster DNS | The school reception desk ☎️ |
+| 05 | `lesson-05-namespaces` | Namespaces | Separate classrooms 🚪 |
+| 06 | `lesson-06-configmaps-secrets` | ConfigMaps & Secrets | Notice board vs locker key 🔑 |
+| 07 | `lesson-07-health-probes` | Liveness & readiness probes | "Are you awake? Ready?" 🙋 |
+| 08 | `lesson-08-resources` | CPU/memory requests & limits | Lunch portions 🍛 |
+| 09 | `lesson-09-autoscaling` | HorizontalPodAutoscaler | Extra school buses on rainy days 🚌 |
+| 10 | `lesson-10-ingress` | Ingress & path routing | The school main gate + signboard 🏫 |
+| 11 | `lesson-11-rollouts` | Rolling updates & rollbacks | Substituting players mid-game ⚽ |
+| 12 | `lesson-12-storage` | Volumes, PV/PVC, state | Backpack vs library shelf 📚 |
+| 13 | `lesson-13-under-the-hood` | Control plane internals | The school office 🏢 |
+
+---
+
 ## Repo structure
 
 ```
@@ -221,14 +254,6 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 > - [docs/architecture.html](docs/architecture.html) — **School platform**: option E→F tenancy,
 >   single-domain routing (external IdP + X-School-Id), NestJS blueprint, backup lifecycle, DR runbook,
 >   security checklists, per-school admin panels. English + मराठी toggle.
-> - [docs/lfg-rfc.html](docs/lfg-rfc.html) — **LFG RFC**: Cropwise Base → AgInsights → Seed Selector
->   integration, clean phase 1/2 steps, tech stack with alternatives, and the sequenced Jira backlog
->   (10 epics, 33 tickets with acceptance criteria).
-> - [docs/architecture-lfg.html](docs/architecture-lfg.html) — **LFG (Large Farm Grower) platform**:
->   engineering companion to the [RFC figures](docs/LFG%20Data%20Architecture.html) — phase 1 D+E
->   (per-grower silos, no cross-silo path), phase 2 F (governed aggregate gate, deferred), the
->   metric-as-rows canonical model extended for multi-country growers, rolling variability windows,
->   and the two-route ingestion pipeline (UI upload / direct inject) with one commit boundary.
 
 # 6️⃣ Multi-Tenancy — 100 Schools, Zero Mix-Ups
 
