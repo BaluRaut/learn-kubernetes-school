@@ -37,10 +37,10 @@
   .lesson a.go:hover { text-decoration: underline; }
   .bonus { outline: 2px dashed var(--ok); outline-offset: 2px; }
   .callout { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--ok); border-radius: 14px; padding: 18px 20px; margin-top: 16px; }
-  .dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 16px; }
-  .fig { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .dgrid { display: flex; flex-direction: column; gap: 22px; margin-top: 16px; }
+  .fig { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
   .fig img { width: 100%; height: auto; border-radius: 8px; background: #fff; }
-  .fig figcaption { font-size: .88rem; color: var(--muted); margin-top: 8px; }
+  .fig figcaption { font-size: .95rem; color: var(--muted); margin-top: 10px; text-align: center; }
   .fig figcaption b { color: var(--ink); }
   ul.links { margin: 12px 0 0 20px; }
   ul.links li { margin-bottom: 8px; }
@@ -124,8 +124,9 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
   </div>
 
   <h2>🗺️ The architecture diagrams</h2>
-  <p class="sub">The big numbered diagrams from the README — click any to open the 4K version.
-  Every one is also explained step-by-step <a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">in the README</a>.</p>
+  <p class="sub">The big numbered diagrams from the README, one after another — readable right here;
+  click any to open the 4K version. Every one is also explained step-by-step
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">in the README</a>.</p>
   <div class="dgrid">
     <figure class="fig"><a href="images/01-big-picture-4k.png"><img src="images/01-big-picture.svg" alt="Big picture architecture" loading="lazy"></a><figcaption><b>1 · The big picture</b> — how all the tools fit together</figcaption></figure>
     <figure class="fig"><a href="images/02-docker-4k.png"><img src="images/02-docker.svg" alt="Docker" loading="lazy"></a><figcaption><b>2 · Docker</b> — image build &amp; local compose</figcaption></figure>
