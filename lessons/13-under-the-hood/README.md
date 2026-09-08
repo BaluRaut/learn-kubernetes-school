@@ -1,6 +1,6 @@
 # 🏢 Lesson 13 — Under the hood: the school office
 
-**📍 You are here:** Lesson **13** of 13 — the final lesson! · Previous: `lesson-12-storage`
+**📍 You are here:** Lesson **13** of 13 · Previous: `lesson-12-storage` · Bonus next: `lesson-14-deploy-gitops`
 
 ---
 
@@ -120,7 +120,8 @@ Where to go next, using this very repo:
    (⚠️ costs real money — `terraform destroy` the same day!).
 3. **Read the production design doc**: [docs/architecture.html](../../docs/architecture.html)
    — multi-tenancy for 100 schools, built on everything you just learned.
+4. **Bonus lesson** — stop deploying by hand; let robots ship every git push:
 
 ```bash
-git checkout main   # back to the beginning — but you're not the same 🧑‍🎓
+git checkout lesson-14-deploy-gitops   # CI/CD pipelines + GitOps with ArgoCD 🤖
 ```
