@@ -1,0 +1,28 @@
+# ArgoCD Application = "caretaker, here is your plan book" 🤖📖
+#
+# Prereq: ArgoCD installed in the cluster (see this lesson's README, step 1).
+# Apply with:  kubectl apply -f lessons/14-deploy-gitops/argocd-app.yaml
+#
+# NOTE: point repoURL at YOUR fork (and make sure k8s/deployment.yaml has a
+# real image instead of IMAGE_PLACEHOLDER on that fork — ArgoCD deploys
+# exactly what git says, placeholders included!).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: school-platform
+  namespace: argocd              # Applications live where ArgoCD lives
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BaluRaut/learn-kubernetes-school.git
+    targetRevision: main         # which page edition of the book to follow
+    path: k8s                    # 📖 the master plan pages: our manifests folder
+  destination:
+    server: https://kubernetes.default.svc   # this very cluster
+    namespace: school
+  syncPolicy:
+    automated:
+      prune: true                # removed from git -> removed from cluster
+      selfHeal: true             # hand-made drift gets reverted. The book wins.
+    syncOptions:
+      - CreateNamespace=true     # make the school namespace if missing
