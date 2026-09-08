@@ -1,199 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School Platform — Before You Start</title>
-<meta name="description" content="The 7 foundations to learn before diving into the School Platform learning repo (Docker, Kubernetes, Terraform, AWS, CircleCI).">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>School Platform — Learn Kubernetes step-by-step</title>
+<meta name="description" content="Learn Docker, Kubernetes, Terraform, AWS and CI/CD with a real school platform: 14 branch-by-branch lessons with ELI5 analogies, diagrams and hands-on labs.">
 <style>
   :root {
     --bg: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted: #475569;
-    --line: #e2e8f0; --accent: #dc2626; --ok: #16a34a;
+    --line: #e2e8f0; --accent: #dc2626; --ok: #16a34a; --blue: #2563eb;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg: #0b1220; --card: #131c2e; --ink: #e2e8f0; --muted: #94a3b8; --line: #253349; }
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
-
-  header.hero { text-align: center; padding: 56px 16px 32px; }
-  .hero h1 { font-size: clamp(1.8rem, 4.5vw, 3.2rem); letter-spacing: -0.02em; }
-  .hero .sub { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); max-width: 720px; margin: 12px auto 0; }
-  .hero .chips { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 60px; }
+  a { color: var(--blue); }
+  h1 { font-size: 2rem; line-height: 1.25; }
+  h2 { font-size: 1.4rem; margin: 44px 0 6px; }
+  .sub { color: var(--muted); max-width: 72ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
   .chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: .85rem; color: var(--muted); }
-
-  .diagram { margin: 24px 0 8px; }
-  .diagram img { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); display: block; }
-  .diagram .cap { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 8px; }
-  .diagram .cap a { color: inherit; }
-
-  .progress-box { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 12px 0; }
-  .progress-inner { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 16px; }
-  .bar { flex: 1; height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; }
-  .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, #dc2626, #ea580c, #ca8a04, #16a34a); border-radius: 999px; transition: width .4s ease; }
-  #progress-label { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
-
-  section.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin: 24px 0; }
-  .card { background: var(--card); border: 1px solid var(--line); border-top: 6px solid var(--c, var(--accent)); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-  .card h2 { font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
-  .num { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--c, var(--accent)); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; }
-  .time { margin-left: auto; font-size: .75rem; font-weight: 700; color: var(--c); border: 1.5px solid var(--c); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
-  .card p { color: var(--muted); font-size: .95rem; }
-  .check { margin-top: auto; display: flex; gap: 10px; align-items: flex-start; background: color-mix(in srgb, var(--c) 7%, transparent); border: 1px dashed var(--c); border-radius: 12px; padding: 12px; cursor: pointer; }
-  .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--ok); cursor: pointer; flex: none; }
-  .check span { font-size: .9rem; }
-  .check b { color: var(--ink); }
-  .card.done { border-top-color: var(--ok); }
-  .card.done .check { border-style: solid; border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
-  .res { font-size: .85rem; color: var(--muted); }
-  .res a { color: var(--c); font-weight: 600; text-decoration: none; }
-  .res a:hover { text-decoration: underline; }
-
-  #ready { display: none; text-align: center; background: var(--card); border: 2px solid var(--ok); border-radius: 20px; padding: 36px 24px; margin: 8px 0 24px; }
-  #ready.show { display: block; animation: pop .5s ease; }
-  @keyframes pop { 0% { transform: scale(.96); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-  #ready h2 { color: var(--ok); font-size: 1.6rem; }
-  #ready p { color: var(--muted); margin: 10px auto 18px; max-width: 560px; }
-  .btn { display: inline-block; background: var(--ok); color: #fff; font-weight: 700; padding: 12px 24px; border-radius: 12px; text-decoration: none; margin: 4px; }
-  .btn.alt { background: var(--ink); }
-
-  .next { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-bottom: 32px; }
-  .next h2 { margin-bottom: 12px; font-size: 1.2rem; }
-  .next ol { padding-left: 22px; color: var(--muted); }
-  .next a { color: #2563eb; font-weight: 600; text-decoration: none; }
-  .next a:hover { text-decoration: underline; }
-
-  footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 0 48px; }
-  footer a { color: inherit; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 18px; }
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+  .step b { display: block; margin-bottom: 4px; }
+  .step .n { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-top: 16px; }
+  .lesson { background: var(--card); border: 1px solid var(--line); border-top: 5px solid var(--c, var(--accent)); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+  .lesson .top { display: flex; align-items: center; gap: 10px; }
+  .lesson .num { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--c, var(--accent)); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: .9rem; }
+  .lesson h3 { font-size: 1.02rem; line-height: 1.3; }
+  .lesson .ana { color: var(--muted); font-size: .9rem; }
+  .lesson code { font-size: .78rem; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .lesson a.go { margin-top: auto; font-weight: 600; font-size: .9rem; text-decoration: none; }
+  .lesson a.go:hover { text-decoration: underline; }
+  .bonus { outline: 2px dashed var(--ok); outline-offset: 2px; }
+  .callout { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--ok); border-radius: 14px; padding: 18px 20px; margin-top: 16px; }
+  .dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 16px; }
+  .fig { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .fig img { width: 100%; height: auto; border-radius: 8px; background: #fff; }
+  .fig figcaption { font-size: .88rem; color: var(--muted); margin-top: 8px; }
+  .fig figcaption b { color: var(--ink); }
+  ul.links { margin: 12px 0 0 20px; }
+  ul.links li { margin-bottom: 8px; }
+  pre { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; font-size: .88rem; margin-top: 12px; }
+  .btn { display: inline-block; background: var(--accent); color: #fff; border-radius: 10px; padding: 10px 18px; text-decoration: none; font-weight: 700; margin: 14px 10px 0 0; }
+  .btn.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  footer { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: .88rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header class="hero">
-    <h1>🎒 Before You Start</h1>
-    <p class="sub">The 7 foundations to learn <b>before</b> diving into the
-      <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform" style="color:inherit">School Platform</a>
-      learning repo. Tick a box when its self-check is honestly a "yes" — your progress is saved in this browser.</p>
+  <header>
+    <h1>🏫 School Platform — learn Kubernetes step-by-step</h1>
+    <p class="sub">One real project — a school management system with two services — used to teach
+    every DevOps tool with a job to do. Complex ideas, explained like you're five, with school
+    analogies, diagrams and hands-on labs.</p>
     <div class="chips">
       <span class="chip">🐳 Docker</span><span class="chip">☸️ Kubernetes</span>
       <span class="chip">🏗️ Terraform</span><span class="chip">☁️ AWS</span>
-      <span class="chip">🔄 CircleCI</span><span class="chip">— taught by the repo, not required here</span>
+      <span class="chip">🔄 CircleCI</span><span class="chip">🤖 ArgoCD / GitOps</span>
     </div>
   </header>
 
-  <div class="diagram">
-    <img src="images/10-before-you-start-4k.png" alt="The 7 foundations to learn before starting, as numbered cards: terminal, git, how the web works, JavaScript or Python, networking words, YAML, what a server is — then you're ready.">
-    <p class="cap">4K diagram — also in the repo as an <a href="images/10-before-you-start.svg">infinitely zoomable SVG</a></p>
+  <section class="steps">
+    <div class="step"><span class="n">1</span><b>Check your foundations</b>
+      Terminal, git, YAML &amp; 4 more — with an interactive tick-off checklist.
+      <br><a href="before-you-start.html">Open the checklist →</a></div>
+    <div class="step"><span class="n">2</span><b>Take the 14 lessons</b>
+      One git branch = one idea. Each lesson: ELI5 story, analogy, diagram, What/Why/How, and commands to try.</div>
+    <div class="step"><span class="n">3</span><b>Go deeper</b>
+      4K architecture diagrams, the production design doc, and a narrated video tour — all below.</div>
+  </section>
+
+  <h2>🎓 The 14 lessons</h2>
+  <p class="sub">Lessons live on <b>branches</b> — branch 05 contains lessons 01–05, so you can stop and
+  resume anywhere. Click a card to read the lesson right on GitHub (diagrams render there), or
+  check the branch out locally.</p>
+
+  <div class="grid">
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">1</span><h3>🍱 Containers &amp; images</h3></div><span class="ana">A packed lunchbox — everything the app needs, inside the box.</span><code>lesson-01-containers</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">2</span><h3>🪑 Pods</h3></div><span class="ana">One school desk — the smallest unit; replaceable, never repaired.</span><code>lesson-02-pods</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">3</span><h3>🧑‍🏫 Deployments</h3></div><span class="ana">A strict class monitor — "there shall ALWAYS be 2" (self-healing).</span><code>lesson-03-deployments</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">4</span><h3>☎️ Services</h3></div><span class="ana">The reception desk — one number that never changes, kids move around.</span><code>lesson-04-services</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">5</span><h3>🚪 Namespaces</h3></div><span class="ana">Separate classrooms — two kids named Aarav, no confusion.</span><code>lesson-05-namespaces</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">6</span><h3>🔑 ConfigMaps &amp; Secrets</h3></div><span class="ana">Notice board vs locker key — settings outside the lunchbox.</span><code>lesson-06-configmaps-secrets</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">7</span><h3>🙋 Health probes</h3></div><span class="ana">"Are you awake? Are you ready?" — two questions, two consequences.</span><code>lesson-07-health-probes</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">8</span><h3>🍛 Requests &amp; limits</h3></div><span class="ana">Lunch portions — a promised plate, and a cap on seconds.</span><code>lesson-08-resources</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">9</span><h3>🚌 Autoscaling</h3></div><span class="ana">Extra buses on rainy days — pods multiply under load.</span><code>lesson-09-autoscaling</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">10</span><h3>🏫 Ingress</h3></div><span class="ana">The main gate + signboard — one entrance, routed by path.</span><code>lesson-10-ingress</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">11</span><h3>⚽ Rollouts &amp; rollbacks</h3></div><span class="ana">Substituting players mid-game — the crowd never notices.</span><code>lesson-11-rollouts</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">12</span><h3>📚 Storage &amp; state</h3></div><span class="ana">Backpack vs library shelf — what survives when a pod dies.</span><code>lesson-12-storage</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">Read lesson →</a></div>
+    <div class="lesson" style="--c:#16a34a"><div class="top"><span class="num">13</span><h3>🏢 Under the hood</h3></div><span class="ana">The school office — API server, etcd, scheduler, kubelet.</span><code>lesson-13-under-the-hood</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">Read lesson →</a></div>
+    <div class="lesson bonus" style="--c:#16a34a"><div class="top"><span class="num">14</span><h3>🤖 Bonus: CI/CD &amp; ArgoCD</h3></div><span class="ana">The caretaker robot with the master plan book — GitOps.</span><code>lesson-14-deploy-gitops</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">Read lesson →</a></div>
   </div>
 
-  <div class="progress-box">
-    <div class="progress-inner">
-      <span id="progress-label">0 / 7 ready</span>
-      <div class="bar"><div id="progress-fill"></div></div>
-    </div>
+  <pre><code># take the course locally:
+git clone https://github.com/BaluRaut/learn-kubernetes-school.git
+cd learn-kubernetes-school
+git checkout lesson-01-containers   # then open lessons/01-containers/README.md</code></pre>
+
+  <div class="callout">🎒 <b>Completely new to all of this?</b> Do the
+    <a href="before-you-start.html">Before-You-Start checklist</a> first — 7 foundations
+    (terminal, git, HTTP, YAML…), each with a self-check and free resources. Your ticks are saved
+    in the browser.</div>
+
+  <h2>🗺️ The architecture diagrams</h2>
+  <p class="sub">The big numbered diagrams from the README — click any to open the 4K version.
+  Every one is also explained step-by-step <a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">in the README</a>.</p>
+  <div class="dgrid">
+    <figure class="fig"><a href="images/01-big-picture-4k.png"><img src="images/01-big-picture.svg" alt="Big picture architecture" loading="lazy"></a><figcaption><b>1 · The big picture</b> — how all the tools fit together</figcaption></figure>
+    <figure class="fig"><a href="images/02-docker-4k.png"><img src="images/02-docker.svg" alt="Docker" loading="lazy"></a><figcaption><b>2 · Docker</b> — image build &amp; local compose</figcaption></figure>
+    <figure class="fig"><a href="images/03-kubernetes-4k.png"><img src="images/03-kubernetes.svg" alt="Kubernetes" loading="lazy"></a><figcaption><b>3 · Kubernetes</b> — pods, services, HPA in the cluster</figcaption></figure>
+    <figure class="fig"><a href="images/04-terraform-aws-4k.png"><img src="images/04-terraform-aws.svg" alt="Terraform and AWS" loading="lazy"></a><figcaption><b>4 · Terraform → AWS</b> — VPC, EKS, ECR, RDS from code</figcaption></figure>
+    <figure class="fig"><a href="images/05-cicd-circleci-4k.png"><img src="images/05-cicd-circleci.svg" alt="CI/CD pipeline" loading="lazy"></a><figcaption><b>5 · CI/CD</b> — test → build → approve → deploy</figcaption></figure>
+    <figure class="fig"><a href="images/06-multi-tenancy-4k.png"><img src="images/06-multi-tenancy.svg" alt="Multi-tenancy" loading="lazy"></a><figcaption><b>6 · Multi-tenancy</b> — 100 schools, zero mix-ups</figcaption></figure>
+    <figure class="fig"><a href="images/07-under-the-hood-docker-4k.png"><img src="images/07-under-the-hood-docker.svg" alt="docker run internals" loading="lazy"></a><figcaption><b>7 · Under the hood</b> — what <code>docker run</code> really does</figcaption></figure>
+    <figure class="fig"><a href="images/08-under-the-hood-kubectl-4k.png"><img src="images/08-under-the-hood-kubectl.svg" alt="kubectl apply internals" loading="lazy"></a><figcaption><b>8 · Under the hood</b> — how <code>kubectl apply</code> becomes a pod</figcaption></figure>
+    <figure class="fig"><a href="images/09-under-the-hood-request-4k.png"><img src="images/09-under-the-hood-request.svg" alt="Life of a request" loading="lazy"></a><figcaption><b>9 · Under the hood</b> — the life of one HTTP request</figcaption></figure>
+    <figure class="fig"><a href="images/10-before-you-start-4k.png"><img src="images/10-before-you-start.svg" alt="Before you start foundations" loading="lazy"></a><figcaption><b>10 · Before you start</b> — the 7 foundations</figcaption></figure>
   </div>
 
-  <section class="cards" id="cards"><!-- cards injected by JS --></section>
+  <h2>📚 Go deeper</h2>
+  <ul class="links">
+    <li><a href="architecture.html">Production design doc</a> — multi-tenancy for 100 schools, single-domain routing, backups &amp; DR runbook, security checklists (English + मराठी toggle)</li>
+    <li><a href="video/walkthrough-4k.mp4">🎬 Narrated video walkthrough (6 min, 4K)</a> — a guided tour through every numbered diagram</li>
+    <li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — what <i>really</i> happens beneath <code>docker run</code>, <code>kubectl apply</code>, and one HTTP request</li>
+    <li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">local-setup.md</a> — run everything on your machine in 3 levels, zero AWS cost</li>
+    <li><a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">Main README</a> — the whole story in one page, with the setup checklists</li>
+  </ul>
 
-  <div id="ready">
-    <h2>🚀 All 7 checked — you're ready!</h2>
-    <p>Don't study Docker, Kubernetes, Terraform or AWS in advance — the repo teaches them
-       with 4K diagrams, a narrated video and a zero-cost local path.</p>
-    <a class="btn" href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform#readme">Open the README</a>
-    <a class="btn alt" href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/local-setup.md">Local setup guide</a>
-  </div>
-
-  <div class="next">
-    <h2>📚 The path after this page</h2>
-    <ol>
-      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform#readme">Main README</a> — the big picture + 6 numbered 4K architecture diagrams</li>
-      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/local-setup.md">local-setup.md</a> — run everything on your machine in 3 levels, zero AWS cost</li>
-      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — what <i>really</i> happens beneath docker run, kubectl apply, and one HTTP request</li>
-      <li><a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform/blob/main/docs/video/walkthrough-4k.mp4">walkthrough-4k.mp4</a> — 6-minute narrated video tour</li>
-    </ol>
-  </div>
+  <a class="btn" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">Start Lesson 01 →</a>
+  <a class="btn alt" href="before-you-start.html">Check my foundations first</a>
 
   <footer>
-    School Platform learning monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI ·
-    <a href="https://github.com/BaluRaut/claod-2026-eks-docker-terraform">github.com/BaluRaut/claod-2026-eks-docker-terraform</a>
+    School Platform learning monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI · ArgoCD ·
+    <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a>
   </footer>
+
 </div>
-
-<script>
-const FOUNDATIONS = [
-  { n: 1, c: "#0f172a", title: "The terminal", time: "1–2 evenings",
-    what: "Navigate folders, run commands, stop them with Ctrl+C, read error messages calmly, use environment variables.",
-    check: "I can open a terminal, cd into a folder, run an unfamiliar command and read its error without panicking.",
-    res: [["MIT Missing Semester — the shell", "https://missing.csail.mit.edu/2020/course-shell/"],
-          ["Ubuntu command line tutorial", "https://ubuntu.com/tutorials/command-line-for-beginners"]] },
-  { n: 2, c: "#ea580c", title: "Git & GitHub", time: "1–2 evenings",
-    what: "The daily loop: edit → status → add → commit → push. What GitHub is vs git. Roughly what a branch is.",
-    check: "I can clone a repo, change a file, commit with a sensible message, and push it.",
-    res: [["Pro Git book, ch. 1–2", "https://git-scm.com/book/en/v2"],
-          ["learngitbranching.js.org", "https://learngitbranching.js.org/"]] },
-  { n: 3, c: "#2563eb", title: "How the web works", time: "1 evening",
-    what: "Request/response, URLs, GET/POST/DELETE, status codes (200/201/404/500), JSON, ports, curl.",
-    check: "I can explain what happens when I run curl -X POST localhost:3000/students — machine, port, method, and what 201 vs 404 means.",
-    res: [["MDN — How the web works", "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works"],
-          ["MDN — HTTP overview", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"]] },
-  { n: 4, c: "#ca8a04", title: "JavaScript OR Python", time: "ongoing",
-    what: "Enough to READ ~150 lines: variables, functions, if/else, loops, objects/dicts, and roughly what async/await means. One language is enough.",
-    check: "I can open the repo's server.js or main.py and roughly follow what each block does.",
-    res: [["javascript.info (part 1)", "https://javascript.info/"],
-          ["Official Python tutorial, ch. 1–5", "https://docs.python.org/3/tutorial/"]] },
-  { n: 5, c: "#0891b2", title: "Networking words", time: "1 evening",
-    what: "Eight words: IP, localhost, port, DNS, client/server, firewall, public vs private network, load balancer.",
-    check: "In postgres://…@db:5432 I can say what db is, what 5432 is, and why it only works inside the private network.",
-    res: [["Cloudflare — What is DNS?", "https://www.cloudflare.com/learning/dns/what-is-dns/"]] },
-  { n: 6, c: "#7c3aed", title: "YAML", time: "1 hour",
-    what: "key: value, nesting by indentation (spaces, never tabs), lists with dashes, # comments. That's ~90% of it.",
-    check: "Looking at k8s/deployment.yaml I can tell whether containers: is a list or a map, and what replicas: 2 is nested under.",
-    res: [["Learn X in Y minutes — YAML", "https://learnxinyminutes.com/docs/yaml/"]] },
-  { n: 7, c: "#16a34a", title: "What a server actually is", time: "1 hour",
-    what: "A server is a rented Linux computer without a screen. EC2 instance, EKS node, RDS — all just computers; the difference is who maintains them.",
-    check: "When a diagram says 'EKS node = EC2 = t3.small', I understand that's a small rented Linux computer running my containers.",
-    res: [["roadmap.sh/devops (orientation only)", "https://roadmap.sh/devops"]] },
-];
-
-const KEY = "school-platform-foundations";
-const state = JSON.parse(localStorage.getItem(KEY) || "{}");
-const cardsEl = document.getElementById("cards");
-
-for (const f of FOUNDATIONS) {
-  const el = document.createElement("article");
-  el.className = "card" + (state[f.n] ? " done" : "");
-  el.style.setProperty("--c", f.c);
-  el.innerHTML = `
-    <h2><span class="num">${f.n}</span> ${f.title} <span class="time">${f.time}</span></h2>
-    <p>${f.what}</p>
-    <p class="res">Free: ${f.res.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}</p>
-    <label class="check">
-      <input type="checkbox" data-n="${f.n}" ${state[f.n] ? "checked" : ""}>
-      <span><b>Self-check:</b> “${f.check}”</span>
-    </label>`;
-  cardsEl.appendChild(el);
-}
-
-function refresh() {
-  const done = FOUNDATIONS.filter(f => state[f.n]).length;
-  document.getElementById("progress-label").textContent = `${done} / 7 ready`;
-  document.getElementById("progress-fill").style.width = (done / 7 * 100) + "%";
-  document.getElementById("ready").classList.toggle("show", done === 7);
-}
-
-cardsEl.addEventListener("change", (e) => {
-  const n = e.target.dataset.n;
-  if (!n) return;
-  state[n] = e.target.checked;
-  if (!e.target.checked) delete state[n];
-  localStorage.setItem(KEY, JSON.stringify(state));
-  e.target.closest(".card").classList.toggle("done", e.target.checked);
-  refresh();
-});
-
-refresh();
-</script>
 </body>
 </html>
