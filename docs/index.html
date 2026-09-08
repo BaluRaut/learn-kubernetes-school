@@ -107,6 +107,22 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
     (terminal, git, HTTP, YAML…), each with a self-check and free resources. Your ticks are saved
     in the browser.</div>
 
+  <h2>☸️ The real k8s manifests</h2>
+  <p class="sub">The actual YAML files the lessons teach — every one heavily commented, in
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school/tree/main/k8s">k8s/</a>.
+  Read them in this order (it's also the apply order):</p>
+  <div class="grid">
+    <div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">a</span><h3>🚪 namespace.yaml</h3></div><span class="ana">The classroom everything else lives in — apply this first.</span><code>lesson 05</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/namespace.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">b</span><h3>📌 configmap.yaml</h3></div><span class="ana">Non-secret settings on the notice board: PORT, APP_VERSION.</span><code>lesson 06</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/configmap.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">c</span><h3>🔑 secret.example.yaml</h3></div><span class="ana">Locker-key template — copy to git-ignored secret.yaml, fill in the DB password.</span><code>lesson 06</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/secret.example.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">d</span><h3>🧑‍🏫 deployment.yaml</h3></div><span class="ana">The heart: 2 replicas, rolling updates, probes, resources — 4 lessons in one file.</span><code>lessons 03 · 07 · 08 · 11</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/deployment.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">e</span><h3>☎️ service.yaml</h3></div><span class="ana">The reception desk: stable name + IP in front of the Node API pods.</span><code>lesson 04</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/service.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">f</span><h3>🐍 analytics-deployment.yaml</h3></div><span class="ana">Second service, same patterns — calls the Node API by Service name.</span><code>lessons 03 · 04</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/analytics-deployment.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">g</span><h3>☎️ analytics-service.yaml</h3></div><span class="ana">Reception desk #2, for the Python analytics pods.</span><code>lesson 04</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/analytics-service.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">h</span><h3>🚌 hpa.yaml</h3></div><span class="ana">The transport manager: 2–5 pods, more buses at 70% CPU.</span><code>lesson 09</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/hpa.yaml">Open file →</a></div>
+    <div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">i</span><h3>🏫 ingress.yaml</h3></div><span class="ana">The main gate: one ALB, /analytics → Python, everything else → Node.</span><code>lesson 10</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/ingress.yaml">Open file →</a></div>
+  </div>
+
   <h2>🗺️ The architecture diagrams</h2>
   <p class="sub">The big numbered diagrams from the README — click any to open the 4K version.
   Every one is also explained step-by-step <a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">in the README</a>.</p>
