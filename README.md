@@ -25,12 +25,9 @@ how `kubectl apply` becomes a running pod, and the life of one HTTP request.
 project (terminal, git, HTTP, YAML, …), each with a self-check and free resources. If the
 self-checks pass, come straight back here.
 
-> 🌐 **Interactive version on GitHub Pages:** the same guide exists as a web page with
-> tick-off self-checks and a progress bar ([docs/index.html](docs/index.html)). To publish it:
-> repo **Settings → Pages → Source: Deploy from a branch → Branch: `main`, folder: `/docs`** →
-> Save. It then appears at `https://baluraut.github.io/claod-2026-eks-docker-terraform/`.
-> (Note: GitHub Pages on a **private** repo requires a paid GitHub plan — either upgrade or
-> make the repo public.)
+> 🌐 **Interactive version (live):** the same guide exists as a web page with tick-off
+> self-checks and a progress bar — **<https://baluraut.github.io/learn-kubernetes-school/>**
+> (served from [docs/index.html](docs/index.html) via GitHub Pages).
 
 > ⚠️ **This repo is for learning.** The AWS pieces cost real money while they exist
 > (EKS ≈ $73/month + EC2 nodes + NAT gateway). Create them, play, and run
@@ -234,7 +231,7 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 
 1. **`git push`** — the only manual action. Any branch runs tests; only `main` continues to build and deploy (see `filters` in [.circleci/config.yml](.circleci/config.yml)).
 2. **Webhook** — GitHub tells CircleCI about the push; CircleCI reads `.circleci/config.yml` from the repo and starts the pipeline.
-3. **Context `balu-cicd`** — your CircleCI **context** (Organization Settings → Contexts) injects the AWS credentials into every job as environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ACCOUNT_ID`, `AWS_DEFAULT_REGION`. Secrets stay in CircleCI — never in the repo. The config references it as `context: balu-cicd`.
+3. **Context `aws-creds`** — your CircleCI **context** (Organization Settings → Contexts) injects the AWS credentials into every job as environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ACCOUNT_ID`, `AWS_DEFAULT_REGION`. Secrets stay in CircleCI — never in the repo. The config references it as `context: aws-creds`.
 4. **Test jobs** — `test-node` (`npm ci` + `npm test`) and `test-python` (`pip install` + `pytest`) run **in parallel**, one per service. If either fails, the pipeline stops here — broken code can't reach production.
 5. **`build-and-push` job** — logs in to ECR using the context credentials, builds the Docker image and pushes it tagged with the **git commit SHA** plus `latest`.
 6. **`hold`** — a manual approval gate. The pipeline pauses until a human clicks **Approve** in the CircleCI UI — a common pattern for production deploys.
@@ -244,7 +241,7 @@ terraform destroy                  # 💸 when done for the day — ALWAYS
 **Setup checklist:**
 
 1. Push this repo to GitHub and connect the project in CircleCI.
-2. Make sure your `balu-cicd` context provides the 4 variables above.
+2. Make sure your `aws-creds` context (create it in CircleCI: Organization Settings → Contexts) provides the 4 variables above.
 3. Run `terraform apply` first — the pipeline needs the ECR repo and EKS cluster to exist.
 4. Push to `main`, watch the pipeline, click **Approve**, then:
    `kubectl -n school get pods` 🎉

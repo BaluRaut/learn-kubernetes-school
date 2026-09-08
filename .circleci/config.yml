@@ -2,7 +2,7 @@
 #                    -> (manual approval) -> Deploy both to EKS
 #
 # IMPORTANT — contexts:
-#   Every job below uses `context: balu-cicd` — your context in CircleCI
+#   Every job below uses `context: aws-creds` — your context in CircleCI
 #   (Organization Settings -> Contexts). The context must provide:
 #     AWS_ACCESS_KEY_ID
 #     AWS_SECRET_ACCESS_KEY
@@ -144,7 +144,7 @@ workflows:
       - test-node
       - test-python
       - build-and-push:
-          context: balu-cicd
+          context: aws-creds
           requires: [test-node, test-python]
           filters:
             branches:
@@ -153,5 +153,5 @@ workflows:
           type: approval
           requires: [build-and-push]
       - deploy-to-eks:
-          context: balu-cicd
+          context: aws-creds
           requires: [hold-for-approval]
