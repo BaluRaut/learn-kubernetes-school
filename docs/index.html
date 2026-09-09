@@ -124,6 +124,23 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
     <div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">i</span><h3>🏫 ingress.yaml</h3></div><span class="ana">The main gate: one ALB, /analytics → Python, everything else → Node.</span><code>lesson 10</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/ingress.yaml">Open file →</a></div>
   </div>
 
+  <h2 id="aws-map">☁️ The AWS components under the cluster — purpose, required or optional</h2>
+  <p class="sub"><b>"Is EC2 connected to Kubernetes?"</b> — completely: Kubernetes doesn't replace EC2,
+  it sits on top of it. Every <b>node</b> you see in <code>kubectl get nodes</code> IS an EC2 instance
+  (a rented desk 🖥️); an EKS <b>node group</b> is an Auto Scaling Group of those desks; the HPA adds
+  <i>pods</i> and, when they no longer fit, the cluster autoscaler asks the ASG for more <i>desks</i>.
+  A <code>NotReady</code> node is usually an EC2 story underneath (spot reclaimed, instance died).
+  The map below shows every AWS piece this repo's <a href="https://github.com/BaluRaut/learn-kubernetes-school/tree/main/terraform">terraform/</a>
+  touches — what each is <b>for</b>, and whether it's
+  <b style="color:#2563eb">REQUIRED</b> or <b style="color:#f59e0b">OPTIONAL</b>.
+  Click for the <a href="images/aws-components-4k.png">4K version</a>.</p>
+  <figure style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px">
+    <a href="images/aws-components-4k.png"><img src="images/aws-components.svg" alt="Map of AWS components under the Kubernetes cluster: VPC, subnets, gateways, EKS control plane, EC2 node group, IAM, ECR required; ALB, RDS, EBS, CloudWatch, Route 53 optional" loading="lazy" style="width:100%;height:auto;border-radius:8px;background:#fff"></a>
+  </figure>
+  <p class="sub" style="margin-top:10px">Deep-dive on the two foundations (IAM &amp; EC2) in the
+  <a href="https://baluraut.github.io/learn-aws-school/">AWS foundations course</a> — its lesson 12
+  is exactly this reveal.</p>
+
   <h2>🗺️ The architecture diagrams</h2>
   <p class="sub">The big numbered diagrams from the README, one after another — readable right here;
   click any to open the 4K version. Every one is also explained step-by-step
