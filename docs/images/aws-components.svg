@@ -30,17 +30,20 @@
   <text class="s" x="750" y="89">= the cluster won't work without it</text>
   <rect class="badge-o" x="1070" y="70" width="100" height="28" rx="14"/><text class="bt" x="1120" y="89">OPTIONAL</text>
   <text class="s" x="1180" y="89">= feature-driven — add when you need the feature</text>
+  <text class="s" x="40" y="89">🧒 = the school analogy</text>
 
   <!-- internet + ALB -->
   <rect class="req" x="40" y="130" width="190" height="100" rx="14"/>
   <text class="t m" x="135" y="170">🌍 internet</text>
   <text class="s m" x="135" y="196">parents' browsers</text>
+  <text class="s m" x="135" y="218">🧒 the street outside</text>
 
-  <rect class="opt" x="290" y="130" width="360" height="100" rx="14"/>
+  <rect class="opt" x="290" y="130" width="360" height="112" rx="14"/>
   <rect class="badge-o" x="540" y="118" width="100" height="28" rx="14"/><text class="bt" x="590" y="137">OPTIONAL</text>
   <text class="t m" x="470" y="165">🏫 ALB — the one HTTP gate</text>
   <text class="s m" x="470" y="191">built by the LB Controller from your Ingress</text>
   <text class="s m" x="470" y="212">(k8s lesson 10) · ~$20/mo · skip = no public web door</text>
+  <text class="s m" x="470" y="233">🧒 the main gate + signboard for visitors</text>
   <line class="arr" x1="230" y1="180" x2="286" y2="180"/>
   <g transform="translate(258,160)"><circle r="13" class="nc"/><text class="ntb" dy="5">1</text></g>
 
@@ -54,11 +57,12 @@
   <text class="s m" x="1660" y="268">that's what the $73/month buys</text>
   <text class="s m" x="1660" y="296">purpose: the brain — stores your wishes,</text>
   <text class="s m" x="1660" y="318">assigns pods to desks (terraform/eks.tf)</text>
+  <text class="s m" x="1660" y="346">🧒 the school office: principal, register, timetable-maker</text>
 
   <!-- VPC -->
   <rect class="req" x="40" y="280" width="1340" height="560" rx="18"/>
   <rect class="badge-r" x="1270" y="268" width="100" height="28" rx="14"/><text class="bt" x="1320" y="287">REQUIRED</text>
-  <text class="t" x="70" y="318">🏞️ VPC — your private campus network (terraform/vpc.tf) · purpose: nothing touches your desks except through doors YOU define</text>
+  <text class="t" x="70" y="318">🏞️ VPC · 🧒 the campus wall (terraform/vpc.tf) · purpose: nothing touches your desks except through doors YOU define</text>
 
   <!-- public subnets -->
   <rect class="zone" x="70" y="340" width="1280" height="150" rx="12"/>
@@ -66,11 +70,11 @@
   <rect class="req" x="90" y="384" width="290" height="90" rx="12"/>
   <rect class="badge-r" x="270" y="372" width="100" height="28" rx="14"/><text class="bt" x="320" y="391">REQUIRED</text>
   <text class="t m" x="235" y="416">🚪 internet gateway</text>
-  <text class="s m" x="235" y="440">purpose: the campus gate —</text>
-  <text class="s m" x="235" y="460">without it, no in/out at all</text>
+  <text class="s m" x="235" y="440">🧒 the campus gate — purpose:</text>
+  <text class="s m" x="235" y="460">without it, no in or out at all</text>
   <rect class="req" x="410" y="384" width="380" height="90" rx="12"/>
   <rect class="badge-r" x="680" y="372" width="100" height="28" rx="14"/><text class="bt" x="730" y="391">REQUIRED</text>
-  <text class="t m" x="600" y="416">📤 NAT gateway</text>
+  <text class="t m" x="600" y="416">📤 NAT gateway · 🧒 one-way postbox</text>
   <text class="s m" x="600" y="440">purpose: private desks can call OUT (pull images,</text>
   <text class="s m" x="600" y="460">updates) but nobody calls IN · ~$32/mo — the sneaky bill line</text>
   <rect class="opt" x="820" y="384" width="330" height="90" rx="12"/>
@@ -83,10 +87,10 @@
 
   <rect class="req" x="100" y="556" width="770" height="240" rx="14"/>
   <rect class="badge-r" x="760" y="544" width="100" height="28" rx="14"/><text class="bt" x="810" y="563">REQUIRED</text>
-  <text class="t m" x="485" y="590">👯 EKS node group = an Auto Scaling Group of EC2 desks (terraform/eks.tf)</text>
+  <text class="t m" x="485" y="590">👯 EKS node group · 🧒 desk rows + a robot janitor keeping N desks (an ASG)</text>
   <rect class="inner" x="130" y="610" width="340" height="160" rx="12"/>
-  <text class="t m" x="300" y="640">🖥️ EC2 node — t3.small</text>
-  <text class="s m" x="300" y="663">runs the kubelet 🧑‍🏫 (k8s lesson 13)</text>
+  <text class="t m" x="300" y="640">🖥️ EC2 node · 🧒 a rented desk</text>
+  <text class="s m" x="300" y="663">t3.small · runs the kubelet 🧑‍🏫</text>
   <rect class="pod" x="150" y="680" width="140" height="60" rx="8"/>
   <text class="s m" x="220" y="705">🪑 pods:</text>
   <text class="s m" x="220" y="725">school-api ×2</text>
@@ -103,13 +107,13 @@
 
   <rect class="req" x="900" y="556" width="430" height="110" rx="12"/>
   <rect class="badge-r" x="1220" y="544" width="100" height="28" rx="14"/><text class="bt" x="1270" y="563">REQUIRED</text>
-  <text class="t m" x="1115" y="590">🧍 security groups</text>
+  <text class="t m" x="1115" y="590">🧍 security groups · 🧒 the guest lists</text>
   <text class="s m" x="1115" y="614">purpose: gatekeepers EKS wires for you —</text>
   <text class="s m" x="1115" y="636">office ↔ desks · ALB → pods · nothing else</text>
 
   <rect class="opt" x="900" y="690" width="430" height="106" rx="12"/>
   <rect class="badge-o" x="1220" y="678" width="100" height="28" rx="14"/><text class="bt" x="1270" y="697">OPTIONAL</text>
-  <text class="t m" x="1115" y="722">🗄️ EBS volumes</text>
+  <text class="t m" x="1115" y="722">🗄️ EBS volumes · 🧒 desk drawers</text>
   <text class="s m" x="1115" y="746">purpose: drawers for PVCs (k8s lesson 12) —</text>
   <text class="s m" x="1115" y="768">only if you keep state IN the cluster (this repo: stateless)</text>
 
@@ -125,7 +129,7 @@
   <!-- bottom row -->
   <rect class="req" x="40" y="880" width="350" height="150" rx="14"/>
   <rect class="badge-r" x="280" y="868" width="100" height="28" rx="14"/><text class="bt" x="330" y="887">REQUIRED</text>
-  <text class="t m" x="215" y="914">🎩 IAM roles</text>
+  <text class="t m" x="215" y="914">🎩 IAM roles · 🧒 the hats</text>
   <text class="s m" x="215" y="940">purpose: the hats — cluster role +</text>
   <text class="s m" x="215" y="962">node role: join the cluster, pull from ECR,</text>
   <text class="s m" x="215" y="984">write logs — zero passwords anywhere</text>
@@ -133,7 +137,7 @@
 
   <rect class="req" x="420" y="880" width="350" height="150" rx="14"/>
   <rect class="badge-r" x="660" y="868" width="100" height="28" rx="14"/><text class="bt" x="710" y="887">REQUIRED</text>
-  <text class="t m" x="595" y="914">🏦 ECR ×2</text>
+  <text class="t m" x="595" y="914">🏦 ECR ×2 · 🧒 the bank locker</text>
   <text class="s m" x="595" y="940">purpose: the image warehouse —</text>
   <text class="s m" x="595" y="962">CI pushes school-api &amp; analytics,</text>
   <text class="s m" x="595" y="984">desks pull at deploy (terraform/ecr.tf)</text>
@@ -142,8 +146,8 @@
 
   <rect class="opt" x="800" y="880" width="350" height="150" rx="14"/>
   <rect class="badge-o" x="1040" y="868" width="100" height="28" rx="14"/><text class="bt" x="1090" y="887">OPTIONAL</text>
-  <text class="t m" x="975" y="914">📚 RDS Postgres</text>
-  <text class="s m" x="975" y="940">purpose: the rented library — managed</text>
+  <text class="t m" x="975" y="914">📚 RDS · 🧒 the rented library</text>
+  <text class="s m" x="975" y="940">purpose: a managed, backed-up</text>
   <text class="s m" x="975" y="962">database outside the cluster (lesson 12);</text>
   <text class="s m" x="975" y="984">this repo: create_rds flag, default OFF —</text>
   <text class="s m" x="975" y="1010">app falls back to in-memory mode</text>
@@ -151,14 +155,14 @@
 
   <rect class="opt" x="1180" y="880" width="340" height="150" rx="14"/>
   <rect class="badge-o" x="1410" y="868" width="100" height="28" rx="14"/><text class="bt" x="1460" y="887">OPTIONAL</text>
-  <text class="t m" x="1350" y="914">📈 CloudWatch</text>
+  <text class="t m" x="1350" y="914">📈 CloudWatch · 🧒 the CCTV</text>
   <text class="s m" x="1350" y="940">purpose: logs &amp; metrics off the desks —</text>
   <text class="s m" x="1350" y="962">container logs, node health, alarms;</text>
   <text class="s m" x="1350" y="984">start without it, add before production</text>
 
   <rect class="opt" x="1550" y="880" width="330" height="150" rx="14"/>
   <rect class="badge-o" x="1770" y="868" width="100" height="28" rx="14"/><text class="bt" x="1820" y="887">OPTIONAL</text>
-  <text class="t m" x="1715" y="914">🪧 Route 53</text>
+  <text class="t m" x="1715" y="914">🪧 Route 53 · 🧒 the street name</text>
   <text class="s m" x="1715" y="940">purpose: the school's street name —</text>
   <text class="s m" x="1715" y="962">yourapp.com → the ALB; skip it and</text>
   <text class="s m" x="1715" y="984">use the ALB's ugly DNS name for free</text>
