@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before &amp; trade-offs — Learn Kubernetes School</title>
+<meta name="description" content="For every big Kubernetes idea: what the world looked like before it, its merits and demerits, and where to use it vs where not.">
+<style>
+  :root {
+    --bg: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted: #475569;
+    --line: #e2e8f0; --accent: #326ce5; --ok: #16a34a; --blue: #2563eb; --bad: #dc2626;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1220; --card: #131c2e; --ink: #e2e8f0; --muted: #94a3b8; --line: #253349; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 28px 20px 60px; }
+  a { color: var(--blue); }
+  h1 { font-size: 1.9rem; line-height: 1.25; }
+  .sub { color: var(--muted); max-width: 74ch; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
+  .toc a { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 5px 12px; font-size: .82rem; color: var(--muted); text-decoration: none; }
+  .toc a:hover { color: var(--ink); border-color: var(--muted); }
+  .term { background: var(--card); border: 1px solid var(--line); border-top: 6px solid var(--c, var(--accent)); border-radius: 16px; padding: 22px; margin-top: 26px; scroll-margin-top: 16px; }
+  .term h2 { font-size: 1.3rem; margin-bottom: 10px; }
+  .hist { background: var(--bg); border-left: 5px solid var(--c, var(--accent)); border-radius: 10px; padding: 14px 16px; margin: 10px 0 14px; }
+  .hist b { display: block; margin-bottom: 4px; }
+  .hist p { color: var(--muted); font-size: .95rem; }
+  .quad { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .q { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .q h4 { margin-bottom: 6px; font-size: .98rem; }
+  .q ul { margin-left: 18px; color: var(--muted); font-size: .92rem; }
+  .q.merit  { border-top: 4px solid var(--ok); }
+  .q.demerit{ border-top: 4px solid var(--bad); }
+  .q.use    { border-top: 4px solid var(--blue); }
+  .q.avoid  { border-top: 4px solid #f59e0b; }
+  .foot { margin-top: 10px; font-size: .92rem; }
+  footer { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 16px; color: var(--muted); font-size: .88rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p><a href="index.html">← Back to the course home</a></p>
+  <h1>⏮️ Before &amp; trade-offs</h1>
+  <p class="sub">Every tool replaced something worse — and is itself the wrong tool somewhere.
+  For each big idea in this course: what life was like <b>before</b> it, its honest
+  <b>merits ✅ and demerits ❌</b>, and <b>where to use it 👍 vs where not 👎</b>.</p>
+  <nav class="toc">
+    <a href="#kubernetes">☸️ Kubernetes</a><a href="#ingress">🏫 Ingress</a>
+    <a href="#hpa">🚌 Autoscaling</a><a href="#namespaces">🚪 Namespaces</a>
+    <a href="#manageddb">📚 Managed DB</a>
+  </nav>
+</header>
+
+<section class="term" id="kubernetes" style="--c:#326ce5">
+  <h2>☸️ Kubernetes itself — the whole course</h2>
+  <div class="hist"><b>⏮️ Before Kubernetes (open-sourced 2014)</b>
+    <p>Fleets of <b>hand-fed VMs</b>: one app per VM, deploys via SSH + shell scripts or Ansible,
+    load balancers edited by hand, scaling = a ticket to the infra team, and a pager going off at
+    3 AM because a process died and <i>nothing restarted it</i>. Google ran an internal answer
+    (Borg) for a decade; Kubernetes is that idea, public. The middle era also had Heroku-style
+    PaaS — wonderfully simple, but constrained and pricey at scale — and "docker-compose on one
+    big VM", a single point of failure wearing a trench coat.</p>
+  </div>
+  <div class="quad">
+    <div class="q merit"><h4>✅ Merits</h4><ul>
+      <li>self-healing — crashed pods return without humans</li>
+      <li>declarative desired state (the course's big idea)</li>
+      <li>rolling deploys, autoscaling, service discovery built in</li>
+      <li>runs anywhere — EKS, GKE, on-prem, laptop</li>
+    </ul></div>
+    <div class="q demerit"><h4>❌ Demerits</h4><ul>
+      <li>steep learning curve (hence… 14 lessons 😄)</li>
+      <li>costs money to exist (EKS ≈ $73/mo before nodes)</li>
+      <li>YAML sprawl; day-2 ops: upgrades, add-ons, CVEs</li>
+      <li>massive overkill for one small app</li>
+    </ul></div>
+    <div class="q use"><h4>👍 Use when</h4><ul>
+      <li>several services/teams, or real scaling needs</li>
+      <li>uptime matters enough to pay for redundancy</li>
+      <li>you're already containerized and outgrowing one box</li>
+    </ul></div>
+    <div class="q avoid"><h4>👎 Think twice when</h4><ul>
+      <li>one app, small team → Cloud Run / App Runner / compose</li>
+      <li>nobody has ops time — a managed PaaS is honest</li>
+      <li>a static site or a cron job (seriously, don't)</li>
+    </ul></div>
+  </div>
+  <p class="foot"><a href="lesson-diagrams.html#l03">Diagrams ↗</a></p>
+</section>
+
+<section class="term" id="ingress" style="--c:#ea580c">
+  <h2>🏫 Ingress — lesson 10</h2>
+  <div class="hist"><b>⏮️ Before Ingress</b>
+    <p>Either <b>one cloud load balancer per service</b> — at real money each, times every service,
+    times every environment — or a hand-managed nginx VM that one brave person understood.
+    Ingress made "one gate, many rooms" a declarative object.</p>
+  </div>
+  <div class="quad">
+    <div class="q merit"><h4>✅ Merits</h4><ul>
+      <li>ONE load balancer for many services (one bill)</li>
+      <li>path/host routing + TLS in one declared place</li>
+      <li>adding a service = one more rule, not more hardware</li>
+    </ul></div>
+    <div class="q demerit"><h4>❌ Demerits</h4><ul>
+      <li>needs a controller add-on (ALB controller, nginx…)</li>
+      <li>annotation zoo differs per controller</li>
+      <li>HTTP(S)-shaped; raw TCP/UDP needs other doors</li>
+    </ul></div>
+    <div class="q use"><h4>👍 Use when</h4><ul>
+      <li>2+ HTTP services share one domain/LB</li>
+      <li>you want central TLS and routing rules in git</li>
+    </ul></div>
+    <div class="q avoid"><h4>👎 Think twice when</h4><ul>
+      <li>exactly one service → a LoadBalancer Service is simpler</li>
+      <li>non-HTTP protocols (databases, game servers)</li>
+    </ul></div>
+  </div>
+  <p class="foot"><a href="lesson-diagrams.html#l10">Diagram ↗</a></p>
+</section>
+
+<section class="term" id="hpa" style="--c:#7c3aed">
+  <h2>🚌 Autoscaling (HPA) — lesson 09</h2>
+  <div class="hist"><b>⏮️ Before autoscaling</b>
+    <p><b>Capacity-planning meetings.</b> You guessed peak load, bought that many servers, and paid
+    for them at 3 AM on a Tuesday. Guessed wrong? Either an outage on results day or a rack of
+    idle metal. "Scaling" was a human clicking things during the cricket final.</p>
+  </div>
+  <div class="quad">
+    <div class="q merit"><h4>✅ Merits</h4><ul>
+      <li>capacity rides the actual load curve</li>
+      <li>pay for quiet nights instead of provisioning for peaks</li>
+      <li>no 3 AM human scaling</li>
+    </ul></div>
+    <div class="q demerit"><h4>❌ Demerits</h4><ul>
+      <li>needs metrics-server + honest resource requests</li>
+      <li>reacts in minutes — instant spikes still hurt</li>
+      <li>can mask leaks (scaling up instead of fixing)</li>
+      <li>fights anyone else who sets replicas (GitOps: ignore that field)</li>
+    </ul></div>
+    <div class="q use"><h4>👍 Use when</h4><ul>
+      <li>traffic genuinely varies (day/night, seasons, events)</li>
+      <li>CPU/memory tracks load reasonably well</li>
+    </ul></div>
+    <div class="q avoid"><h4>👎 Think twice when</h4><ul>
+      <li>flat traffic — fixed replicas are simpler and predictable</li>
+      <li>scale-to-zero dreams → that's serverless/Knative territory</li>
+      <li>spiky-in-seconds load → pre-warm or queue instead</li>
+    </ul></div>
+  </div>
+  <p class="foot"><a href="lesson-diagrams.html#l09">Diagram ↗</a></p>
+</section>
+
+<section class="term" id="namespaces" style="--c:#2563eb">
+  <h2>🚪 Namespaces (vs separate clusters) — lesson 05</h2>
+  <div class="hist"><b>⏮️ Before namespaces</b>
+    <p>Isolation meant <b>a whole cluster (or VM fleet) per team/project</b> — maximum separation,
+    maximum bills, and an ops team drowning in cluster upgrades. Namespaces bought lightweight
+    rooms inside one building.</p>
+  </div>
+  <div class="quad">
+    <div class="q merit"><h4>✅ Merits</h4><ul>
+      <li>isolation without buying another cluster</li>
+      <li>per-room quotas and access rules</li>
+      <li>clean blast radius: delete the room, not the school</li>
+    </ul></div>
+    <div class="q demerit"><h4>❌ Demerits</h4><ul>
+      <li>shared control plane — one cluster upgrade risks all rooms</li>
+      <li>noisy neighbors share nodes unless you add quotas/taints</li>
+      <li>NOT a hard security boundary for hostile tenants</li>
+    </ul></div>
+    <div class="q use"><h4>👍 Use when</h4><ul>
+      <li>teams/environments within one trusting org</li>
+      <li>dev/staging sharing a cluster to save money</li>
+    </ul></div>
+    <div class="q avoid"><h4>👎 Think twice when</h4><ul>
+      <li>compliance demands hard isolation → separate clusters</li>
+      <li>running untrusted third-party workloads</li>
+    </ul></div>
+  </div>
+  <p class="foot"><a href="lesson-diagrams.html#l05">Diagram ↗</a></p>
+</section>
+
+<section class="term" id="manageddb" style="--c:#ea580c">
+  <h2>📚 Managed database (RDS) vs in-cluster — lesson 12</h2>
+  <div class="hist"><b>⏮️ Before managed databases</b>
+    <p>A DBA (or the unluckiest developer) hand-tended database servers: installs, patches,
+    backups nobody tested, and failovers performed live with sweaty hands. RDS-style services
+    (2009+) turned that into a rented, automated librarian.</p>
+  </div>
+  <div class="quad">
+    <div class="q merit"><h4>✅ Merits (managed)</h4><ul>
+      <li>backups, patching, failover — someone else's 3 AM</li>
+      <li>cluster stays stateless = every k8s lesson stays simple</li>
+      <li>encryption, snapshots, restore drills built in</li>
+    </ul></div>
+    <div class="q demerit"><h4>❌ Demerits (managed)</h4><ul>
+      <li>costs more than raw compute</li>
+      <li>less control (versions, extensions, exotic tuning)</li>
+      <li>some vendor coupling</li>
+    </ul></div>
+    <div class="q use"><h4>👍 Managed, when</h4><ul>
+      <li>production data + a small team (this repo's choice)</li>
+      <li>you can't staff real database operations</li>
+    </ul></div>
+    <div class="q avoid"><h4>👎 In-cluster, when</h4><ul>
+      <li>dev/test environments (cheap, disposable)</li>
+      <li>a skilled team + an operator (CloudNativePG etc.)</li>
+      <li>the database isn't offered as a managed service</li>
+    </ul></div>
+  </div>
+  <p class="foot"><a href="lesson-diagrams.html#l12">Diagram ↗</a></p>
+</section>
+
+<footer>
+  Learn Kubernetes School · <a href="index.html">Course home</a> ·
+  <a href="lesson-diagrams.html">Lesson diagrams</a> ·
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a>
+</footer>
+
+</div>
+</body>
+</html>
