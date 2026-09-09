@@ -1,6 +1,6 @@
 # 🤖 Lesson 14 (bonus) — Deploy: CI/CD & GitOps with ArgoCD
 
-**📍 You are here:** Bonus lesson **14** — the deploy lesson · Previous: `lesson-13-under-the-hood`
+**📍 You are here:** Bonus lesson **14** · Previous: `lesson-13-under-the-hood` · Next bonus: `lesson-15-multi-az-scaling`
 
 ---
 
@@ -156,8 +156,9 @@ kubectl -n school get pods -w    # the caretaker puts it back to 3. The book win
 
 Push pipelines, pull reconcilers, and everything from lunchboxes to the control
 plane in between. You now understand not just *what* runs your app, but *what
-deploys it and keeps it honest*. Go build something.
+deploys it and keeps it honest*. One last bonus: making it survive a building
+fire and exam-results day.
 
 ```bash
-git checkout main
+git checkout lesson-15-multi-az-scaling   # multi-AZ + the scaling ladder 🏫🏫
 ```
