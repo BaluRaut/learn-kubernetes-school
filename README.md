@@ -35,10 +35,10 @@ self-checks pass, come straight back here.
 
 ---
 
-## 🎓 Learn Kubernetes step-by-step — 14 lesson branches
+## 🎓 Learn Kubernetes step-by-step — 15 lesson branches
 
 Kubernetes is easiest to learn **one small idea at a time**. This repo has **13 core lesson
-branches + 1 bonus deploy lesson**, each adding ONE lesson folder (`lessons/NN-topic/README.md`) with:
+branches + 2 bonus lessons**, each adding ONE lesson folder (`lessons/NN-topic/README.md`) with:
 an explain-like-I'm-5 story, a real-world analogy, a diagram, **What / Why / How**,
 and hands-on commands that use *this repo's actual files*.
 
@@ -66,6 +66,7 @@ git checkout lesson-02-pods         # ...keep going, one branch at a time
 | 12 | `lesson-12-storage` | Volumes, PV/PVC, state | Backpack vs library shelf 📚 |
 | 13 | `lesson-13-under-the-hood` | Control plane internals | The school office 🏢 |
 | 14 | `lesson-14-deploy-gitops` | **Bonus:** CI/CD & GitOps with ArgoCD | The caretaker robot with the plan book 🤖 |
+| 15 | `lesson-15-multi-az-scaling` | **Bonus:** Multi-AZ & the scaling ladder | Many buildings, more desks on exam day 🏫🏫 |
 
 ---
 

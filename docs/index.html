@@ -75,7 +75,7 @@
       4K architecture diagrams, the production design doc, and a narrated video tour — all below.</div>
   </section>
 
-  <h2>🎓 The 14 lessons</h2>
+  <h2>🎓 The 15 lessons</h2>
   <p class="sub">Lessons live on <b>branches</b> — branch 05 contains lessons 01–05, so you can stop and
   resume anywhere. Click a card to read the lesson right on GitHub (diagrams render there), or
   check the branch out locally. Prefer pictures? All 14 lessons are also drawn as
@@ -96,6 +96,7 @@
     <div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">12</span><h3>📚 Storage &amp; state</h3></div><span class="ana">Backpack vs library shelf — what survives when a pod dies.</span><code>lesson-12-storage</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l12">See the diagram ↗</a></div>
     <div class="lesson" style="--c:#16a34a"><div class="top"><span class="num">13</span><h3>🏢 Under the hood</h3></div><span class="ana">The school office — API server, etcd, scheduler, kubelet.</span><code>lesson-13-under-the-hood</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l13">See the diagram ↗</a></div>
     <div class="lesson bonus" style="--c:#16a34a"><div class="top"><span class="num">14</span><h3>🤖 Bonus: CI/CD &amp; ArgoCD</h3></div><span class="ana">The caretaker robot with the master plan book — GitOps.</span><code>lesson-14-deploy-gitops</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l14">See the diagram ↗</a></div>
+    <div class="lesson bonus" style="--c:#0d9488"><div class="top"><span class="num">15</span><h3>🏫🏫 Bonus: Multi-AZ &amp; scaling</h3></div><span class="ana">Many buildings + the exam-day ladder — fires and rushes, survived.</span><code>lesson-15-multi-az-scaling</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l15">See the diagram ↗</a></div>
   </div>
 
   <pre><code># take the course locally:
@@ -170,8 +171,52 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
     <li>🤖 <a href="https://baluraut.github.io/learn-argocd-school/"><b>Course 3: Learn ArgoCD School</b></a> — 12 lessons on deployment: without ArgoCD (by hand, CI/CD push) vs with ArgoCD (GitOps pull)</li>
   </ul>
 
+
+<!-- 15 -->
+<section class="dsec" id="l15" style="--c:#0d9488">
+  <h2><span class="ln">15</span> 🏫🏫 Bonus: Multi-AZ &amp; the scaling ladder</h2>
+  <p class="d">Never seat the whole class in one building — and climb the cheapest rung first on exam day.</p>
+  <svg viewBox="0 0 940 330" role="img" aria-label="An ALB sends traffic to nodes spread across two availability zones; the scaling ladder: HPA adds pods, cluster autoscaler adds nodes, topology spread crosses buildings, PDB keeps a minimum">
+    <rect class="box" x="300" y="30" width="330" height="60" rx="12"/>
+    <text class="t m" x="465" y="55">🌍 ALB — stands outside all buildings</text>
+    <text class="s m" x="465" y="77">sends visitors wherever is healthy</text>
+    <rect class="soft" x="50" y="130" width="360" height="160" rx="12"/>
+    <text class="t m" x="230" y="158">🏫 building A — AZ a</text>
+    <rect class="box" x="75" y="175" width="150" height="95" rx="10"/>
+    <text class="s m" x="150" y="205">🖥️ desk</text>
+    <text class="s m" x="150" y="227">🪑 api-1</text>
+    <text class="s m" x="150" y="249">🪑 analytics-1</text>
+    <rect class="dead" x="245" y="175" width="145" height="95" rx="10"/>
+    <text class="s m" x="317" y="205">🖥️ new desk</text>
+    <text class="s m" x="317" y="227">added by the</text>
+    <text class="s m" x="317" y="249">autoscaler</text>
+    <g transform="translate(245,175)"><circle r="11" class="nc"/><text class="nt" dy="4">2</text></g>
+    <rect class="soft" x="440" y="130" width="270" height="160" rx="12"/>
+    <text class="t m" x="575" y="158">🏫 building B — AZ b</text>
+    <rect class="box" x="465" y="175" width="220" height="95" rx="10"/>
+    <text class="s m" x="575" y="205">🖥️ desk</text>
+    <text class="s m" x="575" y="227">🪑 api-2 · 🪑 analytics-2</text>
+    <line class="arr" x1="400" y1="90" x2="250" y2="126"/>
+    <line class="arr" x1="530" y1="90" x2="580" y2="126"/>
+    <line class="arr dash" x1="230" y1="295" x2="560" y2="295"/>
+    <g transform="translate(395,295)"><circle r="11" class="nc"/><text class="nt" dy="4">3</text></g>
+    <text class="s m" x="395" y="322">topology spread: copies across buildings — one fire ≠ down</text>
+    <g transform="translate(150,160)"><circle r="11" class="nc"/><text class="nt" dy="4">1</text></g>
+    <rect class="soft" x="740" y="110" width="180" height="200" rx="12"/>
+    <text class="t m" x="830" y="140">🪜 the ladder</text>
+    <text class="s m" x="830" y="168">1 HPA: more pods — seconds</text>
+    <text class="s m" x="830" y="192">2 autoscaler: more desks — minutes</text>
+    <text class="s m" x="830" y="216">3 spread: across buildings</text>
+    <text class="s m" x="830" y="240">4 PDB: never all away at once</text>
+    <text class="s m" x="830" y="272">Pending pods = kids standing —</text>
+    <text class="s m" x="830" y="292">the autoscaler's signal</text>
+    <g transform="translate(740,110)"><circle r="11" class="nc"/><text class="nt" dy="4">4</text></g>
+  </svg>
+  <p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">Read full lesson 15 →</a></p>
+</section>
+
   <a class="btn" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">Start Lesson 01 →</a>
-  <a class="btn alt" href="lesson-diagrams.html">📐 All 14 lesson diagrams</a>
+  <a class="btn alt" href="lesson-diagrams.html">📐 All 15 lesson diagrams</a>
   <a class="btn alt" href="before-and-tradeoffs.html">⏮️ Before &amp; trade-offs</a>
   <a class="btn alt" href="before-you-start.html">Check my foundations first</a>
   <a class="btn alt" href="https://baluraut.github.io/learn-docker-school/">🍱 Course 1: Docker &amp; ECR</a>
