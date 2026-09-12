@@ -1,6 +1,6 @@
 # 🏫🏫 Lesson 15 (bonus) — Multi-AZ & the scaling ladder
 
-**📍 You are here:** Bonus lesson **15** — the resilience lesson · Previous: `lesson-14-deploy-gitops`
+**📍 You are here:** Bonus lesson **15** · Previous: `lesson-14-deploy-gitops` · Next: `lesson-16-debugging` — Part 3 begins!
 
 ---
 
@@ -120,6 +120,9 @@ Self-healing pods (03), rainy-day buses (09), zero-downtime substitutions
 (11), robots that deploy (14) — and now a school that survives fires and
 results day. That's not a demo cluster anymore; that's an architecture. 🏫🏫
 
+And now that it stands: **Part 3 — running it for real** (lessons 16–26):
+debugging, hall passes, homework bells, seating rules, and eyes on everything.
+
 ```bash
-git checkout main
+git checkout lesson-16-debugging   # 🩺 the nurse's triage chart
 ```
