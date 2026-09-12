@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study plan — Learn Kubernetes School</title>
+<meta name="description" content="A 9-week study plan for the 26-lesson Kubernetes course: sequence, time estimates, weekly milestones and a capstone — with progress saved in your browser.">
+<style>
+  :root {
+    --bg: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted: #475569;
+    --line: #e2e8f0; --accent: #326ce5; --ok: #16a34a; --blue: #2563eb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1220; --card: #131c2e; --ink: #e2e8f0; --muted: #94a3b8; --line: #253349; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+  a { color: var(--blue); }
+  h1 { font-size: 1.9rem; line-height: 1.25; }
+  .sub { color: var(--muted); max-width: 74ch; }
+  .paces { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 18px 0 8px; }
+  .pace { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: .93rem; color: var(--muted); }
+  .pace b { color: var(--ink); }
+  .progress-box { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 12px 0; }
+  .progress-inner { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 18px; display: flex; align-items: center; gap: 16px; }
+  .bar { flex: 1; height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0%; background: var(--ok); border-radius: 999px; transition: width .3s; }
+  #ptext { font-weight: 700; white-space: nowrap; }
+  .week { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c, var(--accent)); border-radius: 16px; padding: 20px 22px; margin-top: 22px; }
+  .week h2 { font-size: 1.15rem; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .week h2 .wk { flex: none; font-size: .8rem; font-weight: 800; color: #fff; background: var(--c, var(--accent)); border-radius: 999px; padding: 3px 12px; }
+  .week .goal { color: var(--muted); font-size: .93rem; margin: 6px 0 12px; }
+  .lesson-row { display: flex; align-items: baseline; gap: 10px; padding: 7px 0; border-top: 1px dashed var(--line); font-size: .95rem; }
+  .lesson-row input { transform: scale(1.25); accent-color: var(--ok); flex: none; position: relative; top: 2px; }
+  .lesson-row .time { margin-left: auto; color: var(--muted); font-size: .85rem; white-space: nowrap; }
+  .lesson-row label { cursor: pointer; }
+  .lesson-row a { text-decoration: none; font-weight: 600; }
+  .lesson-row a:hover { text-decoration: underline; }
+  .milestone { margin-top: 12px; background: var(--bg); border-left: 4px solid var(--ok); border-radius: 8px; padding: 10px 14px; font-size: .92rem; }
+  .milestone b { color: var(--ok); }
+  #done { display: none; text-align: center; background: var(--card); border: 2px solid var(--ok); border-radius: 20px; padding: 32px 24px; margin-top: 26px; }
+  #done h2 { font-size: 1.5rem; }
+  footer { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 16px; color: var(--muted); font-size: .88rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p><a href="index.html">← Back to the course home</a></p>
+  <h1>🗓️ The study plan — 26 lessons, 9 weeks</h1>
+  <p class="sub">The whole course in sequence, ~<b>3 sessions a week</b>, each session = read one
+  lesson (~15 min) + do its lab (~25 min). Tick lessons off as you go — <b>progress is saved in
+  this browser</b>. Don't rush: the labs are where it sticks.</p>
+  <div class="paces">
+    <div class="pace">🐢 <b>Steady (recommended):</b> 3 sessions/week → done in ~9 weeks. Fits around a job.</div>
+    <div class="pace">🐇 <b>Fast track:</b> ~2 hours/day → done in ~2½ weeks. Good between jobs or on break.</div>
+    <div class="pace">💰 <b>Cost:</b> weeks 1–8 are laptop-only (free). Only the optional capstone touches AWS — destroy same day.</div>
+  </div>
+</header>
+
+<div class="progress-box"><div class="progress-inner">
+  <span id="ptext">0 / 26</span>
+  <div class="bar"><div id="pbar"></div></div>
+  <span id="pweek" style="color:var(--muted);font-size:.85rem;white-space:nowrap"></span>
+</div></div>
+
+<section class="week" style="--c:#64748b">
+  <h2><span class="wk">WEEK 0</span> 🎒 Foundations check <span style="color:var(--muted);font-weight:400;font-size:.9rem">(optional · 1–2 evenings)</span></h2>
+  <p class="goal">Only if terminal/git/YAML feel shaky — run the self-checks on the
+  <a href="before-you-start.html">Before-You-Start checklist</a>. All green? Skip straight to Week 1.
+  Install Docker Desktop + kubectl + minikube now either way.</p>
+</section>
+
+<section class="week" style="--c:#0ea5e9">
+  <h2><span class="wk">WEEK 1</span> 🍱 See it run — the core loop</h2>
+  <p class="goal">From "what's a container" to a self-healing, reachable app on your laptop.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l01" id="l01"><label for="l01"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">01 · Containers &amp; images 🍱</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l02" id="l02"><label for="l02"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">02 · Pods 🪑</a></label><span class="time">~30 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l03" id="l03"><label for="l03"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">03 · Deployments 🧑‍🏫</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l04" id="l04"><label for="l04"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">04 · Services ☎️</a></label><span class="time">~45 min</span></div>
+  <div class="milestone">🏁 <b>Checkpoint:</b> delete a pod on purpose — then explain, out loud, who brings it back (L03) and how traffic still finds it (L04).</div>
+</section>
+
+<section class="week" style="--c:#2563eb">
+  <h2><span class="wk">WEEK 2</span> 🔑 Configure it properly</h2>
+  <p class="goal">Rooms, settings, secrets, health and portions — the difference between "runs" and "runs right".</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l05" id="l05"><label for="l05"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">05 · Namespaces 🚪</a></label><span class="time">~30 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l06" id="l06"><label for="l06"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">06 · ConfigMaps &amp; Secrets 🔑</a></label><span class="time">~40 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l07" id="l07"><label for="l07"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">07 · Health probes 🙋</a></label><span class="time">~40 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l08" id="l08"><label for="l08"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">08 · Requests &amp; limits 🍛</a></label><span class="time">~40 min</span></div>
+  <div class="milestone">🏁 <b>Checkpoint:</b> liveness vs readiness in one sentence each, from memory — and cause (then explain) one OOMKill.</div>
+</section>
+
+<section class="week" style="--c:#7c3aed">
+  <h2><span class="wk">WEEK 3</span> 🚌 Traffic &amp; change</h2>
+  <p class="goal">Scale under load, route from outside, and ship new versions with zero downtime.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l09" id="l09"><label for="l09"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">09 · Autoscaling (HPA) 🚌</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l10" id="l10"><label for="l10"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">10 · Ingress 🏫</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l11" id="l11"><label for="l11"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">11 · Rollouts &amp; rollbacks ⚽</a></label><span class="time">~45 min</span></div>
+  <div class="milestone">🏁 <b>Checkpoint:</b> ship a broken image, watch readiness protect you, roll back in one command. If that felt boring — perfect, that's the point.</div>
+</section>
+
+<section class="week" style="--c:#ea580c">
+  <h2><span class="wk">WEEK 4</span> 📚 State &amp; internals</h2>
+  <p class="goal">What survives, and what's actually happening underneath.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l12" id="l12"><label for="l12"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">12 · Storage &amp; state 📚</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l13" id="l13"><label for="l13"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">13 · Under the hood 🏢</a></label><span class="time">~40 min</span></div>
+  <p class="goal" style="margin-top:8px">+ dessert: the <a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood diagrams</a> and the 6-min <a href="video/walkthrough-4k.mp4">video tour</a>.</p>
+  <div class="milestone">🏁 <b>Checkpoint:</b> narrate <code>kubectl apply</code> end-to-end from memory — principal, register, timetable-maker, class teacher. Halfway there! 🎉</div>
+</section>
+
+<section class="week" style="--c:#16a34a">
+  <h2><span class="wk">WEEK 5</span> 🤖 Ship it — the bonus band</h2>
+  <p class="goal">Robots deploy it; buildings and ladders keep it alive.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l14" id="l14"><label for="l14"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">14 · CI/CD &amp; GitOps with ArgoCD 🤖</a></label><span class="time">~60 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l15" id="l15"><label for="l15"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">15 · Multi-AZ &amp; the scaling ladder 🏫🏫</a></label><span class="time">~45 min</span></div>
+  <p class="goal" style="margin-top:8px">💡 Detour worth taking now (or after week 9): the sister courses —
+  <a href="https://baluraut.github.io/learn-docker-school/">Docker &amp; ECR</a> ·
+  <a href="https://baluraut.github.io/learn-aws-school/">AWS: IAM &amp; EC2</a> ·
+  <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD in depth</a>.</p>
+  <div class="milestone">🏁 <b>Checkpoint:</b> hand-edit the cluster and watch ArgoCD revert you. Recite the ladder: HPA adds pods → autoscaler adds desks → spread across buildings.</div>
+</section>
+
+<section class="week" style="--c:#be123c">
+  <h2><span class="wk">WEEK 6</span> 🩺 Operate I — when things break</h2>
+  <p class="goal">Part 3 begins: triage, permissions, and scheduled work.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l16" id="l16"><label for="l16"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">16 · Debugging playbook 🩺</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l17" id="l17"><label for="l17"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">17 · RBAC &amp; ServiceAccounts 🪪</a></label><span class="time">~40 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l18" id="l18"><label for="l18"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">18 · Jobs &amp; CronJobs ⏰</a></label><span class="time">~40 min</span></div>
+  <div class="milestone">🏁 <b>Checkpoint:</b> diagnose all three sick pods from L16's infirmary <i>without</i> peeking — and apply the real backup CronJob.</div>
+</section>
+
+<section class="week" style="--c:#be123c">
+  <h2><span class="wk">WEEK 7</span> 🚫 Operate II — locks &amp; seats</h2>
+  <p class="goal">Network rules, seating rules, and the pods on every floor.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l19" id="l19"><label for="l19"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">19 · NetworkPolicies 🚫📝</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l20" id="l20"><label for="l20"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">20 · Taints &amp; affinity 🎫</a></label><span class="time">~40 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l21" id="l21"><label for="l21"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">21 · DaemonSets 🧯</a></label><span class="time">~30 min</span></div>
+  <div class="milestone">🏁 <b>Checkpoint:</b> the spy pod gets blocked; taint vs affinity explained in school words (push from desks, pull from kids).</div>
+</section>
+
+<section class="week" style="--c:#be123c">
+  <h2><span class="wk">WEEK 8</span> 🏗️ Operate III — state, pressure, renovation</h2>
+  <p class="goal">The advanced trio every on-call engineer eventually meets.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l22" id="l22"><label for="l22"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">22 · StatefulSets 🏷️</a></label><span class="time">~45 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l23" id="l23"><label for="l23"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">23 · QoS &amp; evictions 🍽️</a></label><span class="time">~30 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l24" id="l24"><label for="l24"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">24 · Cluster upgrades 🏗️</a></label><span class="time">~40 min</span></div>
+  <div class="milestone">🏁 <b>Checkpoint:</b> kill <code>postgres-0</code> and find the data intact; cordon a node and explain what a drain would wait for (the PDB!).</div>
+</section>
+
+<section class="week" style="--c:#be123c">
+  <h2><span class="wk">WEEK 9</span> 🎓 Graduate — extend, observe, build</h2>
+  <p class="goal">The last two lessons, then prove it all with a capstone.</p>
+  <div class="lesson-row"><input type="checkbox" data-l="l25" id="l25"><label for="l25"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">25 · CRDs &amp; operators 🤖</a></label><span class="time">~40 min</span></div>
+  <div class="lesson-row"><input type="checkbox" data-l="l26" id="l26"><label for="l26"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">26 · Observability 📈</a></label><span class="time">~60 min</span></div>
+  <div class="milestone">🏆 <b>Capstone (pick one):</b><br>
+  💻 <b>Zero-cost:</b> on minikube, deploy everything — both apps, HPA, NetworkPolicies, the backup CronJob, postgres-0, and the Prometheus stack — then break three things and fix them using only L16's drill.<br>
+  ☁️ <b>Real AWS (~$5 if destroyed same day):</b> <code>terraform apply</code> → deploy via the pipeline → see it live behind the ALB → <code>terraform destroy</code> before dinner. 🧹</div>
+</section>
+
+<div id="done">
+  <h2>🎓 26 / 26 — you did the whole school!</h2>
+  <p class="sub" style="margin:10px auto 0">Next: the <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD course</a> for deployment mastery,
+  or go build something real — you're ready.</p>
+</div>
+
+<footer>
+  Learn Kubernetes School · <a href="index.html">Course home</a> ·
+  <a href="lesson-diagrams.html">Lesson diagrams</a> ·
+  <a href="before-and-tradeoffs.html">Before &amp; trade-offs</a> ·
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school">GitHub</a>
+</footer>
+
+</div>
+<script>
+(function(){
+  var KEY='k8s-study-plan';
+  var state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+  var boxes=[].slice.call(document.querySelectorAll('input[data-l]'));
+  function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+  function render(){
+    var done=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('ptext').textContent=done+' / '+boxes.length;
+    document.getElementById('pbar').style.width=(100*done/boxes.length)+'%';
+    var wk=Math.min(9,Math.floor(done/3)+1);
+    document.getElementById('pweek').textContent=done===boxes.length?'complete! 🎓':(done?('≈ week '+wk+' pace'):'');
+    document.getElementById('done').style.display=done===boxes.length?'block':'none';
+  }
+  boxes.forEach(function(b){
+    b.checked=!!state[b.dataset.l];
+    b.addEventListener('change',function(){state[b.dataset.l]=b.checked;save();render();});
+  });
+  render();
+})();
+</script>
+</body>
+</html>
