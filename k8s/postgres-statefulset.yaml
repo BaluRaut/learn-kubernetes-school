@@ -1,0 +1,64 @@
+# A named desk with its own drawer 🏷️🗄️ (lesson 22) — Postgres as a StatefulSet.
+# FOR LEARNING & dev/test. Production stance unchanged: rent the library (RDS).
+---
+# Headless Service: reception that transfers you to a SPECIFIC kid
+# (postgres-0.postgres.school.svc.cluster.local), no load-balancing.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: school
+spec:
+  clusterIP: None            # ← headless: per-pod DNS names instead of one VIP
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: school
+spec:
+  serviceName: postgres      # ties pod names to the headless Service
+  replicas: 1                # HA needs an operator (lesson 25) — not just replicas: 3!
+  selector:
+    matchLabels: { app: postgres }
+  template:
+    metadata:
+      labels: { app: postgres }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_USER
+              value: school
+            - name: POSTGRES_PASSWORD
+              value: learn-only-not-prod   # real setups: secretKeyRef (lesson 06)!
+            - name: POSTGRES_DB
+              value: school
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data                   # ← matches the claim template below
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "school"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+  volumeClaimTemplates:      # 🗄️ the personal-drawer mint: one PVC PER pod,
+    - metadata:              #    named data-postgres-0, survives pod deletion
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 1Gi
