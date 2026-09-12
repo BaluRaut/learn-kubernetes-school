@@ -1,0 +1,56 @@
+# The nightly backup bell 🔔 (lesson 18) — the CronJob the main README promised.
+#
+# Ships SUSPENDED so `kubectl apply` is always safe. To arm it:
+#   1) have a real DATABASE_URL secret (lesson 06 / k8s/secret.example.yaml)
+#   2) replace the "upload" step with your real destination (S3 + IAM hat)
+#   3) set suspend: false
+# Fire one manually anytime:
+#   kubectl -n school create job backup-now --from=cronjob/school-db-backup
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: school-db-backup
+  namespace: school
+spec:
+  schedule: "0 2 * * *"            # every night at 02:00
+  timeZone: "Asia/Kolkata"
+  suspend: true                    # ← the off-switch: flip when ready
+  concurrencyPolicy: Forbid        # never two backups at once
+  successfulJobsHistoryLimit: 3    # keep 3 report cards 🧹
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2              # retry twice, then alert a human
+      activeDeadlineSeconds: 900   # pencils down after 15 min
+      template:
+        spec:
+          restartPolicy: Never     # homework must be allowed to END
+          containers:
+            - name: pg-dump
+              image: postgres:16-alpine
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -e
+                  STAMP=$(date +%Y%m%d-%H%M%S)
+                  echo "📦 dumping to /backup/school-$STAMP.sql.gz"
+                  pg_dump "$DATABASE_URL" | gzip > /backup/school-$STAMP.sql.gz
+                  ls -lh /backup/
+                  # real life: aws s3 cp /backup/school-$STAMP.sql.gz \
+                  #   s3://YOUR-BUCKET/backups/  (pod wears an IAM hat via IRSA)
+                  echo "✅ backup complete"
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: school-api-secrets
+                      key: DATABASE_URL
+              volumeMounts:
+                - name: scratch
+                  mountPath: /backup
+              resources:
+                requests: { cpu: 100m, memory: 128Mi }
+                limits: { cpu: 500m, memory: 256Mi }
+          volumes:
+            - name: scratch
+              emptyDir: {}         # fine for dump-then-upload; NOT the archive itself
