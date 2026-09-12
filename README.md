@@ -35,10 +35,10 @@ self-checks pass, come straight back here.
 
 ---
 
-## 🎓 Learn Kubernetes step-by-step — 15 lesson branches
+## 🎓 Learn Kubernetes step-by-step — 26 lesson branches
 
-Kubernetes is easiest to learn **one small idea at a time**. This repo has **13 core lesson
-branches + 2 bonus lessons**, each adding ONE lesson folder (`lessons/NN-topic/README.md`) with:
+Kubernetes is easiest to learn **one small idea at a time**. This repo has **13 core lessons + 2 bonus
+lessons + 11 "running it for real" lessons (Part 3)**, each adding ONE lesson folder (`lessons/NN-topic/README.md`) with:
 an explain-like-I'm-5 story, a real-world analogy, a diagram, **What / Why / How**,
 and hands-on commands that use *this repo's actual files*.
 
@@ -67,6 +67,17 @@ git checkout lesson-02-pods         # ...keep going, one branch at a time
 | 13 | `lesson-13-under-the-hood` | Control plane internals | The school office 🏢 |
 | 14 | `lesson-14-deploy-gitops` | **Bonus:** CI/CD & GitOps with ArgoCD | The caretaker robot with the plan book 🤖 |
 | 15 | `lesson-15-multi-az-scaling` | **Bonus:** Multi-AZ & the scaling ladder | Many buildings, more desks on exam day 🏫🏫 |
+| 16 | `lesson-16-debugging` | 🩺 Debugging playbook | The nurse's triage chart — describe, events, logs, exec, in order. |
+| 17 | `lesson-17-rbac` | 🪪 RBAC & ServiceAccounts | Hall passes — kids, teachers and robots open different doors. |
+| 18 | `lesson-18-jobs-cronjobs` | ⏰ Jobs & CronJobs | Homework vs the morning bell — includes the REAL backup CronJob. |
+| 19 | `lesson-19-network-policies` | 🚫📝 NetworkPolicies | Passing-notes rules — by default every pod whispers to every pod. |
+| 20 | `lesson-20-taints-affinity` | 🎫 Taints & affinity | Assigned seating — signs on desks, chits and wishes on kids. |
+| 21 | `lesson-21-daemonsets` | 🧯 DaemonSets | One fire extinguisher on EVERY floor — no exceptions. |
+| 22 | `lesson-22-statefulsets` | 🏷️ StatefulSets | Desks with name plates — postgres-0 keeps its own drawer. |
+| 23 | `lesson-23-qos-evictions` | 🍽️ QoS & evictions | Who leaves when lunch runs short — the pecking order you're in. |
+| 24 | `lesson-24-cluster-upgrades` | 🏗️ Cluster upgrades | Renovating while school stays open — cordon, drain, PDBs on stage. |
+| 25 | `lesson-25-crds-operators` | 🤖 CRDs & operators | Teaching the office new words — how ArgoCD's Application works. |
+| 26 | `lesson-26-observability` | 📈 Observability | Report cards, diaries, alarm bells — eyes on everything. |
 
 ---
 
