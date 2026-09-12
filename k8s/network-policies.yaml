@@ -1,0 +1,44 @@
+# Passing-notes rules 🚫📝 (lesson 19): default-deny, then exactly the
+# conversations this app needs. Requires a CNI that enforces NetworkPolicy
+# (minikube --cni=calico · EKS: VPC CNI network policy or Calico).
+---
+# Rule 1: no notes at all (selects EVERY pod in the school namespace)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: school
+spec:
+  podSelector: {}          # empty = all pods here
+  policyTypes: [Ingress]   # inbound locked; outbound left open (add Egress to tighten)
+---
+# Rule 2: analytics may talk to school-api, port 3000 only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-analytics-to-api
+  namespace: school
+spec:
+  podSelector:
+    matchLabels: { app: school-api }
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { app: school-analytics }
+      ports:
+        - port: 3000
+---
+# Rule 3: the gate may reach both apps (ALB/ingress targets pod IPs directly)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-apps
+  namespace: school
+spec:
+  podSelector:
+    matchExpressions:
+      - { key: app, operator: In, values: [school-api, school-analytics] }
+  ingress:
+    - ports:                 # from any source, app ports only —
+        - port: 3000         # tighten `from:` to your ALB/node CIDRs in prod
+        - port: 8000
