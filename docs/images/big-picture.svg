@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1160" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <style>
+    .band1 { fill: #fff; stroke: #326ce5; stroke-width: 3; }
+    .band2 { fill: #fff; stroke: #be123c; stroke-width: 3; }
+    .bx  { fill: #f8fafc; stroke: #94a3b8; stroke-width: 2; }
+    .bxb { fill: #fff; stroke: #326ce5; stroke-width: 2.5; }
+    .bxr { fill: #fff; stroke: #be123c; stroke-width: 2.5; }
+    .tip  { fill: #eff6ff; stroke: #326ce5; stroke-width: 1.5; }
+    .win  { fill: #fff1f2; stroke: #be123c; stroke-width: 1.5; }
+    .title { font-size: 36px; font-weight: 800; fill: #0f172a; }
+    .bandt { font-size: 26px; font-weight: 800; }
+    .t  { font-size: 19px; font-weight: 600; fill: #0f172a; }
+    .s  { font-size: 15px; fill: #475569; }
+    .m  { text-anchor: middle; }
+    .arr  { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arw); }
+    .ntb { font-size: 15px; font-weight: 700; fill: #fff; text-anchor: middle; }
+  </style>
+
+  <rect x="0" y="0" width="1920" height="1160" fill="#ffffff"/>
+  <text class="title m" x="960" y="52">The Big Picture — Kubernetes: a school that runs itself · 26 lessons, one campus</text>
+
+  <rect class="band1" x="40" y="80" width="1840" height="470" rx="20"/>
+  <text class="bandt" x="70" y="122" fill="#326ce5">☸️ THE CORE SCHOOL (lessons 1–13)</text>
+
+  <rect class="bxb" x="70" y="170" width="430" height="130" rx="14"/>
+  <text class="t m" x="285" y="203">🪑 desks &amp; monitors (L1–4)</text>
+  <text class="s m" x="285" y="231">containers 🍱 ride in pods (desks) · the class monitor</text>
+  <text class="s m" x="285" y="255">keeps N alive, always · reception ☎️ gives pods one</text>
+  <text class="s m" x="285" y="279">stable number — kids move, the number doesn't</text>
+  <g transform="translate(70,170)"><circle r="13" fill="#326ce5"/><text class="ntb" dy="5">1</text></g>
+
+  <rect class="bxb" x="560" y="170" width="430" height="130" rx="14"/>
+  <text class="t m" x="775" y="203">🚪 rooms &amp; settings (L5–8)</text>
+  <text class="s m" x="775" y="231">namespaces = classrooms · notice board 📌 vs locker</text>
+  <text class="s m" x="775" y="255">key 🔑 (config vs secrets) · two probe questions 🙋 ·</text>
+  <text class="s m" x="775" y="279">lunch portions: requests reserve, limits cap 🍛</text>
+  <g transform="translate(560,170)"><circle r="13" fill="#326ce5"/><text class="ntb" dy="5">2</text></g>
+
+  <rect class="bxb" x="1050" y="170" width="430" height="130" rx="14"/>
+  <text class="t m" x="1265" y="203">🚌 traffic &amp; change (L9–12)</text>
+  <text class="s m" x="1265" y="231">HPA: extra buses on rainy days · one gate + signboard</text>
+  <text class="s m" x="1265" y="255">(ingress) 🏫 · substitutions mid-game = zero-downtime</text>
+  <text class="s m" x="1265" y="279">rollouts ⚽ · backpack vs library shelf (storage) 📚</text>
+  <g transform="translate(1050,170)"><circle r="13" fill="#326ce5"/><text class="ntb" dy="5">3</text></g>
+
+  <rect class="bxb" x="1540" y="170" width="310" height="130" rx="14"/>
+  <text class="t m" x="1695" y="203">🏢 the office (L13)</text>
+  <text class="s m" x="1695" y="231">principal (API server) · register</text>
+  <text class="s m" x="1695" y="255">(etcd) 📖 · timetable-maker ·</text>
+  <text class="s m" x="1695" y="279">class teachers (kubelet)</text>
+  <g transform="translate(1540,170)"><circle r="13" fill="#326ce5"/><text class="ntb" dy="5">4</text></g>
+
+  <line class="arr" x1="500" y1="235" x2="556" y2="235"/>
+  <line class="arr" x1="990" y1="235" x2="1046" y2="235"/>
+  <line class="arr" x1="1480" y1="235" x2="1536" y2="235"/>
+
+  <rect class="tip" x="70" y="400" width="1780" height="110" rx="14"/>
+  <text class="t m" x="960" y="438">💡 the ONE idea, thirteen costumes: declare a wish → a monitor reconciles reality toward it, forever</text>
+  <text class="s m" x="960" y="466">Deployment wishes for pods · HPA wishes for a CPU% · the office stores every wish in the register — and everything in Part 3</text>
+  <text class="s m" x="960" y="490">(and ArgoCD, one school over) is the same loop wearing a new hat · real manifests for all of it live in this repo's k8s/ folder</text>
+
+  <text class="t m" x="960" y="588" fill="#475569">then the campus grows up: robots deploy it, buildings multiply, and you learn to run it at 3 AM 🌙</text>
+
+  <rect class="band2" x="40" y="610" width="1840" height="510" rx="20"/>
+  <text class="bandt" x="70" y="652" fill="#be123c">🧰 SHIP IT &amp; RUN IT FOR REAL (lessons 14–26)</text>
+
+  <rect class="bxr" x="70" y="700" width="560" height="200" rx="14"/>
+  <text class="t m" x="350" y="733">🤖 ship &amp; survive (L14–15)</text>
+  <text class="s m" x="350" y="763">GitOps: the caretaker robot reads the plan book —</text>
+  <text class="s m" x="350" y="787">deploys = commits, rollback = git revert ⏪ ·</text>
+  <text class="s m" x="350" y="811">multi-AZ: never seat the whole class in one building 🏫🏫 ·</text>
+  <text class="s m" x="350" y="835">the scaling ladder: more pods → more desks → more</text>
+  <text class="s m" x="350" y="859">buildings · PDB: never everyone at lunch at once 🍽️</text>
+  <g transform="translate(70,700)"><circle r="13" fill="#be123c"/><text class="ntb" dy="5">1</text></g>
+
+  <rect class="bxr" x="690" y="700" width="560" height="200" rx="14"/>
+  <text class="t m" x="970" y="733">🩺 operate (L16–21)</text>
+  <text class="s m" x="970" y="763">the nurse's triage chart: Pending, ImagePull, CrashLoop,</text>
+  <text class="s m" x="970" y="787">OOMKilled — describe → events → logs, always · hall</text>
+  <text class="s m" x="970" y="811">passes (RBAC) 🪪 · homework &amp; the bell (Jobs/CronJobs</text>
+  <text class="s m" x="970" y="835">+ the real backup!) ⏰ · passing-notes rules (NetworkPolicies)</text>
+  <text class="s m" x="970" y="859">🚫📝 · assigned seating (taints) 🎫 · one 🧯 per floor</text>
+  <g transform="translate(690,700)"><circle r="13" fill="#be123c"/><text class="ntb" dy="5">2</text></g>
+
+  <rect class="bxr" x="1310" y="700" width="540" height="200" rx="14"/>
+  <text class="t m" x="1580" y="733">🏗️ advanced ops (L22–26)</text>
+  <text class="s m" x="1580" y="763">desks with name plates (StatefulSets) 🏷️ · who leaves</text>
+  <text class="s m" x="1580" y="787">when lunch runs short (QoS/evictions) 🍽️ · renovating</text>
+  <text class="s m" x="1580" y="811">while school stays open (upgrades: cordon→drain) ·</text>
+  <text class="s m" x="1580" y="835">teaching the office new words (CRDs/operators) 🤖 ·</text>
+  <text class="s m" x="1580" y="859">report cards, diaries, alarm bells (observability) 📈</text>
+  <g transform="translate(1310,700)"><circle r="13" fill="#be123c"/><text class="ntb" dy="5">3</text></g>
+
+  <rect class="win" x="70" y="960" width="1780" height="120" rx="14"/>
+  <text class="t m" x="960" y="1000">🎓 the flagship school: 26 lessons · 26 branches · real manifests, real Terraform, real CI — plus its own 9-week study plan</text>
+  <text class="s m" x="960" y="1030">under the cluster: EC2 desks, IAM hats, the VPC campus (see the AWS-components map on the site) ·</text>
+  <text class="s m" x="960" y="1054">siblings supply the rest: Docker packs 🍱 · ArgoCD deploys 🤖 · AWS explains the ground it stands on 🪪</text>
+</svg>
