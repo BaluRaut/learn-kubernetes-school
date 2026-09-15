@@ -1,0 +1,219 @@
+🌱 Seed Advisor
+Ask in Marathi, Hindi, or English. The agent searches a seed catalog before it answers. Prefer a plain form?
+
+👨‍🌾
+Solapur, rabi season, rainfed deep black soil. Jowar for bhakri and fodder?
+
+🌱
+🔍 search_seeds
+crop=jowar region=Western Maharashtra season=rabi irrigation=rainfed soil=black
+→ 3 matches: Maldandi (M 35-1), Phule Vasudha (RSV 423), Phule Anuradha (RSV 458)
+बहुत अच्छा! आपके गहरे काले मातीला रबी ज्वारीसाठी **३ जाती** योग्य आहेत:
+
+**१. मालदंडी (M 35-1)** — भाकरीसाठी सर्वश्रेष्ठ
+- गुणवत्ता भाकरी + बांधणी गाय-गुरांसाठीही चांगली
+- १२२ दिवस, सेप्ट १५-अक्टो १५
+- ६-८ क्विंटल धान्य प्रति एकर
+- ⚠️ नवीन जातीपेक्षा उपज कमी, पण दाम चांगला
+
+**२. फुले वसुधा (RSV 423)** — जास्त उपज
+- गहरी मातीला सर्वश्रेष्ठ, शूटफ्लाय प्रतिरोधक
+- १२० दिवस, ८-१० क्विंटल
+- सेप्ट १५-अक्टो १५
+- ⚠️ पुरेशी ठेवण आवश्यक
+
+**३. फुले अनुराधा (RSV 458)** — जर माती उथळ असेल
+- १०८ दिवस (सुटसुटीत), पण आपल्या गहरी मातीला नीट लागणार नाही
+
+**मेरे सल्ला:** आपल्या भाकरी+चारा हेतूसाठी **मालदंडी** किंवा **फुले वसुधा** निवडा.
+
+कती एकर आहे? तर बियाण्याचे प्रमाण सांगतो. स्थानिक बीज विक्रेत्याकडे उपलब्धता व दाम पडताळा.
+
+ate 4,742 in
+919 out
+2 API calls
+≈ 0.93¢
+What was called · 3 steps
+Sent on every call: system prompt (2,570 chars) and 2 tool definitions · model claude-haiku-4-5
+1
+Claude API
+POST https://api.anthropic.com/v1/messages · 1,916 in · 356 out · 3.4 s
+Request · 1 message · last: user: "Solapur, rabi season, rainfed deep black soil. Jowar for bhakri and fodder?"
+{
+  "url": "POST https://api.anthropic.com/v1/messages",
+  "model": "claude-haiku-4-5",
+  "thinking": "{\"type\":\"enabled\",\"budget_tokens\":4096}",
+  "max_tokens": 64000,
+  "systemChars": 2570,
+  "tools": [
+    "search_seeds",
+    "list_crops"
+  ],
+  "messages": 1,
+  "lastMessage": "user: \"Solapur, rabi season, rainfed deep black soil. Jowar for bhakri and fodder?\"",
+  "betas": [
+    "server-side-fallback-2026-07-01"
+  ]
+}
+Response · stop_reason tool_use · thinking + tool_use
+{
+  "stop_reason": "tool_use",
+  "blocks": [
+    {
+      "type": "thinking",
+      "detail": "The farmer is from Solapur, which is in Western Maharashtra region. They want to grow jowar (sorghum) in the rabi season on rainfed deep black soil. The goal is for both bhakri (bread) and fodder.\n\nLet me map what I know:\n- Location: Solapur → Western Maharashtra\n- Crop: Jowar (sorghum)\n- Season: rabi\n- Soil: deep black\n- Irrigation: rainfed\n\nThis is enough information to search. I should use the "
+    },
+    {
+      "type": "tool_use",
+      "detail": "search_seeds {\"crop\":\"jowar\",\"region\":\"Western Maharashtra\",\"season\":\"rabi\",\"irrigation\":\"rainfed\",\"soil\":\"black\"}"
+    }
+  ]
+}
+2
+Tool
+search_seeds over MCP · 18 ms
+Request · MCP tools/call → GET http://localhost:8789/catalog/seeds?crop=jowar&season=rabi&region=Western+Maharashtra&soil=black&irrigation=rainfed
+{
+  "mcp": {
+    "transport": "MCP tools/call",
+    "url": "http://localhost:8788/mcp"
+  },
+  "tool": "search_seeds",
+  "input": {
+    "crop": "jowar",
+    "region": "Western Maharashtra",
+    "season": "rabi",
+    "irrigation": "rainfed",
+    "soil": "black"
+  },
+  "then": {
+    "method": "GET",
+    "url": "http://localhost:8789/catalog/seeds?crop=jowar&season=rabi&region=Western+Maharashtra&soil=black&irrigation=rainfed"
+  }
+}
+Response · 3 matches: Maldandi (M 35-1), Phule Vasudha (RSV 423), Phule Anuradha (RSV 458) · 1,620 chars to the model
+{
+  "summary": "3 matches: Maldandi (M 35-1), Phule Vasudha (RSV 423), Phule Anuradha (RSV 458)",
+  "count": 3,
+  "seeds": [
+    {
+      "id": "jowar-maldandi",
+      "crop": "jowar",
+      "variety": "Maldandi (M 35-1)",
+      "type": "open-pollinated",
+      "seasons": [
+        "rabi"
+      ],
+      "regions": [
+        "Western Maharashtra",
+        "Marathwada"
+      ],
+      "soils": [
+        "deep black",
+        "medium black"
+      ],
+      "irrigation": "rainfed",
+      "durationDays": 122,
+      "sowingWindow": "15 September - 15 October",
+      "seedRatePerAcre": "4 kg",
+      "yieldPerAcre": "6-8 quintal grain + good fodder",
+      "traits": [
+        "best bhakri quality",
+        "excellent fodder",
+        "drought hardy",
+        "farmer can save seed"
+      ],
+      "notes": "Classic rabi jowar of Solapur belt. Lower yield than newer varieties but premium grain price."
+    },
+    {
+      "id": "jowar-phule-vasudha",
+      "crop": "jowar",
+      "variety": "Phule Vasudha (RSV 423)",
+      "type": "improved",
+      "seasons": [
+        "rabi"
+      ],
+      "regions": [
+        "Western Maharashtra",
+        "Marathwada"
+      ],
+      "soils": [
+        "deep black"
+      ],
+      "irrigation": "rainfed",
+      "durationDays": 120,
+      "sowingWindow": "15 September - 15 October",
+      "seedRatePerAcre": "4 kg",
+      "yieldPerAcre": "8-10 quintal grain",
+      "traits": [
+        "high yield",
+        "shootfly tolerant",
+        "good grain quality"
+      ],
+      "notes": "MPKV Rahuri. For deep, moisture-retentive soils."
+    },
+    {
+      "id": "jowar-phule-anuradha",
+      "crop": "jowar",
+      "variety": "Phule Anuradha (RSV 458)",
+      "type": "improved",
+      "seasons": [
+        "rabi"
+      ],
+      "regions": [
+        "Western Maharashtra",
+        "Marathwada"
+      ],
+      "soils": [
+        "light",
+        "shallow",
+        "medium black"
+      ],
+      "irrigation": "rainfed",
+      "durationDays": 108,
+      "sowingWindow": "15 September - 10 October",
+      "seedRatePerAcre": "4 kg",
+      "yieldPerAcre": "5-6 quintal grain",
+      "traits": [
+        "for shallow and light soils",
+        "drought tolerant",
+        "early"
+      ],
+      "notes": "MPKV Rahuri. Choose when soil is shallow and moisture is limited."
+    }
+  ]
+}
+3
+Claude API
+POST https://api.anthropic.com/v1/messages · 2,826 in · 563 out · 8.2 s
+Request · 3 messages · last: user: tool_result (1,620 chars)
+{
+  "url": "POST https://api.anthropic.com/v1/messages",
+  "model": "claude-haiku-4-5",
+  "thinking": "{\"type\":\"enabled\",\"budget_tokens\":4096}",
+  "max_tokens": 64000,
+  "systemChars": 2570,
+  "tools": [
+    "search_seeds",
+    "list_crops"
+  ],
+  "messages": 3,
+  "lastMessage": "user: tool_result (1,620 chars)",
+  "betas": [
+    "server-side-fallback-2026-07-01"
+  ]
+}
+Response · stop_reason end_turn · text
+{
+  "stop_reason": "end_turn",
+  "blocks": [
+    {
+      "type": "text",
+      "detail": "बहुत अच्छा! आपके गहरे काले मातीला रबी ज्वारीसाठी **३ जाती** योग्य आहेत:\n\n**१. मालदंडी (M 35-1)** — भाकरीसाठी सर्वश्रेष्ठ\n- गुणवत्ता भाकरी + बांधणी गाय-गुरांसाठीही चांगली\n- १२२ दिवस, सेप्ट १५-अक्टो १५\n- ६-८ क्विंटल धान्य प्रति एकर\n- ⚠️ नवीन जातीपेक्षा उपज कमी, पण दाम चांगला\n\n**२. फुले वसुधा (RSV 423)** — जास्त उपज\n- गहरी मातीला सर्वश्रेष्ठ, शूटफ्लाय प्रतिरोधक\n- १२० दिवस, ८-१० क्विंटल\n- सेप्ट १५-अक्… (716 chars)"
+    }
+  ]
+}
+Describe your land, crop, and season…
+
+Send
+This session: 1 question · 4,742 in · 919 out · ≈ 0.93¢ · claude-haiku-4-5
