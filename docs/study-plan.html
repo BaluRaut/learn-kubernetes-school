@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="mr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Study plan — Learn Kubernetes School</title>
-<meta name="description" content="A 9-week study plan for the 26-lesson Kubernetes course: sequence, time estimates, weekly milestones and a capstone — with progress saved in your browser.">
-<meta property="og:title" content="Study plan — Learn Kubernetes School">
-<meta property="og:description" content="A 9-week study plan for the 26-lesson Kubernetes course: sequence, time estimates, weekly milestones and a capstone — with progress saved in your browser.">
-<meta property="og:image" content="https://baluraut.github.io/learn-kubernetes-school/images/big-picture-4k.png">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title data-en="Study plan — Learn Kubernetes School">अभ्यास योजना — Learn Kubernetes School</title>
+<meta content="A 9-week study plan for the 26-lesson Kubernetes course: sequence, time estimates, weekly milestones and a capstone — with progress saved in your browser." name="description"/>
+<meta content="Study plan — Learn Kubernetes School" property="og:title"/>
+<meta content="A 9-week study plan for the 26-lesson Kubernetes course: sequence, time estimates, weekly milestones and a capstone — with progress saved in your browser." property="og:description"/>
+<meta content="https://baluraut.github.io/learn-kubernetes-school/images/big-picture-4k.png" property="og:image"/>
+<meta content="website" property="og:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
 <style>
   :root {
     --bg: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted: #475569;
@@ -50,140 +51,132 @@
 
   @media (min-width: 1660px) { .wrap { max-width: 1580px; } }
 </style>
-</head>
-<body>
+
+<style id="i18n-css">
+#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
+html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
+@media print{#lang-pick{display:none}}
+</style></head>
+<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
+<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
 <div class="wrap">
-
 <header>
-  <p><a href="index.html">← Back to the course home</a></p>
-  <h1>🗓️ The study plan — 26 lessons, 9 weeks</h1>
-  <p class="sub">The whole course in sequence, ~<b>3 sessions a week</b>, each session = read one
-  lesson (~15 min) + do its lab (~25 min). Tick lessons off as you go — <b>progress is saved in
-  this browser</b>. Don't rush: the labs are where it sticks.</p>
-  <div class="paces">
-    <div class="pace">🐢 <b>Steady (recommended):</b> 3 sessions/week → done in ~9 weeks. Fits around a job.</div>
-    <div class="pace">🐇 <b>Fast track:</b> ~2 hours/day → done in ~2½ weeks. Good between jobs or on break.</div>
-    <div class="pace">💰 <b>Cost:</b> weeks 1–8 are laptop-only (free). Only the optional capstone touches AWS — destroy same day.</div>
-  </div>
-</header>
-
-<div class="progress-box"><div class="progress-inner">
-  <span id="ptext">0 / 26</span>
-  <div class="bar"><div id="pbar"></div></div>
-  <span id="pweek" style="color:var(--muted);font-size:.85rem;white-space:nowrap"></span>
-</div></div>
-
-<section class="week" style="--c:#64748b">
-  <h2><span class="wk">WEEK 0</span> 🎒 Foundations check <span style="color:var(--muted);font-weight:400;font-size:.9rem">(optional · 1–2 evenings)</span></h2>
-  <p class="goal">Only if terminal/git/YAML feel shaky — run the self-checks on the
-  <a href="before-you-start.html">Before-You-Start checklist</a>. All green? Skip straight to Week 1.
-  Install Docker Desktop + kubectl + minikube now either way.</p>
-</section>
-
-<section class="week" style="--c:#0ea5e9">
-  <h2><span class="wk">WEEK 1</span> 🍱 See it run — the core loop</h2>
-  <p class="goal">From "what's a container" to a self-healing, reachable app on your laptop.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l01" id="l01"><label for="l01"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">01 · Containers &amp; images 🍱</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l02" id="l02"><label for="l02"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">02 · Pods 🪑</a></label><span class="time">~30 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l03" id="l03"><label for="l03"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">03 · Deployments 🧑‍🏫</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l04" id="l04"><label for="l04"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">04 · Services ☎️</a></label><span class="time">~45 min</span></div>
-  <div class="milestone">🏁 <b>Checkpoint:</b> delete a pod on purpose — then explain, out loud, who brings it back (L03) and how traffic still finds it (L04).</div>
-</section>
-
-<section class="week" style="--c:#2563eb">
-  <h2><span class="wk">WEEK 2</span> 🔑 Configure it properly</h2>
-  <p class="goal">Rooms, settings, secrets, health and portions — the difference between "runs" and "runs right".</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l05" id="l05"><label for="l05"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">05 · Namespaces 🚪</a></label><span class="time">~30 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l06" id="l06"><label for="l06"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">06 · ConfigMaps &amp; Secrets 🔑</a></label><span class="time">~40 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l07" id="l07"><label for="l07"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">07 · Health probes 🙋</a></label><span class="time">~40 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l08" id="l08"><label for="l08"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">08 · Requests &amp; limits 🍛</a></label><span class="time">~40 min</span></div>
-  <div class="milestone">🏁 <b>Checkpoint:</b> liveness vs readiness in one sentence each, from memory — and cause (then explain) one OOMKill.</div>
-</section>
-
-<section class="week" style="--c:#7c3aed">
-  <h2><span class="wk">WEEK 3</span> 🚌 Traffic &amp; change</h2>
-  <p class="goal">Scale under load, route from outside, and ship new versions with zero downtime.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l09" id="l09"><label for="l09"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">09 · Autoscaling (HPA) 🚌</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l10" id="l10"><label for="l10"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">10 · Ingress 🏫</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l11" id="l11"><label for="l11"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">11 · Rollouts &amp; rollbacks ⚽</a></label><span class="time">~45 min</span></div>
-  <div class="milestone">🏁 <b>Checkpoint:</b> ship a broken image, watch readiness protect you, roll back in one command. If that felt boring — perfect, that's the point.</div>
-</section>
-
-<section class="week" style="--c:#ea580c">
-  <h2><span class="wk">WEEK 4</span> 📚 State &amp; internals</h2>
-  <p class="goal">What survives, and what's actually happening underneath.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l12" id="l12"><label for="l12"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">12 · Storage &amp; state 📚</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l13" id="l13"><label for="l13"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">13 · Under the hood 🏢</a></label><span class="time">~40 min</span></div>
-  <p class="goal" style="margin-top:8px">+ dessert: the <a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood diagrams</a> and the 6-min <a href="video/walkthrough-4k.mp4">video tour</a>.</p>
-  <div class="milestone">🏁 <b>Checkpoint:</b> narrate <code>kubectl apply</code> end-to-end from memory — principal, register, timetable-maker, class teacher. Halfway there! 🎉</div>
-</section>
-
-<section class="week" style="--c:#16a34a">
-  <h2><span class="wk">WEEK 5</span> 🤖 Ship it — the bonus band</h2>
-  <p class="goal">Robots deploy it; buildings and ladders keep it alive.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l14" id="l14"><label for="l14"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">14 · CI/CD &amp; GitOps with ArgoCD 🤖</a></label><span class="time">~60 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l15" id="l15"><label for="l15"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">15 · Multi-AZ &amp; the scaling ladder 🏫🏫</a></label><span class="time">~45 min</span></div>
-  <p class="goal" style="margin-top:8px">💡 Detour worth taking now (or after week 9): the sister courses —
-  <a href="https://baluraut.github.io/learn-docker-school/">Docker &amp; ECR</a> ·
-  <a href="https://baluraut.github.io/learn-aws-school/">AWS: IAM &amp; EC2</a> ·
-  <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD in depth</a>.</p>
-  <div class="milestone">🏁 <b>Checkpoint:</b> hand-edit the cluster and watch ArgoCD revert you. Recite the ladder: HPA adds pods → autoscaler adds desks → spread across buildings.</div>
-</section>
-
-<section class="week" style="--c:#be123c">
-  <h2><span class="wk">WEEK 6</span> 🩺 Operate I — when things break</h2>
-  <p class="goal">Part 3 begins: triage, permissions, and scheduled work.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l16" id="l16"><label for="l16"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">16 · Debugging playbook 🩺</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l17" id="l17"><label for="l17"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">17 · RBAC &amp; ServiceAccounts 🪪</a></label><span class="time">~40 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l18" id="l18"><label for="l18"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">18 · Jobs &amp; CronJobs ⏰</a></label><span class="time">~40 min</span></div>
-  <div class="milestone">🏁 <b>Checkpoint:</b> diagnose all three sick pods from L16's infirmary <i>without</i> peeking — and apply the real backup CronJob.</div>
-</section>
-
-<section class="week" style="--c:#be123c">
-  <h2><span class="wk">WEEK 7</span> 🚫 Operate II — locks &amp; seats</h2>
-  <p class="goal">Network rules, seating rules, and the pods on every floor.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l19" id="l19"><label for="l19"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">19 · NetworkPolicies 🚫📝</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l20" id="l20"><label for="l20"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">20 · Taints &amp; affinity 🎫</a></label><span class="time">~40 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l21" id="l21"><label for="l21"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">21 · DaemonSets 🧯</a></label><span class="time">~30 min</span></div>
-  <div class="milestone">🏁 <b>Checkpoint:</b> the spy pod gets blocked; taint vs affinity explained in school words (push from desks, pull from kids).</div>
-</section>
-
-<section class="week" style="--c:#be123c">
-  <h2><span class="wk">WEEK 8</span> 🏗️ Operate III — state, pressure, renovation</h2>
-  <p class="goal">The advanced trio every on-call engineer eventually meets.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l22" id="l22"><label for="l22"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">22 · StatefulSets 🏷️</a></label><span class="time">~45 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l23" id="l23"><label for="l23"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">23 · QoS &amp; evictions 🍽️</a></label><span class="time">~30 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l24" id="l24"><label for="l24"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">24 · Cluster upgrades 🏗️</a></label><span class="time">~40 min</span></div>
-  <div class="milestone">🏁 <b>Checkpoint:</b> kill <code>postgres-0</code> and find the data intact; cordon a node and explain what a drain would wait for (the PDB!).</div>
-</section>
-
-<section class="week" style="--c:#be123c">
-  <h2><span class="wk">WEEK 9</span> 🎓 Graduate — extend, observe, build</h2>
-  <p class="goal">The last two lessons, then prove it all with a capstone.</p>
-  <div class="lesson-row"><input type="checkbox" data-l="l25" id="l25"><label for="l25"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">25 · CRDs &amp; operators 🤖</a></label><span class="time">~40 min</span></div>
-  <div class="lesson-row"><input type="checkbox" data-l="l26" id="l26"><label for="l26"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">26 · Observability 📈</a></label><span class="time">~60 min</span></div>
-  <div class="milestone">🏆 <b>Capstone (pick one):</b><br>
-  💻 <b>Zero-cost:</b> on minikube, deploy everything — both apps, HPA, NetworkPolicies, the backup CronJob, postgres-0, and the Prometheus stack — then break three things and fix them using only L16's drill.<br>
-  ☁️ <b>Real AWS (~$5 if destroyed same day):</b> <code>terraform apply</code> → deploy via the pipeline → see it live behind the ALB → <code>terraform destroy</code> before dinner. 🧹</div>
-</section>
-
-<div id="done">
-  <h2>🎓 26 / 26 — you did the whole school!</h2>
-  <p class="sub" style="margin:10px auto 0">Next: the <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD course</a> for deployment mastery,
-  or go build something real — you're ready.</p>
+<p data-en='&lt;a href="index.html"&gt;← Back to the course home&lt;/a&gt;'><a href="index.html">← कोर्सच्या मुख्य पानाकडे परत</a></p>
+<h1 data-en="🗓️ The study plan — 26 lessons, 9 weeks">🗓️ अभ्यास योजना — 26 धडे, 9 आठवडे</h1>
+<p class="sub" data-en="The whole course in sequence, ~&lt;b&gt;3 sessions a week&lt;/b&gt;, each session = read one
+  lesson (~15 min) + do its lab (~25 min). Tick lessons off as you go — &lt;b&gt;progress is saved in
+  this browser&lt;/b&gt;. Don't rush: the labs are where it sticks.">संपूर्ण कोर्स क्रमाने, आठवड्याला ~<b>3 सत्रे</b>, प्रत्येक सत्र = एक धडा वाचा (~15 मि.) + त्याचा प्रयोग करा (~25 मि.). जाता जाता धड्यांवर खूण करा — <b>प्रगती या ब्राउझरमध्ये जपली जाते</b>. घाई नको: प्रयोगांतूनच ते पक्के होते.</p>
+<div class="paces">
+<div class="pace" data-en="🐢 &lt;b&gt;Steady (recommended):&lt;/b&gt; 3 sessions/week → done in ~9 weeks. Fits around a job.">🐢 <b>स्थिर (शिफारस):</b> आठवड्याला 3 सत्रे → ~9 आठवड्यांत पूर्ण. नोकरीसोबत जमते.</div>
+<div class="pace" data-en="🐇 &lt;b&gt;Fast track:&lt;/b&gt; ~2 hours/day → done in ~2½ weeks. Good between jobs or on break.">🐇 <b>जलद मार्ग:</b> दिवसाला ~2 तास → ~2½ आठवड्यांत पूर्ण. नोकऱ्यांच्या मधल्या काळात किंवा सुट्टीत चांगले.</div>
+<div class="pace" data-en="💰 &lt;b&gt;Cost:&lt;/b&gt; weeks 1–8 are laptop-only (free). Only the optional capstone touches AWS — destroy same day.">💰 <b>खर्च:</b> आठवडे 1–8 फक्त लॅपटॉपवर (मोफत). फक्त ऐच्छिक कळस-प्रकल्प AWS ला स्पर्श करतो — त्याच दिवशी नष्ट करा.</div>
 </div>
-
-<footer>
-  Learn Kubernetes School · <a href="index.html">Course home</a> ·
-  <a href="lesson-diagrams.html">Lesson diagrams</a> ·
-  <a href="before-and-tradeoffs.html">Before &amp; trade-offs</a> ·
-  <a href="https://github.com/BaluRaut/learn-kubernetes-school">GitHub</a>
+</header>
+<div class="progress-box"><div class="progress-inner">
+<span id="ptext">0 / 26</span>
+<div class="bar"><div id="pbar"></div></div>
+<span id="pweek" style="color:var(--muted);font-size:.85rem;white-space:nowrap"></span>
+</div></div>
+<section class="week" style="--c:#64748b">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 0&lt;/span&gt; 🎒 Foundations check &lt;span style="color:var(--muted);font-weight:400;font-size:.9rem"&gt;(optional · 1–2 evenings)&lt;/span&gt;'><span class="wk">आठवडा 0</span> 🎒 पायाची तपासणी <span style="color:var(--muted);font-weight:400;font-size:.9rem">(ऐच्छिक · 1–2 संध्याकाळी)</span></h2>
+<p class="goal" data-en='Only if terminal/git/YAML feel shaky — run the self-checks on the
+  &lt;a href="before-you-start.html"&gt;Before-You-Start checklist&lt;/a&gt;. All green? Skip straight to Week 1.
+  Install Docker Desktop + kubectl + minikube now either way.'>फक्त टर्मिनल/git/YAML कच्चे वाटत असतील तर — <a href="before-you-start.html">सुरू-करण्यापूर्वीच्या यादीतील</a> स्व-तपासण्या करा. सगळे हिरवे? थेट आठवडा 1 ला जा. Docker Desktop + kubectl + minikube आत्ताच install करा, काहीही असो.</p>
+</section>
+<section class="week" style="--c:#0ea5e9">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 1&lt;/span&gt; 🍱 See it run — the core loop'><span class="wk">आठवडा 1</span> 🍱 चालताना पहा — गाभ्याचा लूप</h2>
+<p class="goal" data-en="From &quot;what's a container&quot; to a self-healing, reachable app on your laptop.">"कंटेनर म्हणजे काय" पासून तुमच्या लॅपटॉपवर स्व-उपचार करणारे, पोहोचता येणारे ॲप.</p>
+<div class="lesson-row"><input data-l="l01" id="l01" type="checkbox"/><label data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md"&gt;01 · Containers &amp;amp; images 🍱&lt;/a&gt;' for="l01"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">01 · कंटेनर &amp; इमेज 🍱</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l02" id="l02" type="checkbox"/><label for="l02"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">02 · Pods 🪑</a></label><span class="time" data-en="~30 min">~30 मि.</span></div>
+<div class="lesson-row"><input data-l="l03" id="l03" type="checkbox"/><label for="l03"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">03 · Deployments 🧑‍🏫</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l04" id="l04" type="checkbox"/><label for="l04"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">04 · Services ☎️</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; delete a pod on purpose — then explain, out loud, who brings it back (L03) and how traffic still finds it (L04).">🏁 <b>तपासणी:</b> मुद्दाम एक pod हटवा — मग मोठ्याने सांगा, कोण तो परत आणतो (L03) आणि traffic त्याला अजूनही कसा सापडतो (L04).</div>
+</section>
+<section class="week" style="--c:#2563eb">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 2&lt;/span&gt; 🔑 Configure it properly'><span class="wk">आठवडा 2</span> 🔑 नीट configure करा</h2>
+<p class="goal" data-en='Rooms, settings, secrets, health and portions — the difference between "runs" and "runs right".'>खोल्या, settings, secrets, आरोग्य आणि वाटप — "चालते" आणि "नीट चालते" यातला फरक.</p>
+<div class="lesson-row"><input data-l="l05" id="l05" type="checkbox"/><label for="l05"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">05 · Namespaces 🚪</a></label><span class="time" data-en="~30 min">~30 मि.</span></div>
+<div class="lesson-row"><input data-l="l06" id="l06" type="checkbox"/><label for="l06"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">06 · ConfigMaps &amp; Secrets 🔑</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="lesson-row"><input data-l="l07" id="l07" type="checkbox"/><label for="l07"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">07 · Health probes 🙋</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="lesson-row"><input data-l="l08" id="l08" type="checkbox"/><label for="l08"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">08 · Requests &amp; limits 🍛</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; liveness vs readiness in one sentence each, from memory — and cause (then explain) one OOMKill.">🏁 <b>तपासणी:</b> liveness विरुद्ध readiness, प्रत्येकी एका वाक्यात, पाठ — आणि एक OOMKill घडवा (मग समजावा).</div>
+</section>
+<section class="week" style="--c:#7c3aed">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 3&lt;/span&gt; 🚌 Traffic &amp;amp; change'><span class="wk">आठवडा 3</span> 🚌 Traffic &amp; बदल</h2>
+<p class="goal" data-en="Scale under load, route from outside, and ship new versions with zero downtime.">load खाली वाढवा, बाहेरून वाट दाखवा, आणि शून्य downtime सह नव्या आवृत्त्या पाठवा.</p>
+<div class="lesson-row"><input data-l="l09" id="l09" type="checkbox"/><label for="l09"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">09 · Autoscaling (HPA) 🚌</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l10" id="l10" type="checkbox"/><label for="l10"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">10 · Ingress 🏫</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l11" id="l11" type="checkbox"/><label for="l11"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">11 · Rollouts &amp; rollbacks ⚽</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; ship a broken image, watch readiness protect you, roll back in one command. If that felt boring — perfect, that's the point.">🏁 <b>तपासणी:</b> बिघडलेली इमेज पाठवा, readiness तुम्हाला वाचवताना पहा, एका command ने rollback करा. कंटाळवाणे वाटले? — उत्तम, हाच मुद्दा.</div>
+</section>
+<section class="week" style="--c:#ea580c">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 4&lt;/span&gt; 📚 State &amp;amp; internals'><span class="wk">आठवडा 4</span> 📚 State &amp; अंतर्गत यंत्रणा</h2>
+<p class="goal" data-en="What survives, and what's actually happening underneath.">काय टिकते, आणि खाली खरोखर काय घडते.</p>
+<div class="lesson-row"><input data-l="l12" id="l12" type="checkbox"/><label for="l12"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">12 · Storage &amp; state 📚</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l13" id="l13" type="checkbox"/><label data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md"&gt;13 · Under the hood 🏢&lt;/a&gt;' for="l13"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">13 · पडद्यामागे 🏢</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<p class="goal" data-en='+ dessert: the &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md"&gt;under-the-hood diagrams&lt;/a&gt; and the 6-min &lt;a href="video/walkthrough-4k.mp4"&gt;video tour&lt;/a&gt;.' style="margin-top:8px">+ गोड पदार्थ: <a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">पडद्यामागच्या आकृत्या</a> आणि 6 मिनिटांचा <a href="video/walkthrough-4k.mp4">व्हिडिओ फेरफटका</a>.</p>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; narrate &lt;code&gt;kubectl apply&lt;/code&gt; end-to-end from memory — principal, register, timetable-maker, class teacher. Halfway there! 🎉">🏁 <b>तपासणी:</b> <code>kubectl apply</code> सुरुवातीपासून शेवटपर्यंत पाठ सांगा — मुख्याध्यापक, रजिस्टर, वेळापत्रक बनवणारा, वर्गशिक्षक. अर्धे झाले! 🎉</div>
+</section>
+<section class="week" style="--c:#16a34a">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 5&lt;/span&gt; 🤖 Ship it — the bonus band'><span class="wk">आठवडा 5</span> 🤖 पाठवा — बोनस पट्टा</h2>
+<p class="goal" data-en="Robots deploy it; buildings and ladders keep it alive.">रोबोट deploy करतात; इमारती आणि शिड्या ते जिवंत ठेवतात.</p>
+<div class="lesson-row"><input data-l="l14" id="l14" type="checkbox"/><label data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md"&gt;14 · CI/CD &amp;amp; GitOps with ArgoCD 🤖&lt;/a&gt;' for="l14"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">14 · ArgoCD सह CI/CD &amp; GitOps 🤖</a></label><span class="time" data-en="~60 min">~60 मि.</span></div>
+<div class="lesson-row"><input data-l="l15" id="l15" type="checkbox"/><label data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md"&gt;15 · Multi-AZ &amp;amp; the scaling ladder 🏫🏫&lt;/a&gt;' for="l15"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">15 · Multi-AZ &amp; scaling ची शिडी 🏫🏫</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<p class="goal" data-en='💡 Detour worth taking now (or after week 9): the sister courses —
+  &lt;a href="https://baluraut.github.io/learn-docker-school/"&gt;Docker &amp;amp; ECR&lt;/a&gt; ·
+  &lt;a href="https://baluraut.github.io/learn-aws-school/"&gt;AWS: IAM &amp;amp; EC2&lt;/a&gt; ·
+  &lt;a href="https://baluraut.github.io/learn-argocd-school/"&gt;ArgoCD in depth&lt;/a&gt;.' style="margin-top:8px">💡 आत्ता (किंवा आठवडा 9 नंतर) घेण्यासारखा वळसा: भावंड-कोर्स — <a href="https://baluraut.github.io/learn-docker-school/">Docker &amp; ECR</a> · <a href="https://baluraut.github.io/learn-aws-school/">AWS: IAM &amp; EC2</a> · <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD खोलात</a>.</p>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; hand-edit the cluster and watch ArgoCD revert you. Recite the ladder: HPA adds pods → autoscaler adds desks → spread across buildings.">🏁 <b>तपासणी:</b> cluster हाताने बदला आणि ArgoCD तुम्हाला परत फिरवताना पहा. शिडी पाठ म्हणा: HPA pods वाढवतो → autoscaler बाक वाढवतो → इमारतींमध्ये पसरवा.</div>
+</section>
+<section class="week" style="--c:#be123c">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 6&lt;/span&gt; 🩺 Operate I — when things break'><span class="wk">आठवडा 6</span> 🩺 चालवणे I — जेव्हा गोष्टी बिघडतात</h2>
+<p class="goal" data-en="Part 3 begins: triage, permissions, and scheduled work.">भाग 3 सुरू: triage, परवानग्या, आणि वेळापत्रकानुसार काम.</p>
+<div class="lesson-row"><input data-l="l16" id="l16" type="checkbox"/><label data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md"&gt;16 · Debugging playbook 🩺&lt;/a&gt;' for="l16"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">16 · Debugging मार्गदर्शिका 🩺</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l17" id="l17" type="checkbox"/><label for="l17"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">17 · RBAC &amp; ServiceAccounts 🪪</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="lesson-row"><input data-l="l18" id="l18" type="checkbox"/><label for="l18"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">18 · Jobs &amp; CronJobs ⏰</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; diagnose all three sick pods from L16's infirmary &lt;i&gt;without&lt;/i&gt; peeking — and apply the real backup CronJob.">🏁 <b>तपासणी:</b> L16 च्या दवाखान्यातील तिन्ही आजारी pods चे निदान <i>न डोकावता</i> करा — आणि खरे backup CronJob apply करा.</div>
+</section>
+<section class="week" style="--c:#be123c">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 7&lt;/span&gt; 🚫 Operate II — locks &amp;amp; seats'><span class="wk">आठवडा 7</span> 🚫 चालवणे II — कुलपे &amp; जागा</h2>
+<p class="goal" data-en="Network rules, seating rules, and the pods on every floor.">नेटवर्क नियम, बैठकीचे नियम, आणि प्रत्येक मजल्यावरचे pods.</p>
+<div class="lesson-row"><input data-l="l19" id="l19" type="checkbox"/><label for="l19"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">19 · NetworkPolicies 🚫📝</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l20" id="l20" type="checkbox"/><label for="l20"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">20 · Taints &amp; affinity 🎫</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="lesson-row"><input data-l="l21" id="l21" type="checkbox"/><label for="l21"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">21 · DaemonSets 🧯</a></label><span class="time" data-en="~30 min">~30 मि.</span></div>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; the spy pod gets blocked; taint vs affinity explained in school words (push from desks, pull from kids).">🏁 <b>तपासणी:</b> हेर pod अडवला जातो; taint विरुद्ध affinity शाळेच्या शब्दांत समजावा (बाक ढकलतात, मुले ओढतात).</div>
+</section>
+<section class="week" style="--c:#be123c">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 8&lt;/span&gt; 🏗️ Operate III — state, pressure, renovation'><span class="wk">आठवडा 8</span> 🏗️ चालवणे III — state, दबाव, नूतनीकरण</h2>
+<p class="goal" data-en="The advanced trio every on-call engineer eventually meets.">प्रत्येक on-call इंजिनिअरला कधीतरी भेटणारी प्रगत त्रयी.</p>
+<div class="lesson-row"><input data-l="l22" id="l22" type="checkbox"/><label for="l22"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">22 · StatefulSets 🏷️</a></label><span class="time" data-en="~45 min">~45 मि.</span></div>
+<div class="lesson-row"><input data-l="l23" id="l23" type="checkbox"/><label for="l23"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">23 · QoS &amp; evictions 🍽️</a></label><span class="time" data-en="~30 min">~30 मि.</span></div>
+<div class="lesson-row"><input data-l="l24" id="l24" type="checkbox"/><label data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md"&gt;24 · Cluster upgrades 🏗️&lt;/a&gt;' for="l24"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">24 · Cluster अपग्रेड 🏗️</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="milestone" data-en="🏁 &lt;b&gt;Checkpoint:&lt;/b&gt; kill &lt;code&gt;postgres-0&lt;/code&gt; and find the data intact; cordon a node and explain what a drain would wait for (the PDB!).">🏁 <b>तपासणी:</b> <code>postgres-0</code> मारा आणि डेटा सुरक्षित सापडतो का पहा; एक node cordon करा आणि drain कशाची वाट पाहील ते समजावा (PDB!).</div>
+</section>
+<section class="week" style="--c:#be123c">
+<h2 data-en='&lt;span class="wk"&gt;WEEK 9&lt;/span&gt; 🎓 Graduate — extend, observe, build'><span class="wk">आठवडा 9</span> 🎓 पदवीदान — वाढवा, पहा, बनवा</h2>
+<p class="goal" data-en="The last two lessons, then prove it all with a capstone.">शेवटचे दोन धडे, मग कळस-प्रकल्पाने सगळे सिद्ध करा.</p>
+<div class="lesson-row"><input data-l="l25" id="l25" type="checkbox"/><label for="l25"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">25 · CRDs &amp; operators 🤖</a></label><span class="time" data-en="~40 min">~40 मि.</span></div>
+<div class="lesson-row"><input data-l="l26" id="l26" type="checkbox"/><label for="l26"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">26 · Observability 📈</a></label><span class="time" data-en="~60 min">~60 मि.</span></div>
+<div class="milestone" data-en="🏆 &lt;b&gt;Capstone (pick one):&lt;/b&gt;&lt;br/&gt;
+  💻 &lt;b&gt;Zero-cost:&lt;/b&gt; on minikube, deploy everything — both apps, HPA, NetworkPolicies, the backup CronJob, postgres-0, and the Prometheus stack — then break three things and fix them using only L16's drill.&lt;br/&gt;
+  ☁️ &lt;b&gt;Real AWS (~$5 if destroyed same day):&lt;/b&gt; &lt;code&gt;terraform apply&lt;/code&gt; → deploy via the pipeline → see it live behind the ALB → &lt;code&gt;terraform destroy&lt;/code&gt; before dinner. 🧹">🏆 <b>कळस-प्रकल्प (एक निवडा):</b><br/> 💻 <b>शून्य-खर्च:</b> minikube वर सगळे deploy करा — दोन्ही ॲप्स, HPA, NetworkPolicies, backup CronJob, postgres-0, आणि Prometheus stack — मग तीन गोष्टी बिघडवा आणि फक्त L16 च्या सरावाने दुरुस्त करा.<br/> ☁️ <b>खरे AWS (~$5 त्याच दिवशी नष्ट केल्यास):</b> <code>terraform apply</code> → pipeline ने deploy → ALB मागे लाइव्ह पहा → जेवणाआधी <code>terraform destroy</code>. 🧹</div>
+</section>
+<div id="done">
+<h2 data-en="🎓 26 / 26 — you did the whole school!">🎓 26 / 26 — तुम्ही संपूर्ण शाळा पूर्ण केली!</h2>
+<p class="sub" data-en="Next: the &lt;a href=&quot;https://baluraut.github.io/learn-argocd-school/&quot;&gt;ArgoCD course&lt;/a&gt; for deployment mastery,
+  or go build something real — you're ready." style="margin:10px auto 0">पुढे: deployment वर प्रभुत्वासाठी <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD कोर्स</a>, किंवा जाऊन काहीतरी खरे बनवा — तुम्ही तयार आहात.</p>
+</div>
+<footer data-en='
+  Learn Kubernetes School · &lt;a href="index.html"&gt;Course home&lt;/a&gt; ·
+  &lt;a href="lesson-diagrams.html"&gt;Lesson diagrams&lt;/a&gt; ·
+  &lt;a href="before-and-tradeoffs.html"&gt;Before &amp;amp; trade-offs&lt;/a&gt; ·
+  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school"&gt;GitHub&lt;/a&gt;
  ·
-  <a href="https://baluraut.github.io/school/">🏫 all schools</a>
+  &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt;
  ·
-  <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 found a mistake?</a>
-</footer>
-
+  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;
+'>Learn Kubernetes School · <a href="index.html">कोर्स मुख्य पान</a> · <a href="lesson-diagrams.html">धड्यांच्या आकृत्या</a> · <a href="before-and-tradeoffs.html">आधी &amp; फायदे-तोटे</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school">GitHub</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
 </div>
 <script>
 (function(){
@@ -207,5 +200,22 @@
   render();
 })();
 </script>
-</body>
+
+<script id="i18n-js">
+function schoolSetLang(l){
+  try{localStorage.setItem('school-lang',l)}catch(e){}
+  document.documentElement.setAttribute('lang',l);
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
+    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(function(el){
+    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
+    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
+  });
+  var p=document.getElementById('lang-pick'); if(p) p.value=l;
+}
+(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
+</script></body>
 </html>

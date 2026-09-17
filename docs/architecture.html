@@ -1276,12 +1276,14 @@ function setLang(lang) {
   document.getElementById("btn-en").classList.toggle("active", lang === "en");
   document.getElementById("btn-mr").classList.toggle("active", lang === "mr");
   document.documentElement.lang = lang;
-  try { localStorage.setItem("arch-lang", lang); } catch (e) {}
+  try { localStorage.setItem("arch-lang", lang); localStorage.setItem("school-lang", lang); } catch (e) {}
 }
 const urlLang = new URLSearchParams(location.search).get("lang");
 let saved = null;
 try { saved = localStorage.getItem("arch-lang"); } catch (e) {}
-setLang(urlLang === "mr" || (!urlLang && saved === "mr") ? "mr" : "en");
+let shared = null;
+try { shared = localStorage.getItem("school-lang"); } catch (e) {}
+setLang(urlLang === "en" || (!urlLang && (saved === "en" || (saved === null && shared === "en"))) ? "en" : "mr");
 </script>
 </body>
 </html>
