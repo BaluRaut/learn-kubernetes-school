@@ -54,6 +54,25 @@ flowchart TB
   ones labeled `app: school-api`" — that's the sticker from lesson 02.
 - Deployment → ReplicaSet → Pods. You edit the Deployment; the rest follows.
 
+### 🧠 Desired state → reconciliation → actual state
+
+```text
+Desired state        replicas: 2          (what you wrote in git)
+        ↓
+Kubernetes continuously compares          (the controller loop, every few seconds, forever)
+        ↓
+Actual state         1 Pod                (one just crashed)
+        ↓
+creates another Pod
+        ↓
+Actual state = Desired state   2 Pods ✅
+```
+
+> **Kubernetes is a reconciliation system.** You never tell it *what to do* —
+> you tell it *how things should be*, and controllers close the gap, forever.
+> This one loop explains Deployments, ReplicaSets, HPA (L09), Jobs (L18),
+> StatefulSets (L22), operators (L25) and ArgoCD (L14) — same loop, new hat.
+
 ## 🤔 Why
 
 Lesson 02 ended with a dead pod staying dead. Real apps must **self-heal** at
@@ -97,6 +116,25 @@ kubectl -n school get pods                   # 2 pods, names like school-api-xxx
 kubectl -n school delete pod -l app=school-api --field-selector=status.phase=Running --wait=false
 kubectl -n school get pods -w                # ...watch the monitor replace it in seconds!  Ctrl+C to stop
 ```
+
+## 🔧 kubectl for this lesson
+
+`kubectl get deploy` · `kubectl get rs` · `kubectl scale` · `kubectl rollout status`
+
+🔗 **Builds on:** 🪪 AWS L12 (an ASG is 'a Deployment for computers')
+
+## ✅ Verify — what you should see
+
+`kubectl delete pod` one of the two → within seconds `kubectl get pods` shows a NEW pod name and 2/2 again — reconciliation in action.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- editing replicas on the ReplicaSet — edit the Deployment, the RS is its counter
+- `kubectl scale` by hand in production and forgetting GitOps will revert it (L14)
 
 ## ⏭️ Next
 
