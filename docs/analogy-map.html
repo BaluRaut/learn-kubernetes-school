@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="mr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title data-en="Analogy map — AWS → Docker → Kubernetes · Learn Kubernetes School">उपमांचा नकाशा — AWS → Docker → Kubernetes · Learn Kubernetes School</title>
+<meta content="One table mapping every school analogy across the three courses: the desk is EC2 and the Pod, the class monitor is the ASG and the Deployment, the reception is the ALB and the Service — so knowledge transfers." name="description"/>
+<meta content="Analogy map — AWS → Docker → Kubernetes" property="og:title"/>
+<meta content="The same school metaphors across AWS, Docker and Kubernetes, side by side — with the lesson that teaches each." property="og:description"/>
+<meta content="https://baluraut.github.io/learn-kubernetes-school/images/big-picture-4k.png" property="og:image"/>
+<meta content="website" property="og:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<style>
+:root { --bg:#f8fafc; --card:#fff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --accent:#326ce5; --blue:#2563eb; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0b1220; --card:#131c2e; --ink:#e2e8f0; --muted:#94a3b8; --line:#253349; } }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.6; }
+.wrap { max-width:1100px; margin:0 auto; padding:28px 20px 60px; }
+a { color:var(--blue); } h1 { font-size:1.9rem; } h2 { font-size:1.2rem; margin:30px 0 6px; }
+.sub { color:var(--muted); max-width:78ch; }
+.tbl { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-left:6px solid var(--accent); border-radius:14px; padding:10px 14px; margin-top:12px; }
+table { border-collapse:collapse; width:100%; font-size:.9rem; }
+th, td { border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top; } th { background:var(--bg); white-space:nowrap; }
+td:first-child { font-weight:700; white-space:nowrap; }
+td a { text-decoration:none; font-weight:600; }
+.note { background:var(--card); border:1px dashed var(--line); border-radius:14px; padding:12px 16px; margin-top:18px; color:var(--muted); font-size:.92rem; }
+footer { margin-top:44px; border-top:1px solid var(--line); padding-top:16px; color:var(--muted); font-size:.88rem; }
+</style>
+
+<style id="i18n-css">
+#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
+html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
+@media print{#lang-pick{display:none}}
+</style></head>
+<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
+<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
+<div class="wrap">
+<p data-en='&lt;a href="index.html"&gt;← Back to the course home&lt;/a&gt;'><a href="index.html">← कोर्सच्या मुख्य पानाकडे परत</a></p>
+<h1 data-en="🗺️ Analogy map — the same school, three courses">🗺️ उपमांचा नकाशा — तीच शाळा, तीन कोर्स</h1>
+<p class="sub" data-en="The series reuses one metaphor universe on purpose: what you learned as an EC2 desk in the AWS school is the same desk a Pod sits on here. This table lines the metaphors up so knowledge transfers — each cell links to the lesson that teaches it.">मालिका मुद्दाम एकच उपमांचे विश्व पुन्हा वापरते: AWS शाळेत EC2 बाक म्हणून शिकलेला तोच बाक इथे Pod बसतो. हा तक्ता उपमा एका रांगेत लावतो म्हणजे ज्ञान सहज पुढे जाते — प्रत्येक cell तो शिकवणाऱ्या धड्याशी जोडलेला आहे.</p>
+<div class="tbl"><table>
+<tr><th data-en="Analogy">उपमा</th><th data-en="🪪 AWS school">🪪 AWS शाळा</th><th data-en="🍱 Docker school">🍱 Docker शाळा</th><th data-en="☸️ Kubernetes school">☸️ Kubernetes शाळा</th></tr>
+<tr><td data-en="🍱 the packed lunchbox">🍱 भरलेला डबा</td><td data-en='— (an AMI is a whole desk template, &lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l11"&gt;L11&lt;/a&gt;)'>— (AMI म्हणजे संपूर्ण बाकाचा साचा, <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l11">L11</a>)</td><td data-en='container / image — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l01"&gt;L01&lt;/a&gt;'>कंटेनर / इमेज — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l01">L01</a></td><td data-en='the container inside a Pod — &lt;a href="lesson-diagrams.html#l01"&gt;L01&lt;/a&gt;'>Pod च्या आतला कंटेनर — <a href="lesson-diagrams.html#l01">L01</a></td></tr>
+<tr><td data-en="🖥️ the rented desk">🖥️ भाड्याचा बाक</td><td>EC2 instance — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l07">L07</a></td><td data-en="your laptop running Docker">Docker चालवणारा तुमचा लॅपटॉप</td><td data-en='a Node (EC2 in this EKS setup) — &lt;a href="lesson-diagrams.html#l13"&gt;L13&lt;/a&gt;'>एक Node (या EKS रचनेत EC2) — <a href="lesson-diagrams.html#l13">L13</a></td></tr>
+<tr><td data-en="🪑 the seat at the desk">🪑 बाकावरची जागा</td><td>—</td><td data-en='a running container — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l04"&gt;L04&lt;/a&gt;'>चालणारा कंटेनर — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l04">L04</a></td><td data-en='a Pod — &lt;a href="lesson-diagrams.html#l02"&gt;L02&lt;/a&gt;'>एक Pod — <a href="lesson-diagrams.html#l02">L02</a></td></tr>
+<tr><td data-en='🧑‍🏫 "there shall always be N"'>🧑‍🏫 "नेहमी N असतीलच"</td><td>Auto Scaling Group — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l12">L12</a></td><td data-en="— (Compose restarts, no self-healing)">— (Compose पुन्हा सुरू करते, स्व-उपचार नाही)</td><td>Deployment / ReplicaSet — <a href="lesson-diagrams.html#l03">L03</a></td></tr>
+<tr><td data-en="☎️ the reception desk">☎️ रिसेप्शन डेस्क</td><td>ALB — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l15">L15</a></td><td data-en='Compose service name + Docker DNS — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l05"&gt;L05&lt;/a&gt;'>Compose service नाव + Docker DNS — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l05">L05</a></td><td>Service — <a href="lesson-diagrams.html#l04">L04</a></td></tr>
+<tr><td data-en="🏫 the main gate + signboard">🏫 मुख्य गेट + फलक</td><td data-en='ALB listener rules / Route 53 — &lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l15"&gt;L15&lt;/a&gt;·&lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l16"&gt;L16&lt;/a&gt;'>ALB listener नियम / Route 53 — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l15">L15</a>·<a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l16">L16</a></td><td data-en="the proxy container's :8080 door — &lt;a href=&quot;https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l06&quot;&gt;L06&lt;/a&gt;">proxy कंटेनरचे :8080 दार — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l06">L06</a></td><td>Ingress — <a href="lesson-diagrams.html#l10">L10</a></td></tr>
+<tr><td data-en="🚪 the classroom">🚪 वर्ग</td><td data-en='an AWS account / VPC — &lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l13"&gt;L13&lt;/a&gt;'>AWS खाते / VPC — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l13">L13</a></td><td data-en="a Compose project network">Compose project चे network</td><td>Namespace — <a href="lesson-diagrams.html#l05">L05</a></td></tr>
+<tr><td data-en="📌 notice board / 🔑 locker key">📌 सूचना फलक / 🔑 लॉकरची किल्ली</td><td>Parameter Store / Secrets Manager (AWS L05, L06)</td><td data-en='-e env / never bake secrets — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l08"&gt;L08&lt;/a&gt;'>-e env / secrets कधीच बेक करू नका — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l08">L08</a></td><td>ConfigMap / Secret — <a href="lesson-diagrams.html#l06">L06</a></td></tr>
+<tr><td data-en='🙋 "ready to answer?"'>🙋 "उत्तर द्यायला तयार?"</td><td data-en='ALB health check — &lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l15"&gt;L15&lt;/a&gt;'>ALB चा health check — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l15">L15</a></td><td>Compose healthcheck — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l06">L06</a></td><td>readiness probe — <a href="lesson-diagrams.html#l07">L07</a></td></tr>
+<tr><td data-en="🍛 the promised plate">🍛 वचन दिलेली थाळी</td><td data-en='instance type / size — &lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l08"&gt;L08&lt;/a&gt;'>instance चा प्रकार / आकार — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l08">L08</a></td><td>docker run --memory/--cpus</td><td>requests &amp; limits — <a href="lesson-diagrams.html#l08">L08</a></td></tr>
+<tr><td data-en="🚌 extra buses on rainy days">🚌 पावसाळी दिवशी जादा बस</td><td>ASG scaling policy + CloudWatch alarm — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l18">L18</a></td><td>—</td><td>HPA (pods) + cluster autoscaler (nodes) — <a href="lesson-diagrams.html#l09">L09</a>·<a href="lesson-diagrams.html#l15">L15</a></td></tr>
+<tr><td data-en="🚫📝 passing-notes rules / guest list">🚫📝 चिठ्ठ्यांचे नियम / पाहुण्यांची यादी</td><td>security groups, NACLs — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l10">L10</a>·<a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l21">L21</a></td><td data-en="Compose networks (who can call whom)">Compose networks (कोण कोणाला कॉल करू शकतो)</td><td>NetworkPolicy — <a href="lesson-diagrams.html#l19">L19</a></td></tr>
+<tr><td data-en="📚 the library shelf">📚 ग्रंथालयाचे कपाट</td><td>EBS / S3 / RDS — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l11">L11</a>·<a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l14">L14</a>·<a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l17">L17</a></td><td>named volume — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l05">L05</a></td><td data-en='PV / PVC (or rent RDS) — &lt;a href="lesson-diagrams.html#l12"&gt;L12&lt;/a&gt;'>PV / PVC (किंवा RDS भाड्याने) — <a href="lesson-diagrams.html#l12">L12</a></td></tr>
+<tr><td data-en="🪪 hall passes / ID cards">🪪 हॉल पास / ओळखपत्रे</td><td>IAM users, roles, policies — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l03">L03</a>·<a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l04">L04</a></td><td data-en='ECR login = an IAM token — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l10"&gt;L10&lt;/a&gt;'>ECR login = IAM token — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l10">L10</a></td><td>RBAC + ServiceAccounts — <a href="lesson-diagrams.html#l17">L17</a></td></tr>
+<tr><td data-en="⏰ the morning bell">⏰ सकाळची घंटा</td><td>EventBridge schedule → Lambda — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l19">L19</a></td><td>—</td><td>CronJob — <a href="lesson-diagrams.html#l18">L18</a></td></tr>
+<tr><td data-en="🏢🏢 many buildings">🏢🏢 अनेक इमारती</td><td>Availability Zones — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l07">L07</a></td><td>—</td><td>topology spread, multi-AZ node groups — <a href="lesson-diagrams.html#l15">L15</a></td></tr>
+<tr><td data-en="📈 report cards &amp;amp; alarm bells">📈 प्रगतिपुस्तके &amp; धोक्याच्या घंटा</td><td>CloudWatch — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l18">L18</a></td><td>docker logs / stats</td><td>Prometheus, Grafana, Alertmanager — <a href="lesson-diagrams.html#l26">L26</a></td></tr>
+<tr><td data-en="🤖 the caretaker robot">🤖 केअरटेकर रोबोट</td><td data-en="— (Terraform is the plan book for the campus)">— (Terraform ही कॅम्पसची प्लॅन-वही)</td><td data-en='CI = the courier robot — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l12"&gt;L12&lt;/a&gt;'>CI = कुरिअर रोबोट — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l12">L12</a></td><td data-en='ArgoCD — &lt;a href="lesson-diagrams.html#l14"&gt;L14&lt;/a&gt; (deep dive: the &lt;a href="https://baluraut.github.io/learn-argocd-school/"&gt;ArgoCD school&lt;/a&gt;)'>ArgoCD — <a href="lesson-diagrams.html#l14">L14</a> (खोल अभ्यास: <a href="https://baluraut.github.io/learn-argocd-school/">ArgoCD शाळा</a>)</td></tr>
+<tr><td data-en="🧾 the meter">🧾 मीटर</td><td data-en='the bill — &lt;a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l20"&gt;L20&lt;/a&gt;'>बिल — <a href="https://baluraut.github.io/learn-aws-school/lesson-diagrams.html#l20">L20</a></td><td data-en='image size ≈ pull cost — &lt;a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l07"&gt;L07&lt;/a&gt;'>इमेजचा आकार ≈ pull चा खर्च — <a href="https://baluraut.github.io/learn-docker-school/lesson-diagrams.html#l07">L07</a></td><td data-en='requests = what you reserve = what nodes you pay for — &lt;a href="lesson-diagrams.html#l08"&gt;L08&lt;/a&gt;'>requests = तुम्ही राखून ठेवता ते = तुम्ही ज्या nodes चे पैसे देता ते — <a href="lesson-diagrams.html#l08">L08</a></td></tr>
+</table></div>
+<div class="note" data-en="🧭 &lt;b&gt;The one loop under all three:&lt;/b&gt; AWS's Auto Scaling Group, Docker's restart policy, and Kubernetes' Deployment are the same idea at three sizes — &lt;i&gt;declare a desired state, a controller reconciles reality toward it&lt;/i&gt;. The Kubernetes school's &lt;a href=&quot;index.html#mental-model&quot;&gt;mental-model diagram&lt;/a&gt; is that loop; the ArgoCD school is that loop applied to git.">🧭 <b>तिघांखालचा एकच लूप:</b> AWS चा Auto Scaling Group, Docker ची restart policy, आणि Kubernetes चे Deployment ही एकच कल्पना तीन आकारांत — <i>इच्छित स्थिती जाहीर करा, controller वास्तव तिच्याकडे नेतो</i>. Kubernetes शाळेची <a href="index.html#mental-model">मानसिक मॉडेलची आकृती</a> तोच लूप; ArgoCD शाळा तोच लूप git ला लावलेला.</div>
+<footer data-en='Learn Kubernetes School · &lt;a href="index.html"&gt;Course home&lt;/a&gt; · &lt;a href="cheat-sheet.html"&gt;Cheat sheet&lt;/a&gt; · &lt;a href="https://baluraut.github.io/school/dictionary.html"&gt;📖 the Dictionary (every term)&lt;/a&gt; · &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt; · &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;'>Learn Kubernetes School · <a href="index.html">कोर्स मुख्य पान</a> · <a href="cheat-sheet.html">Cheat sheet</a> · <a href="https://baluraut.github.io/school/dictionary.html">📖 शब्दकोश (प्रत्येक संज्ञा)</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
+</div>
+
+<script id="i18n-js">
+function schoolSetLang(l){
+  try{localStorage.setItem('school-lang',l)}catch(e){}
+  document.documentElement.setAttribute('lang',l);
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
+    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(function(el){
+    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
+    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
+  });
+  var p=document.getElementById('lang-pick'); if(p) p.value=l;
+}
+(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
+</script></body>
+</html>

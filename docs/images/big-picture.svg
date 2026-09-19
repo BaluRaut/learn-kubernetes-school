@@ -25,7 +25,7 @@
   <text class="title m" x="960" y="52">The Big Picture — Kubernetes: a school that runs itself · 26 lessons, one campus</text>
 
   <rect class="band1" x="40" y="80" width="1840" height="470" rx="20"/>
-  <text class="bandt" x="70" y="122" fill="#326ce5">☸️ THE CORE SCHOOL (lessons 1–13)</text>
+  <text class="bandt" x="70" y="122" fill="#326ce5">☸️ PART 1 — THE CORE (lessons 1–13)</text>
 
   <rect class="bxb" x="70" y="170" width="430" height="130" rx="14"/>
   <text class="t m" x="285" y="203">🪑 desks &amp; monitors (L1–4)</text>
@@ -67,7 +67,7 @@
   <text class="t m" x="960" y="588" fill="#475569">then the campus grows up: robots deploy it, buildings multiply, and you learn to run it at 3 AM 🌙</text>
 
   <rect class="band2" x="40" y="610" width="1840" height="510" rx="20"/>
-  <text class="bandt" x="70" y="652" fill="#be123c">🧰 SHIP IT &amp; RUN IT FOR REAL (lessons 14–26)</text>
+  <text class="bandt" x="70" y="652" fill="#be123c">🧰 PART 2 — SHIP IT (14–15) · PART 3 — RUN IT FOR REAL (16–26)</text>
 
   <rect class="bxr" x="70" y="700" width="560" height="200" rx="14"/>
   <text class="t m" x="350" y="733">🤖 ship &amp; survive (L14–15)</text>

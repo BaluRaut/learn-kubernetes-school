@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="mr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title data-en="Cheat sheet — the five comparison tables · Learn Kubernetes School">Cheat sheet — पाच तुलना-तक्ते · Learn Kubernetes School</title>
+<meta content="The five Kubernetes comparisons everyone mixes up, on one page: Deployment vs StatefulSet vs DaemonSet · Service types + Ingress · liveness vs readiness vs startup · requests vs limits + QoS · NetworkPolicy vs security group." name="description"/>
+<meta content="Cheat sheet — the five comparison tables · Learn Kubernetes School" property="og:title"/>
+<meta content="Deployment/StatefulSet/DaemonSet · Service types · probes · requests/limits/QoS · NetworkPolicy vs SG — with the school analogies and 'when NOT to' rows." property="og:description"/>
+<meta content="https://baluraut.github.io/learn-kubernetes-school/images/big-picture-4k.png" property="og:image"/>
+<meta content="website" property="og:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<style>
+:root { --bg:#f8fafc; --card:#fff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --accent:#326ce5; --blue:#2563eb; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0b1220; --card:#131c2e; --ink:#e2e8f0; --muted:#94a3b8; --line:#253349; } }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.6; }
+.wrap { max-width:1100px; margin:0 auto; padding:28px 20px 60px; }
+a { color:var(--blue); } h1 { font-size:1.9rem; } h2 { font-size:1.2rem; margin:34px 0 6px; }
+.sub { color:var(--muted); max-width:78ch; }
+.tbl { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-left:6px solid var(--c,var(--accent)); border-radius:14px; padding:10px 14px; margin-top:10px; }
+table { border-collapse:collapse; width:100%; font-size:.9rem; }
+th, td { border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top; } th { background:var(--bg); white-space:nowrap; }
+td:first-child { font-weight:600; white-space:nowrap; }
+.foot { margin-top:6px; font-size:.88rem; }
+footer { margin-top:44px; border-top:1px solid var(--line); padding-top:16px; color:var(--muted); font-size:.88rem; }
+@media print { .sub, footer { display:none; } .tbl { break-inside:avoid; border-left-width:2px; } }
+</style>
+
+<style id="i18n-css">
+#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
+html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
+@media print{#lang-pick{display:none}}
+</style></head>
+<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
+<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
+<div class="wrap">
+<p data-en='&lt;a href="index.html"&gt;← Back to the course home&lt;/a&gt;'><a href="index.html">← कोर्सच्या मुख्य पानाकडे परत</a></p>
+<h1 data-en="📊 Cheat sheet — the five comparisons everyone mixes up">📊 Cheat sheet — सगळे गोंधळतात त्या पाच तुलना</h1>
+<p class="sub" data-en='One page, five tables, the school analogy on every row — and a "when NOT to" row, because the wrong object is the most common Kubernetes mistake. Print it; pin it next to the &lt;a href="lesson-diagrams.html"&gt;diagrams&lt;/a&gt; and the &lt;a href="triage-card.html"&gt;triage card&lt;/a&gt;.'>एक पान, पाच तक्ते, प्रत्येक ओळीला शाळेची उपमा — आणि एक "कधी नाही" ओळ, कारण चुकीची वस्तू ही Kubernetes मधली सर्वात सामान्य चूक. प्रिंट करा; <a href="lesson-diagrams.html">आकृत्या</a> आणि <a href="triage-card.html">triage card</a> शेजारी लावा.</p>
+<h2 data-en="🧑‍🏫 Deployment vs StatefulSet vs DaemonSet (lessons 03, 22, 21)">🧑‍🏫 Deployment विरुद्ध StatefulSet विरुद्ध DaemonSet (धडे 03, 22, 21)</h2>
+<div class="tbl" style="--c:#326ce5"><table>
+<tr><th></th><th>Deployment</th><th>StatefulSet</th><th>DaemonSet</th></tr>
+<tr><td data-en="Analogy">उपमा</td><td data-en='the class monitor — "always N", any desk'>वर्गप्रमुख — "नेहमी N", कोणताही बाक</td><td data-en="desks with name plates">नावाच्या पाट्या असलेले बाक</td><td data-en="one fire extinguisher on every floor">प्रत्येक मजल्यावर एक अग्निशामक</td></tr>
+<tr><td data-en="Pods are">Pods असतात</td><td data-en="interchangeable, random names">अदलाबदल करता येणारे, यादृच्छिक नावे</td><td data-en="sticky names (postgres-0), ordered start/stop">चिकट नावे (postgres-0), क्रमाने सुरू/बंद</td><td data-en="exactly one per node">प्रत्येक node वर नेमका एक</td></tr>
+<tr><td>Storage</td><td data-en="shared or none">सामायिक किंवा काहीच नाही</td><td data-en="its OWN PVC per pod, reattached by name">प्रत्येक pod चा स्वतःचा PVC, नावाने पुन्हा जोडलेला</td><td data-en="usually host paths / node-local">सहसा host paths / node-स्थानिक</td></tr>
+<tr><td>Scaling</td><td>replicas + HPA</td><td data-en="replicas, ordered; HPA rarely">replicas, क्रमाने; HPA क्वचित</td><td data-en="the node list IS the count">nodes ची यादी हीच संख्या</td></tr>
+<tr><td data-en="Use for">कशासाठी</td><td data-en="stateless apps, APIs, workers">stateless ॲप्स, APIs, workers</td><td data-en="databases, brokers, anything with identity">डेटाबेस, brokers, ओळख असलेले काहीही</td><td>log shippers, CNI, node agents, kube-proxy</td></tr>
+<tr><td data-en="When NOT to">कधी नाही</td><td data-en="anything needing a stable identity or its own disk">स्थिर ओळख किंवा स्वतःची डिस्क लागणारे काहीही</td><td data-en="stateless apps (slower rollouts) — and prefer RDS for prod data">stateless ॲप्स (हळू rollouts) — आणि prod डेटासाठी RDS ला पसंती</td><td data-en="apps that scale by load, not by node">node नुसार नव्हे, load नुसार वाढणारी ॲप्स</td></tr>
+</table><p class="foot" data-en='&lt;a href="lesson-diagrams.html#l22"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l22">आकृती ↗</a></p></div>
+<h2 data-en="☎️ Service types + Ingress (lessons 04, 10)">☎️ Service चे प्रकार + Ingress (धडे 04, 10)</h2>
+<div class="tbl" style="--c:#326ce5"><table>
+<tr><th></th><th>ClusterIP</th><th>NodePort</th><th>LoadBalancer</th><th>Ingress</th></tr>
+<tr><td data-en="Analogy">उपमा</td><td data-en="the reception desk inside the school">शाळेच्या आतला रिसेप्शन डेस्क</td><td data-en="a side window on every building">प्रत्येक इमारतीला एक बाजूची खिडकी</td><td data-en="a cloud reception desk (ALB/NLB) per service">प्रत्येक service साठी क्लाउड रिसेप्शन डेस्क (ALB/NLB)</td><td data-en="the main gate + signboard, many rooms">मुख्य गेट + फलक, अनेक खोल्या</td></tr>
+<tr><td data-en="Reachable from">कुठून पोहोचता येते</td><td data-en="inside the cluster only">फक्त cluster च्या आतून</td><td data-en="any node's IP : 30000–32767">कोणत्याही node चा IP : 30000–32767</td><td data-en="the internet, one cloud LB each">इंटरनेट, प्रत्येकी एक क्लाउड LB</td><td data-en="the internet, one LB for many services">इंटरनेट, अनेक services साठी एक LB</td></tr>
+<tr><td data-en="Routes by">वाट कशाने</td><td data-en="selector → ready pods">selector → तयार pods</td><td data-en="same, via a node port">तेच, node port मार्गे</td><td data-en="same, via the LB">तेच, LB मार्गे</td><td>host / path → Services</td></tr>
+<tr><td data-en="Cost">खर्च</td><td data-en="free">मोफत</td><td data-en="free (but ugly)">मोफत (पण कुरूप)</td><td data-en="a cloud LB bill per service">प्रत्येक service ला क्लाउड LB चे बिल</td><td data-en="one LB + a controller add-on">एक LB + एक controller add-on</td></tr>
+<tr><td data-en="Use for">कशासाठी</td><td data-en="service-to-service (the default)">service-ते-service (मूळ पर्याय)</td><td data-en="local demos, bare metal tricks">स्थानिक डेमो, bare metal युक्त्या</td><td data-en="a single non-HTTP entry (DB, game server)">एकच HTTP-नसलेला प्रवेश (DB, गेम सर्व्हर)</td><td data-en="HTTP(S) sites and APIs — the normal front door">HTTP(S) साइट आणि APIs — नेहमीचे पुढचे दार</td></tr>
+<tr><td data-en="When NOT to">कधी नाही</td><td data-en="anything the outside must reach">बाहेरून पोहोचायचे काहीही</td><td>production traffic</td><td data-en="ten HTTP services = ten bills → Ingress">दहा HTTP services = दहा बिले → Ingress</td><td data-en="raw TCP/UDP — use a LoadBalancer Service">कच्चे TCP/UDP — LoadBalancer Service वापरा</td></tr>
+</table><p class="foot" data-en='&lt;a href="lesson-diagrams.html#l10"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l10">आकृती ↗</a></p></div>
+<h2 data-en="🙋 Liveness vs readiness vs startup probes (lesson 07)">🙋 Liveness विरुद्ध readiness विरुद्ध startup probes (धडा 07)</h2>
+<div class="tbl" style="--c:#326ce5"><table>
+<tr><th></th><th>Liveness</th><th>Readiness</th><th>Startup</th></tr>
+<tr><td data-en="Question">प्रश्न</td><td data-en='"are you awake?"'>"जागा आहेस?"</td><td data-en='"ready to answer?"'>"उत्तर द्यायला तयार?"</td><td data-en='"finished waking up yet?"'>"जागा होणे संपले का?"</td></tr>
+<tr><td data-en="On failure">फसल्यावर</td><td data-en="container RESTARTED">कंटेनर पुन्हा सुरू</td><td data-en="removed from the Service's endpoints — no restart">Service च्या endpoints मधून काढला — पुन्हा सुरू नाही</td><td data-en="keeps liveness/readiness switched off until it passes">पास होईपर्यंत liveness/readiness बंद ठेवतो</td></tr>
+<tr><td data-en="Typical endpoint">नेहमीचा endpoint</td><td data-en="/healthz — trivial, cheap">/healthz — साधा, स्वस्त</td><td data-en="/readyz — checks dependencies">/readyz — dependencies तपासतो</td><td data-en="same as liveness, generous failureThreshold">liveness सारखाच, उदार failureThreshold</td></tr>
+<tr><td data-en="AWS cousin">AWS मधला भाऊ</td><td>—</td><td data-en="the ALB health check (AWS L15)">ALB चा health check (AWS L15)</td><td>—</td></tr>
+<tr><td data-en="When NOT to">कधी नाही</td><td data-en="a probe that checks the DB — you'll restart the app for the DB's outage">DB तपासणारा probe — DB च्या outage साठी तुम्ही ॲप पुन्हा सुरू कराल</td><td data-en='a probe that is always "ready" — traffic during startup'>नेहमी "तयार" असणारा probe — सुरू होताना traffic</td><td data-en="fast-starting apps — just set initialDelaySeconds">पटकन सुरू होणारी ॲप्स — फक्त initialDelaySeconds ठेवा</td></tr>
+</table><p class="foot" data-en='&lt;a href="lesson-diagrams.html#l07"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l07">आकृती ↗</a></p></div>
+<h2 data-en="🍛 Requests vs limits + QoS classes (lessons 08, 23)">🍛 Requests विरुद्ध limits + QoS classes (धडे 08, 23)</h2>
+<div class="tbl" style="--c:#326ce5"><table>
+<tr><th></th><th>Requests</th><th>Limits</th></tr>
+<tr><td data-en="Analogy">उपमा</td><td data-en="the promised plate">वचन दिलेली थाळी</td><td data-en="the cap on seconds">दुसऱ्या वाढीवरची मर्यादा</td></tr>
+<tr><td data-en="Who reads it">कोण वाचते</td><td data-en="the scheduler — places pods only where requests fit">scheduler — requests बसतील तिथेच pods ठेवतो</td><td data-en="the kubelet/kernel — enforces at runtime">kubelet/kernel — चालू असताना लागू करतो</td></tr>
+<tr><td data-en="CPU overrun">CPU ओलांडले</td><td>—</td><td data-en="throttled (slower, alive)">throttled (हळू, जिवंत)</td></tr>
+<tr><td data-en="Memory overrun">Memory ओलांडली</td><td>—</td><td>OOMKilled 💀</td></tr>
+<tr><td>QoS class</td><td colspan="2" data-en="&lt;b&gt;Guaranteed&lt;/b&gt; = requests == limits · &lt;b&gt;Burstable&lt;/b&gt; = requests &amp;lt; limits · &lt;b&gt;BestEffort&lt;/b&gt; = nothing set — evicted first under pressure"><b>Guaranteed</b> = requests == limits · <b>Burstable</b> = requests &lt; limits · <b>BestEffort</b> = काहीच नाही — दबावाखाली सर्वात आधी काढला</td></tr>
+<tr><td data-en="When NOT to">कधी नाही</td><td data-en='no requests "to let it use everything" — BestEffort, first out the door'>"सगळे वापरू द्या" म्हणून requests नाहीत — BestEffort, सर्वात आधी बाहेर</td><td data-en="limits far above requests — over-commit that OOMKills the neighbour">requests पेक्षा खूप वरचे limits — over-commit जे शेजाऱ्याला OOMKill करते</td></tr>
+</table><p class="foot" data-en='&lt;a href="lesson-diagrams.html#l08"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l08">आकृती ↗</a></p></div>
+<h2 data-en="🚫 NetworkPolicy vs security group (lesson 19 · AWS L10/L21)">🚫 NetworkPolicy विरुद्ध security group (धडा 19 · AWS L10/L21)</h2>
+<div class="tbl" style="--c:#326ce5"><table>
+<tr><th></th><th>NetworkPolicy</th><th>Security group (EKS nodes/pods)</th></tr>
+<tr><td data-en="Analogy">उपमा</td><td data-en="passing-notes rules between desks">बाकांमधले चिठ्ठ्या पाठवण्याचे नियम</td><td data-en="the guest list at the building's desk">इमारतीच्या डेस्कवरची पाहुण्यांची यादी</td></tr>
+<tr><td data-en="Applies to">लागू होते</td><td data-en="pods, by label selector">pods, label selector ने</td><td data-en="ENIs — nodes (or pods with SG-for-pods)">ENIs — nodes (किंवा SG-for-pods सह pods)</td></tr>
+<tr><td data-en="Default">मूळ</td><td data-en="every pod talks to every pod">प्रत्येक pod प्रत्येक pod शी बोलतो</td><td data-en="deny all inbound">सगळे inbound नाकारले</td></tr>
+<tr><td data-en="Direction">दिशा</td><td data-en="ingress and egress, per policy">ingress आणि egress, प्रत्येक policy साठी</td><td data-en="inbound rules; stateful replies">inbound नियम; stateful उत्तरे</td></tr>
+<tr><td data-en="Enforced by">लागू करणारा</td><td data-en="the CNI (Calico, VPC CNI policy mode) — no enforcer = ignored">CNI (Calico, VPC CNI policy mode) — लागू करणारा नसेल तर दुर्लक्षित</td><td data-en="AWS, always">AWS, नेहमी</td></tr>
+<tr><td data-en="Use for">कशासाठी</td><td data-en="pod-to-pod rules inside the cluster">cluster च्या आतले pod-ते-pod नियम</td><td data-en="who may reach the nodes/ALB from outside">बाहेरून nodes/ALB पर्यंत कोण पोहोचू शकते</td></tr>
+<tr><td data-en="When NOT to">कधी नाही</td><td data-en="as your only perimeter — the ALB/WAF and SGs guard the street">तुमची एकमेव सीमा म्हणून — ALB/WAF आणि SG रस्त्याचा पहारा देतात</td><td data-en="fine-grained pod-to-pod rules — that's NetworkPolicy's job">बारीक pod-ते-pod नियम — ते NetworkPolicy चे काम</td></tr>
+</table><p class="foot" data-en='&lt;a href="lesson-diagrams.html#l19"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l19">आकृती ↗</a></p></div>
+<footer data-en='Learn Kubernetes School · &lt;a href="index.html"&gt;Course home&lt;/a&gt; · &lt;a href="triage-card.html"&gt;Triage card&lt;/a&gt; · &lt;a href="analogy-map.html"&gt;Analogy map&lt;/a&gt; · &lt;a href="lesson-diagrams.html"&gt;Lesson diagrams&lt;/a&gt; · &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt; · &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;'>Learn Kubernetes School · <a href="index.html">कोर्स मुख्य पान</a> · <a href="triage-card.html">Triage card</a> · <a href="analogy-map.html">उपमांचा नकाशा</a> · <a href="lesson-diagrams.html">धड्यांच्या आकृत्या</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
+</div>
+
+<script id="i18n-js">
+function schoolSetLang(l){
+  try{localStorage.setItem('school-lang',l)}catch(e){}
+  document.documentElement.setAttribute('lang',l);
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
+    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(function(el){
+    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
+    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
+  });
+  var p=document.getElementById('lang-pick'); if(p) p.value=l;
+}
+(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
+</script></body>
+</html>

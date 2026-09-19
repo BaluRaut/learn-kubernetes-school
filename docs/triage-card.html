@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="mr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title data-en="Triage card — the one-page debugging drill · Learn Kubernetes School">Triage card — एका पानाचा debugging सराव · Learn Kubernetes School</title>
+<meta content="Printable one-page Kubernetes triage card: describe → events → logs → exec → --previous, plus the symptom table (Pending, ImagePullBackOff, CrashLoopBackOff, OOMKilled, silent Service)." name="description"/>
+<meta content="Triage card — the one-page debugging drill · Learn Kubernetes School" property="og:title"/>
+<meta content="The nurse's chart from lesson 16 on one printable page: the drill, the symptom table, the commands." property="og:description"/>
+<meta content="https://baluraut.github.io/learn-kubernetes-school/images/big-picture-4k.png" property="og:image"/>
+<meta content="website" property="og:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<style>
+:root { --bg:#f8fafc; --card:#fff; --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --accent:#be123c; --blue:#2563eb; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0b1220; --card:#131c2e; --ink:#e2e8f0; --muted:#94a3b8; --line:#253349; } }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.55; }
+.wrap { max-width:900px; margin:0 auto; padding:28px 20px 60px; }
+a { color:var(--blue); } h1 { font-size:1.8rem; } h2 { font-size:1.15rem; margin:26px 0 6px; }
+.sub { color:var(--muted); }
+.drill { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:12px; }
+.step { background:var(--card); border:1px solid var(--line); border-top:5px solid var(--accent); border-radius:12px; padding:12px 14px; }
+.step b { display:block; font-size:1rem; } .step code { display:block; margin-top:6px; font-size:.82rem; background:var(--bg); padding:5px 8px; border-radius:6px; white-space:pre-wrap; }
+.step span { display:block; color:var(--muted); font-size:.85rem; margin-top:6px; }
+table { border-collapse:collapse; width:100%; margin-top:10px; font-size:.88rem; background:var(--card); }
+th, td { border:1px solid var(--line); padding:7px 9px; text-align:left; vertical-align:top; } th { background:var(--bg); }
+td:first-child { font-weight:700; white-space:nowrap; }
+.rule { background:var(--card); border:1px dashed var(--line); border-radius:12px; padding:12px 16px; margin-top:16px; color:var(--muted); font-size:.92rem; }
+.btn { display:inline-block; margin-top:14px; background:var(--accent); color:#fff; font-weight:700; text-decoration:none; padding:9px 18px; border-radius:10px; }
+footer { margin-top:36px; border-top:1px solid var(--line); padding-top:14px; color:var(--muted); font-size:.85rem; }
+@media print { .sub, .btn, footer, #lang-pick { display:none !important; } body { background:#fff; } .wrap { padding:0; } h1 { font-size:1.4rem; } .step, table { break-inside:avoid; } }
+</style>
+
+<style id="i18n-css">
+#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
+html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
+@media print{#lang-pick{display:none}}
+</style></head>
+<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
+<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
+<div class="wrap">
+<p data-en='&lt;a href="index.html"&gt;← Back to the course home&lt;/a&gt;'><a href="index.html">← कोर्सच्या मुख्य पानाकडे परत</a></p>
+<h1 data-en="🩺 Triage card — the nurse's chart, one page">🩺 Triage card — नर्सचा तक्ता, एका पानावर</h1>
+<p class="sub" data-en="Lesson 16 on a single printable page. Whatever walks in: the drill never changes. Print it, tape it next to the screen.">धडा 16 एका प्रिंट करता येणाऱ्या पानावर. जो कोणी आत येईल: सराव कधीच बदलत नाही. प्रिंट करा, स्क्रीनशेजारी चिकटवा.</p>
+<a class="btn" data-en="🖨️ Print the card" href="javascript:window.print()">🖨️ कार्ड प्रिंट करा</a>
+<h2 data-en="The drill — in this order, always">सराव — या क्रमाने, नेहमी</h2>
+<div class="drill">
+<div class="step" data-en="&lt;b&gt;1 · describe&lt;/b&gt;&lt;code&gt;kubectl describe pod POD -n NS&lt;/code&gt;&lt;span&gt;state, restarts, conditions — and the Events at the bottom&lt;/span&gt;"><b>1 · describe</b><code>kubectl describe pod POD -n NS</code><span>स्थिती, restarts, conditions — आणि तळाशी Events</span></div>
+<div class="step" data-en="&lt;b&gt;2 · events&lt;/b&gt;&lt;code&gt;kubectl get events -n NS --sort-by=.lastTimestamp&lt;/code&gt;&lt;span&gt;WHY it never started: scheduling, image pull, probes&lt;/span&gt;"><b>2 · events</b><code>kubectl get events -n NS --sort-by=.lastTimestamp</code><span>ते का सुरूच झाले नाही: scheduling, image pull, probes</span></div>
+<div class="step" data-en="&lt;b&gt;3 · logs&lt;/b&gt;&lt;code&gt;kubectl logs POD -n NS
+kubectl logs POD --previous&lt;/code&gt;&lt;span&gt;&lt;b&gt;--previous&lt;/b&gt; for the crashed container's last words&lt;/span&gt;"><b>3 · logs</b><code>kubectl logs POD -n NS kubectl logs POD --previous</code><span>कोसळलेल्या कंटेनरच्या शेवटच्या शब्दांसाठी <b>--previous</b></span></div>
+<div class="step" data-en="&lt;b&gt;4 · exec&lt;/b&gt;&lt;code&gt;kubectl exec -it POD -n NS -- sh&lt;/code&gt;&lt;span&gt;look around: env, files, DNS (&lt;code&gt;nslookup school-api&lt;/code&gt;), ports&lt;/span&gt;"><b>4 · exec</b><code>kubectl exec -it POD -n NS -- sh</code><span>आत पहा: env, फाइल्स, DNS (<code>nslookup school-api</code>), ports</span></div>
+<div class="step" data-en="&lt;b&gt;5 · the neighbours&lt;/b&gt;&lt;code&gt;kubectl get endpointslices -n NS
+kubectl get svc,ingress -n NS&lt;/code&gt;&lt;span&gt;a silent Service = selector ≠ labels, or no READY pods&lt;/span&gt;"><b>5 · शेजारी</b><code>kubectl get endpointslices -n NS kubectl get svc,ingress -n NS</code><span>गप्प Service = selector ≠ labels, किंवा तयार pods नाहीत</span></div>
+</div>
+<h2 data-en="Match the symptom">लक्षण जुळवा</h2>
+<table>
+<tr><th data-en="Symptom">लक्षण</th><th data-en="Usually means">सहसा अर्थ</th><th data-en="Look at">कुठे पहा</th><th data-en="Lesson">धडा</th></tr>
+<tr><td>Pending</td><td data-en="no desk fits: requests too big, taints, cluster full, PVC unbound">कोणताच बाक बसत नाही: requests खूप मोठे, taints, cluster भरला, PVC unbound</td><td>describe → Events "FailedScheduling"</td><td>L08 · L15 · L20 · L12</td></tr>
+<tr><td>ImagePullBackOff</td><td data-en="wrong image name/tag, or no registry permission (ECR: the node role)">चुकीचे इमेज नाव/tag, किंवा registry परवानगी नाही (ECR: node चा role)</td><td data-en="describe → Events; the image string, character by character">describe → Events; इमेजची string, अक्षर न् अक्षर</td><td>L01 · AWS L05</td></tr>
+<tr><td>CrashLoopBackOff</td><td data-en="starts, dies, repeats: bad config, missing env, crashing app">सुरू होतो, मरतो, पुन्हा: चुकीचे config, env नाही, कोसळणारे ॲप</td><td data-en="logs --previous, then ConfigMap/Secret">logs --previous, मग ConfigMap/Secret</td><td>L06 · L16</td></tr>
+<tr><td>OOMKilled</td><td data-en="memory over the limit">memory limit च्या पलीकडे</td><td data-en="describe → Last State; raise the limit or fix the leak">describe → Last State; limit वाढवा किंवा गळती दुरुस्त करा</td><td>L08 · L23</td></tr>
+<tr><td data-en="Running but not Ready">Running पण Ready नाही</td><td data-en="readiness probe failing — no traffic, no restart">readiness probe फसतोय — traffic नाही, पुन्हा सुरू नाही</td><td data-en="describe → probe failures; curl the readiness path from inside">describe → probe failures; आतून readiness path curl करा</td><td>L07</td></tr>
+<tr><td data-en="Restarts climbing">Restarts वाढतायत</td><td data-en="liveness probe failing (or the app really dies)">liveness probe फसतोय (किंवा ॲप खरंच मरते)</td><td data-en="logs --previous; probe too strict / too early">logs --previous; probe खूप कडक / खूप लवकर</td><td>L07</td></tr>
+<tr><td data-en="Service answers nothing">Service काहीच उत्तर देत नाही</td><td data-en="selector ≠ pod labels, wrong targetPort, no READY endpoints">selector ≠ pod labels, चुकीचा targetPort, तयार endpoints नाहीत</td><td>get endpointslices; describe svc</td><td>L04</td></tr>
+<tr><td>Ingress 404 / 502</td><td data-en="path order, wrong Service/port, no controller, backend not Ready">path चा क्रम, चुकीची Service/port, controller नाही, backend Ready नाही</td><td data-en="describe ingress; controller logs">describe ingress; controller चे logs</td><td>L10</td></tr>
+<tr><td data-en="Can't reach another pod">दुसऱ्या pod पर्यंत पोहोचत नाही</td><td data-en="a NetworkPolicy (default-deny + missing allow / DNS egress)">एखादी NetworkPolicy (default-deny + allow नाही / DNS egress नाही)</td><td data-en="get networkpolicy; test from inside with curl">get networkpolicy; आतून curl ने तपासा</td><td>L19</td></tr>
+<tr><td>Node NotReady</td><td data-en="kubelet down, disk/memory pressure — or an EC2 story underneath (spot reclaimed)">kubelet बंद, disk/memory दबाव — किंवा खाली EC2 ची गोष्ट (spot परत घेतला)</td><td data-en="describe node → Conditions; the cloud console">describe node → Conditions; क्लाउड console</td><td>L13 · AWS L12</td></tr>
+<tr><td data-en="Everything evicted at once">सगळे एकदम evict झाले</td><td data-en="node pressure; BestEffort pods go first">node वर दबाव; BestEffort pods आधी जातात</td><td>describe node; QoS classes</td><td>L23</td></tr>
+</table>
+<div class="rule" data-en='🧭 &lt;b&gt;Rules of the drill:&lt;/b&gt; events before logs (events say &lt;i&gt;why it never started&lt;/i&gt;, logs say &lt;i&gt;why it died&lt;/i&gt;) · &lt;code&gt;--previous&lt;/code&gt; on every crash loop · never "fix" by deleting the pod first — you delete the evidence · if the Service is silent, suspect labels before the network · when in doubt, &lt;code&gt;kubectl get all -n NS&lt;/code&gt; and read it top to bottom.'>🧭 <b>सरावाचे नियम:</b> logs आधी events (events सांगतात <i>ते का सुरू झाले नाही</i>, logs सांगतात <i>ते का मेले</i>) · प्रत्येक crash loop वर <code>--previous</code> · आधी pod हटवून कधीच "दुरुस्त" करू नका — तुम्ही पुरावा हटवता · Service गप्प असेल तर network आधी labels वर संशय घ्या · शंका असेल तर <code>kubectl get all -n NS</code> आणि वरून खाली वाचा.</div>
+<footer data-en='Learn Kubernetes School · &lt;a href="index.html"&gt;Course home&lt;/a&gt; · &lt;a href="cheat-sheet.html"&gt;Cheat sheet&lt;/a&gt; · &lt;a href="lesson-diagrams.html#l16"&gt;Lesson 16 diagram&lt;/a&gt; · &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt; · &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;'>Learn Kubernetes School · <a href="index.html">कोर्स मुख्य पान</a> · <a href="cheat-sheet.html">Cheat sheet</a> · <a href="lesson-diagrams.html#l16">धडा 16 ची आकृती</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
+</div>
+
+<script id="i18n-js">
+function schoolSetLang(l){
+  try{localStorage.setItem('school-lang',l)}catch(e){}
+  document.documentElement.setAttribute('lang',l);
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
+    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(function(el){
+    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
+    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
+  });
+  var p=document.getElementById('lang-pick'); if(p) p.value=l;
+}
+(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
+</script></body>
+</html>

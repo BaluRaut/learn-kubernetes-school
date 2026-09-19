@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="mr">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Before &amp; trade-offs — Learn Kubernetes School</title>
+<title data-en="Before &amp;amp; trade-offs — Learn Kubernetes School">आधी काय होते &amp; फायदे-तोटे — Learn Kubernetes School</title>
 <meta content="For every big Kubernetes idea: what the world looked like before it, its merits and demerits, and where to use it vs where not." name="description"/>
 <meta content="Before &amp; trade-offs — Learn Kubernetes School" property="og:title"/>
 <meta content="For every big Kubernetes idea: what the world looked like before it, its merits and demerits, and where to use it vs where not." property="og:description"/>
@@ -46,15 +46,22 @@
 
   @media (min-width: 1660px) { .wrap { max-width: 1580px; } }
 </style>
-</head>
-<body>
+
+<style id="i18n-css">
+#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
+html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
+@media print{#lang-pick{display:none}}
+</style></head>
+<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
+<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
 <div class="wrap">
 <header>
-<p><a href="index.html">← Back to the course home</a></p>
-<h1>⏮️ Before &amp; trade-offs</h1>
-<p class="sub">Every tool replaced something worse — and is itself the wrong tool somewhere.
-  For each big idea in this course: what life was like <b>before</b> it, its honest
-  <b>merits ✅ and demerits ❌</b>, and <b>where to use it 👍 vs where not 👎</b>.</p>
+<p data-en='&lt;a href="index.html"&gt;← Back to the course home&lt;/a&gt;'><a href="index.html">← कोर्सच्या मुख्य पानाकडे परत</a></p>
+<h1 data-en="⏮️ Before &amp;amp; trade-offs">⏮️ आधी काय होते &amp; फायदे-तोटे</h1>
+<p class="sub" data-en="Every tool replaced something worse — and is itself the wrong tool somewhere.
+  For each big idea in this course: what life was like &lt;b&gt;before&lt;/b&gt; it, its honest
+  &lt;b&gt;merits ✅ and demerits ❌&lt;/b&gt;, and &lt;b&gt;where to use it 👍 vs where not 👎&lt;/b&gt;.">प्रत्येक साधनाने काहीतरी वाईट गोष्ट बदलली — आणि तेच साधन कुठेतरी चुकीचे ठरते. या कोर्समधील प्रत्येक मोठ्या कल्पनेसाठी: ती येण्या<b>आधी</b> जीवन कसे होते, तिचे प्रामाणिक <b>फायदे ✅ आणि तोटे ❌</b>, आणि <b>कुठे वापरावी 👍 विरुद्ध कुठे नाही 👎</b>.</p>
 <nav class="toc">
 <a href="#kubernetes">☸️ Kubernetes</a><a href="#ingress">🏫 Ingress</a>
 <a href="#hpa">🚌 Autoscaling</a><a href="#namespaces">🚪 Namespaces</a>
@@ -62,169 +69,186 @@
 </nav>
 </header>
 <section class="term" id="kubernetes" style="--c:#326ce5">
-<h2>☸️ Kubernetes itself — the whole course</h2>
-<div class="hist"><b>⏮️ Before Kubernetes (open-sourced 2014)</b>
-<p>Fleets of <b>hand-fed VMs</b>: one app per VM, deploys via SSH + shell scripts or Ansible,
+<h2 data-en="☸️ Kubernetes itself — the whole course">☸️ खुद्द Kubernetes — संपूर्ण कोर्स</h2>
+<div class="hist"><b data-en="⏮️ Before Kubernetes (open-sourced 2014)">⏮️ Kubernetes च्या आधी (2014 मध्ये ओपन-सोर्स)</b>
+<p data-en='Fleets of &lt;b&gt;hand-fed VMs&lt;/b&gt;: one app per VM, deploys via SSH + shell scripts or Ansible,
     load balancers edited by hand, scaling = a ticket to the infra team, and a pager going off at
-    3 AM because a process died and <i>nothing restarted it</i>. Google ran an internal answer
+    3 AM because a process died and &lt;i&gt;nothing restarted it&lt;/i&gt;. Google ran an internal answer
     (Borg) for a decade; Kubernetes is that idea, public. The middle era also had Heroku-style
     PaaS — wonderfully simple, but constrained and pricey at scale — and "docker-compose on one
-    big VM", a single point of failure wearing a trench coat.</p>
+    big VM", a single point of failure wearing a trench coat.'><b>हाताने सांभाळलेल्या VM</b> चे ताफे: प्रत्येक VM वर एक ॲप, SSH + shell स्क्रिप्ट किंवा Ansible ने deploy, हाताने बदललेले लोड बॅलन्सर, scaling = infra टीमकडे तिकीट, आणि पहाटे 3 वाजता पेजर वाजतो कारण एक प्रोसेस मेली आणि <i>काहीही तिला पुन्हा चालू केले नाही</i>. Google ने एक दशक अंतर्गत उत्तर (Borg) चालवले; Kubernetes ही तीच कल्पना, सार्वजनिक. मधल्या काळात Heroku-सारखे PaaS होते — सुंदर सोपे, पण मर्यादित आणि मोठ्या प्रमाणावर महाग — आणि "एका मोठ्या VM वर docker-compose", म्हणजे ट्रेंच कोट घातलेला single point of failure.</p>
 </div>
 <div class="quad">
-<div class="q merit"><h4>✅ Merits</h4><ul>
-<li>self-healing — crashed pods return without humans</li>
-<li>declarative desired state (the course's big idea)</li>
-<li>rolling deploys, autoscaling, service discovery built in</li>
-<li>runs anywhere — EKS, GKE, on-prem, laptop</li>
+<div class="q merit"><h4 data-en="✅ Merits">✅ फायदे</h4><ul>
+<li data-en="self-healing — crashed pods return without humans">स्व-उपचार — कोसळलेले pod माणसाशिवाय परत येतात</li>
+<li data-en="declarative desired state (the course's big idea)">declarative इच्छित स्थिती (कोर्सची मोठी कल्पना)</li>
+<li data-en="rolling deploys, autoscaling, service discovery built in">rolling deploy, autoscaling, service discovery अंगभूत</li>
+<li data-en="runs anywhere — EKS, GKE, on-prem, laptop">कुठेही चालते — EKS, GKE, on-prem, लॅपटॉप</li>
 </ul></div>
-<div class="q demerit"><h4>❌ Demerits</h4><ul>
-<li>steep learning curve (hence… 14 lessons 😄)</li>
-<li>costs money to exist (EKS ≈ $73/mo before nodes)</li>
-<li>YAML sprawl; day-2 ops: upgrades, add-ons, CVEs</li>
-<li>massive overkill for one small app</li>
+<div class="q demerit"><h4 data-en="❌ Demerits">❌ तोटे</h4><ul>
+<li data-en="steep learning curve (hence… 26 lessons 😄)">शिकण्याचा चढ खडा (म्हणूनच… 26 धडे 😄)</li>
+<li data-en="costs money to exist (EKS ≈ $73/mo before nodes)">नुसते अस्तित्वात असण्याचेही पैसे (EKS ≈ $73/महिना, नोड्सशिवाय)</li>
+<li data-en="YAML sprawl; day-2 ops: upgrades, add-ons, CVEs">YAML चा पसारा; दुसऱ्या दिवसाची कामे: अपग्रेड, add-ons, CVE</li>
+<li data-en="massive overkill for one small app">एका छोट्या ॲपसाठी प्रचंड अतिरेक</li>
 </ul></div>
-<div class="q use"><h4>👍 Use when</h4><ul>
-<li>several services/teams, or real scaling needs</li>
-<li>uptime matters enough to pay for redundancy</li>
-<li>you're already containerized and outgrowing one box</li>
+<div class="q use"><h4 data-en="👍 Use when">👍 वापरा जेव्हा</h4><ul>
+<li data-en="several services/teams, or real scaling needs">अनेक services/टीम, किंवा खरी scaling ची गरज</li>
+<li data-en="uptime matters enough to pay for redundancy">uptime इतके महत्त्वाचे की redundancy साठी पैसे मोजावे</li>
+<li data-en="you're already containerized and outgrowing one box">तुम्ही आधीच containerized आहात आणि एक मशीन पुरत नाही</li>
 </ul></div>
-<div class="q avoid"><h4>👎 Think twice when</h4><ul>
-<li>one app, small team → Cloud Run / App Runner / compose</li>
-<li>nobody has ops time — a managed PaaS is honest</li>
-<li>a static site or a cron job (seriously, don't)</li>
+<div class="q avoid"><h4 data-en="👎 Think twice when">👎 दोनदा विचार करा जेव्हा</h4><ul>
+<li data-en="one app, small team → Cloud Run / App Runner / compose">एक ॲप, छोटी टीम → Cloud Run / App Runner / compose</li>
+<li data-en="nobody has ops time — a managed PaaS is honest">कोणाकडेच ops साठी वेळ नाही — managed PaaS प्रामाणिक पर्याय</li>
+<li data-en="a static site or a cron job (seriously, don't)">static साइट किंवा cron job (खरंच, नको)</li>
 </ul></div>
 </div>
-<p class="foot"><a href="lesson-diagrams.html#l03">Diagrams ↗</a></p>
+<p class="foot" data-en='&lt;a href="lesson-diagrams.html#l03"&gt;Diagrams ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l03">आकृत्या ↗</a></p>
 </section>
 <section class="term" id="ingress" style="--c:#ea580c">
-<h2>🏫 Ingress — lesson 10</h2>
-<div class="hist"><b>⏮️ Before Ingress</b>
-<p>Either <b>one cloud load balancer per service</b> — at real money each, times every service,
+<h2 data-en="🏫 Ingress — lesson 10">🏫 Ingress — धडा 10</h2>
+<div class="hist"><b data-en="⏮️ Before Ingress">⏮️ Ingress च्या आधी</b>
+<p data-en='Either &lt;b&gt;one cloud load balancer per service&lt;/b&gt; — at real money each, times every service,
     times every environment — or a hand-managed nginx VM that one brave person understood.
-    Ingress made "one gate, many rooms" a declarative object.</p>
+    Ingress made "one gate, many rooms" a declarative object.'>एकतर <b>प्रत्येक service साठी एक क्लाउड लोड बॅलन्सर</b> — प्रत्येकाचे खरे पैसे, गुणिले प्रत्येक service, गुणिले प्रत्येक environment — किंवा हाताने चालवलेली nginx VM जी एकच धाडसी व्यक्ती समजू शकत असे. Ingress ने "एक गेट, अनेक खोल्या" ही declarative वस्तू बनवली.</p>
 </div>
 <div class="quad">
-<div class="q merit"><h4>✅ Merits</h4><ul>
-<li>ONE load balancer for many services (one bill)</li>
-<li>path/host routing + TLS in one declared place</li>
-<li>adding a service = one more rule, not more hardware</li>
+<div class="q merit"><h4 data-en="✅ Merits">✅ फायदे</h4><ul>
+<li data-en="ONE load balancer for many services (one bill)">अनेक services साठी एकच लोड बॅलन्सर (एकच बिल)</li>
+<li data-en="path/host routing + TLS in one declared place">path/host routing + TLS एकाच घोषित जागी</li>
+<li data-en="adding a service = one more rule, not more hardware">service जोडणे = आणखी एक नियम, आणखी हार्डवेअर नाही</li>
 </ul></div>
-<div class="q demerit"><h4>❌ Demerits</h4><ul>
-<li>needs a controller add-on (ALB controller, nginx…)</li>
-<li>annotation zoo differs per controller</li>
-<li>HTTP(S)-shaped; raw TCP/UDP needs other doors</li>
+<div class="q demerit"><h4 data-en="❌ Demerits">❌ तोटे</h4><ul>
+<li data-en="needs a controller add-on (ALB controller, nginx…)">controller add-on लागतो (ALB controller, nginx…)</li>
+<li data-en="annotation zoo differs per controller">annotation चा पसारा controller नुसार वेगळा</li>
+<li data-en="HTTP(S)-shaped; raw TCP/UDP needs other doors">HTTP(S)-आकाराचे; कच्च्या TCP/UDP ला वेगळी दारे लागतात</li>
 </ul></div>
-<div class="q use"><h4>👍 Use when</h4><ul>
-<li>2+ HTTP services share one domain/LB</li>
-<li>you want central TLS and routing rules in git</li>
+<div class="q use"><h4 data-en="👍 Use when">👍 वापरा जेव्हा</h4><ul>
+<li data-en="2+ HTTP services share one domain/LB">2+ HTTP services एक domain/LB वाटून घेतात</li>
+<li data-en="you want central TLS and routing rules in git">तुम्हाला केंद्रीय TLS आणि routing नियम git मध्ये हवेत</li>
 </ul></div>
-<div class="q avoid"><h4>👎 Think twice when</h4><ul>
-<li>exactly one service → a LoadBalancer Service is simpler</li>
-<li>non-HTTP protocols (databases, game servers)</li>
+<div class="q avoid"><h4 data-en="👎 Think twice when">👎 दोनदा विचार करा जेव्हा</h4><ul>
+<li data-en="exactly one service → a LoadBalancer Service is simpler">नेमकी एकच service → LoadBalancer Service सोपी</li>
+<li data-en="non-HTTP protocols (databases, game servers)">HTTP नसलेले प्रोटोकॉल (डेटाबेस, गेम सर्व्हर)</li>
 </ul></div>
 </div>
-<p class="foot"><a href="lesson-diagrams.html#l10">Diagram ↗</a></p>
+<p class="foot" data-en='&lt;a href="lesson-diagrams.html#l10"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l10">आकृती ↗</a></p>
 </section>
 <section class="term" id="hpa" style="--c:#7c3aed">
-<h2>🚌 Autoscaling (HPA) — lesson 09</h2>
-<div class="hist"><b>⏮️ Before autoscaling</b>
-<p><b>Capacity-planning meetings.</b> You guessed peak load, bought that many servers, and paid
+<h2 data-en="🚌 Autoscaling (HPA) — lesson 09">🚌 Autoscaling (HPA) — धडा 09</h2>
+<div class="hist"><b data-en="⏮️ Before autoscaling">⏮️ autoscaling च्या आधी</b>
+<p data-en='&lt;b&gt;Capacity-planning meetings.&lt;/b&gt; You guessed peak load, bought that many servers, and paid
     for them at 3 AM on a Tuesday. Guessed wrong? Either an outage on results day or a rack of
-    idle metal. "Scaling" was a human clicking things during the cricket final.</p>
+    idle metal. "Scaling" was a human clicking things during the cricket final.'><b>क्षमता-नियोजनाच्या बैठका.</b> तुम्ही peak load चा अंदाज केलात, तेवढे सर्व्हर विकत घेतलेत, आणि मंगळवारी पहाटे 3 वाजताही त्यांचे पैसे भरलेत. अंदाज चुकला? एकतर निकालाच्या दिवशी outage किंवा रिकाम्या लोखंडाचे रॅक. "Scaling" म्हणजे क्रिकेटच्या फायनलदरम्यान माणसाने बटणे दाबणे.</p>
 </div>
 <div class="quad">
-<div class="q merit"><h4>✅ Merits</h4><ul>
-<li>capacity rides the actual load curve</li>
-<li>pay for quiet nights instead of provisioning for peaks</li>
-<li>no 3 AM human scaling</li>
+<div class="q merit"><h4 data-en="✅ Merits">✅ फायदे</h4><ul>
+<li data-en="capacity rides the actual load curve">क्षमता प्रत्यक्ष load च्या वक्रावर चालते</li>
+<li data-en="pay for quiet nights instead of provisioning for peaks">peak साठी provisioning ऐवजी शांत रात्रींचे पैसे</li>
+<li data-en="no 3 AM human scaling">पहाटे 3 वाजता माणसाने scaling नाही</li>
 </ul></div>
-<div class="q demerit"><h4>❌ Demerits</h4><ul>
-<li>needs metrics-server + honest resource requests</li>
-<li>reacts in minutes — instant spikes still hurt</li>
-<li>can mask leaks (scaling up instead of fixing)</li>
-<li>fights anyone else who sets replicas (GitOps: ignore that field)</li>
+<div class="q demerit"><h4 data-en="❌ Demerits">❌ तोटे</h4><ul>
+<li data-en="needs metrics-server + honest resource requests">metrics-server + प्रामाणिक resource requests लागतात</li>
+<li data-en="reacts in minutes — instant spikes still hurt">मिनिटांत प्रतिसाद — अचानक spikes तरीही दुखतात</li>
+<li data-en="can mask leaks (scaling up instead of fixing)">गळत्या लपवू शकते (दुरुस्तीऐवजी scaling)</li>
+<li data-en="fights anyone else who sets replicas (GitOps: ignore that field)">replicas ठरवणाऱ्या इतर कोणाशीही भांडते (GitOps: ते field दुर्लक्षित करा)</li>
 </ul></div>
-<div class="q use"><h4>👍 Use when</h4><ul>
-<li>traffic genuinely varies (day/night, seasons, events)</li>
-<li>CPU/memory tracks load reasonably well</li>
+<div class="q use"><h4 data-en="👍 Use when">👍 वापरा जेव्हा</h4><ul>
+<li data-en="traffic genuinely varies (day/night, seasons, events)">traffic खरोखर बदलतो (दिवस/रात्र, ऋतू, कार्यक्रम)</li>
+<li data-en="CPU/memory tracks load reasonably well">CPU/memory load ला बऱ्यापैकी अनुसरतात</li>
 </ul></div>
-<div class="q avoid"><h4>👎 Think twice when</h4><ul>
-<li>flat traffic — fixed replicas are simpler and predictable</li>
-<li>scale-to-zero dreams → that's serverless/Knative territory</li>
-<li>spiky-in-seconds load → pre-warm or queue instead</li>
+<div class="q avoid"><h4 data-en="👎 Think twice when">👎 दोनदा विचार करा जेव्हा</h4><ul>
+<li data-en="flat traffic — fixed replicas are simpler and predictable">सपाट traffic — निश्चित replicas सोपे आणि अंदाजे</li>
+<li data-en="scale-to-zero dreams → that's serverless/Knative territory">scale-to-zero ची स्वप्ने → ते serverless/Knative चे क्षेत्र</li>
+<li data-en="spiky-in-seconds load → pre-warm or queue instead">सेकंदांत spike होणारा load → आधी warm करा किंवा queue वापरा</li>
 </ul></div>
 </div>
-<p class="foot"><a href="lesson-diagrams.html#l09">Diagram ↗</a></p>
+<p class="foot" data-en='&lt;a href="lesson-diagrams.html#l09"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l09">आकृती ↗</a></p>
 </section>
 <section class="term" id="namespaces" style="--c:#2563eb">
-<h2>🚪 Namespaces (vs separate clusters) — lesson 05</h2>
-<div class="hist"><b>⏮️ Before namespaces</b>
-<p>Isolation meant <b>a whole cluster (or VM fleet) per team/project</b> — maximum separation,
+<h2 data-en="🚪 Namespaces (vs separate clusters) — lesson 05">🚪 Namespaces (विरुद्ध वेगळे clusters) — धडा 05</h2>
+<div class="hist"><b data-en="⏮️ Before namespaces">⏮️ namespaces च्या आधी</b>
+<p data-en="Isolation meant &lt;b&gt;a whole cluster (or VM fleet) per team/project&lt;/b&gt; — maximum separation,
     maximum bills, and an ops team drowning in cluster upgrades. Namespaces bought lightweight
-    rooms inside one building.</p>
+    rooms inside one building.">isolation म्हणजे <b>प्रत्येक टीम/प्रोजेक्टसाठी संपूर्ण cluster (किंवा VM ताफा)</b> — कमाल वेगळेपणा, कमाल बिले, आणि cluster अपग्रेडमध्ये बुडालेली ops टीम. Namespaces ने एका इमारतीत हलक्या खोल्या दिल्या.</p>
 </div>
 <div class="quad">
-<div class="q merit"><h4>✅ Merits</h4><ul>
-<li>isolation without buying another cluster</li>
-<li>per-room quotas and access rules</li>
-<li>clean blast radius: delete the room, not the school</li>
+<div class="q merit"><h4 data-en="✅ Merits">✅ फायदे</h4><ul>
+<li data-en="isolation without buying another cluster">दुसरा cluster न विकत घेता isolation</li>
+<li data-en="per-room quotas and access rules">प्रत्येक खोलीसाठी quota आणि प्रवेश नियम</li>
+<li data-en="clean blast radius: delete the room, not the school">स्वच्छ blast radius: खोली हटवा, शाळा नाही</li>
 </ul></div>
-<div class="q demerit"><h4>❌ Demerits</h4><ul>
-<li>shared control plane — one cluster upgrade risks all rooms</li>
-<li>noisy neighbors share nodes unless you add quotas/taints</li>
-<li>NOT a hard security boundary for hostile tenants</li>
+<div class="q demerit"><h4 data-en="❌ Demerits">❌ तोटे</h4><ul>
+<li data-en="shared control plane — one cluster upgrade risks all rooms">सामायिक control plane — एका cluster अपग्रेडचा धोका सर्व खोल्यांना</li>
+<li data-en="noisy neighbors share nodes unless you add quotas/taints">quota/taints नसतील तर गोंगाट करणारे शेजारी nodes वाटून घेतात</li>
+<li data-en="NOT a hard security boundary for hostile tenants">शत्रू tenants साठी कठोर सुरक्षा सीमा नाही</li>
 </ul></div>
-<div class="q use"><h4>👍 Use when</h4><ul>
-<li>teams/environments within one trusting org</li>
-<li>dev/staging sharing a cluster to save money</li>
+<div class="q use"><h4 data-en="👍 Use when">👍 वापरा जेव्हा</h4><ul>
+<li data-en="teams/environments within one trusting org">एका विश्वासू संस्थेतील टीम/environments</li>
+<li data-en="dev/staging sharing a cluster to save money">पैसे वाचवण्यासाठी dev/staging एक cluster वाटून घेतात</li>
 </ul></div>
-<div class="q avoid"><h4>👎 Think twice when</h4><ul>
-<li>compliance demands hard isolation → separate clusters</li>
-<li>running untrusted third-party workloads</li>
+<div class="q avoid"><h4 data-en="👎 Think twice when">👎 दोनदा विचार करा जेव्हा</h4><ul>
+<li data-en="compliance demands hard isolation → separate clusters">compliance ला कठोर isolation हवे → वेगळे clusters</li>
+<li data-en="running untrusted third-party workloads">अविश्वसनीय तृतीय-पक्ष workloads चालवणे</li>
 </ul></div>
 </div>
-<p class="foot"><a href="lesson-diagrams.html#l05">Diagram ↗</a></p>
+<p class="foot" data-en='&lt;a href="lesson-diagrams.html#l05"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l05">आकृती ↗</a></p>
 </section>
 <section class="term" id="manageddb" style="--c:#ea580c">
-<h2>📚 Managed database (RDS) vs in-cluster — lesson 12</h2>
-<div class="hist"><b>⏮️ Before managed databases</b>
-<p>A DBA (or the unluckiest developer) hand-tended database servers: installs, patches,
+<h2 data-en="📚 Managed database (RDS) vs in-cluster — lesson 12">📚 Managed डेटाबेस (RDS) विरुद्ध cluster मध्ये — धडा 12</h2>
+<div class="hist"><b data-en="⏮️ Before managed databases">⏮️ managed डेटाबेसच्या आधी</b>
+<p data-en="A DBA (or the unluckiest developer) hand-tended database servers: installs, patches,
     backups nobody tested, and failovers performed live with sweaty hands. RDS-style services
-    (2009+) turned that into a rented, automated librarian.</p>
+    (2009+) turned that into a rented, automated librarian.">एक DBA (किंवा सर्वात दुर्दैवी डेव्हलपर) हाताने डेटाबेस सर्व्हर सांभाळत असे: install, patch, कोणीही न तपासलेले backup, आणि घामाच्या हातांनी live केलेले failover. RDS-सारख्या सेवांनी (2009+) याचे भाड्याच्या, स्वयंचलित ग्रंथपालात रूपांतर केले.</p>
 </div>
 <div class="quad">
-<div class="q merit"><h4>✅ Merits (managed)</h4><ul>
-<li>backups, patching, failover — someone else's 3 AM</li>
-<li>cluster stays stateless = every k8s lesson stays simple</li>
-<li>encryption, snapshots, restore drills built in</li>
+<div class="q merit"><h4 data-en="✅ Merits (managed)">✅ फायदे (managed)</h4><ul>
+<li data-en="backups, patching, failover — someone else's 3 AM">backup, patching, failover — दुसऱ्या कोणाची पहाट 3</li>
+<li data-en="cluster stays stateless = every k8s lesson stays simple">cluster stateless राहतो = प्रत्येक k8s धडा सोपा राहतो</li>
+<li data-en="encryption, snapshots, restore drills built in">encryption, snapshots, restore सराव अंगभूत</li>
 </ul></div>
-<div class="q demerit"><h4>❌ Demerits (managed)</h4><ul>
-<li>costs more than raw compute</li>
-<li>less control (versions, extensions, exotic tuning)</li>
-<li>some vendor coupling</li>
+<div class="q demerit"><h4 data-en="❌ Demerits (managed)">❌ तोटे (managed)</h4><ul>
+<li data-en="costs more than raw compute">कच्च्या compute पेक्षा महाग</li>
+<li data-en="less control (versions, extensions, exotic tuning)">कमी नियंत्रण (आवृत्त्या, extensions, खास tuning)</li>
+<li data-en="some vendor coupling">थोडे vendor वर अवलंबित्व</li>
 </ul></div>
-<div class="q use"><h4>👍 Managed, when</h4><ul>
-<li>production data + a small team (this repo's choice)</li>
-<li>you can't staff real database operations</li>
+<div class="q use"><h4 data-en="👍 Managed, when">👍 Managed, जेव्हा</h4><ul>
+<li data-en="production data + a small team (this repo's choice)">production डेटा + छोटी टीम (या रेपोची निवड)</li>
+<li data-en="you can't staff real database operations">खरे डेटाबेस ऑपरेशन्स सांभाळायला माणसे नाहीत</li>
 </ul></div>
-<div class="q avoid"><h4>👎 In-cluster, when</h4><ul>
-<li>dev/test environments (cheap, disposable)</li>
-<li>a skilled team + an operator (CloudNativePG etc.)</li>
-<li>the database isn't offered as a managed service</li>
+<div class="q avoid"><h4 data-en="👎 In-cluster, when">👎 cluster मध्ये, जेव्हा</h4><ul>
+<li data-en="dev/test environments (cheap, disposable)">dev/test environments (स्वस्त, टाकाऊ)</li>
+<li data-en="a skilled team + an operator (CloudNativePG etc.)">कुशल टीम + operator (CloudNativePG इ.)</li>
+<li data-en="the database isn't offered as a managed service">तो डेटाबेस managed सेवा म्हणून उपलब्ध नाही</li>
 </ul></div>
 </div>
-<p class="foot"><a href="lesson-diagrams.html#l12">Diagram ↗</a></p>
+<p class="foot" data-en='&lt;a href="lesson-diagrams.html#l12"&gt;Diagram ↗&lt;/a&gt;'><a href="lesson-diagrams.html#l12">आकृती ↗</a></p>
 </section>
-<footer>
-  Learn Kubernetes School · <a href="index.html">Course home</a> ·
-  <a href="lesson-diagrams.html">Lesson diagrams</a> ·
-  <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a>
+<footer data-en='
+  Learn Kubernetes School · &lt;a href="index.html"&gt;Course home&lt;/a&gt; ·
+  &lt;a href="lesson-diagrams.html"&gt;Lesson diagrams&lt;/a&gt; ·
+  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school"&gt;github.com/BaluRaut/learn-kubernetes-school&lt;/a&gt;
  ·
-  <a href="https://baluraut.github.io/school/">🏫 all schools</a>
+  &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt;
  ·
-  <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 found a mistake?</a>
-</footer>
+  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;
+'>Learn Kubernetes School · <a href="index.html">कोर्स मुख्य पान</a> · <a href="lesson-diagrams.html">धड्यांच्या आकृत्या</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
 </div>
-</body>
+
+<script id="i18n-js">
+function schoolSetLang(l){
+  try{localStorage.setItem('school-lang',l)}catch(e){}
+  document.documentElement.setAttribute('lang',l);
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
+    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
+  });
+  document.querySelectorAll('[data-en-ph]').forEach(function(el){
+    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
+    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
+  });
+  var p=document.getElementById('lang-pick'); if(p) p.value=l;
+}
+(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
+</script></body>
 </html>
