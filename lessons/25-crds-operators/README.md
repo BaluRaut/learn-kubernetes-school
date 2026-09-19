@@ -120,6 +120,25 @@ kubectl -n school delete backupplan my-wish
 kubectl delete crd backupplans.school.example.com
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get crd` · `kubectl explain` · `kubectl api-resources | grep school`
+
+🔗 **Builds on:** 🤖 ArgoCD school L07 (Application is exactly this)
+
+## ✅ Verify — what you should see
+
+`kubectl get backupplans` works after the CRD; `kubectl explain backupplan` prints your schema.
+
+## 🧹 Clean up
+
+`kubectl delete crd backupplans.school.io` removes the word and every object of it
+
+## ⚠️ Common mistakes
+
+- a CRD with no controller and expecting something to happen
+- writing an operator for what a CronJob + Deployment already do
+
 ## ⏭️ Next
 
 The final lesson: can you actually SEE all of this running? Report

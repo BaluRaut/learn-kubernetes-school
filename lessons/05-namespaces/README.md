@@ -102,6 +102,25 @@ kubectl -n school get deploy; kubectl -n room-b get deploy
 kubectl delete namespace room-b
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get ns` · `kubectl config set-context --current --namespace=school`
+
+🔗 **Builds on:** 🪪 AWS L02 (groups: separation without a second account)
+
+## ✅ Verify — what you should see
+
+`kubectl get all -n school` shows only the school's objects; `kubectl get all` (default) shows none of them.
+
+## 🧹 Clean up
+
+`kubectl delete namespace school` removes the whole room — everything in it
+
+## ⚠️ Common mistakes
+
+- forgetting `-n` and creating things in `default`
+- treating namespaces as a hard security boundary for hostile tenants (they are not)
+
 ## ⏭️ Next
 
 Our pods need settings (port numbers) and secrets (database passwords) — and

@@ -100,6 +100,25 @@ kubectl -n school delete pod newkid
 # kubectl uncordon $NODE
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl cordon/drain/uncordon` · `kubectl get nodes`
+
+🔗 **Builds on:** 🪪 AWS L12 (EKS node groups = ASGs of desks)
+
+## ✅ Verify — what you should see
+
+`kubectl cordon NODE` → `SchedulingDisabled`; `kubectl drain` waits for the PDB, then pods move; `uncordon` reopens it.
+
+## 🧹 Clean up
+
+`kubectl uncordon NODE` — don't leave a classroom taped shut
+
+## ⚠️ Common mistakes
+
+- skipping minor versions — one at a time
+- draining without a PDB and taking every replica down together
+
 ## ⏭️ Next
 
 How Kubernetes learns entirely NEW words — the mechanism behind ArgoCD's
