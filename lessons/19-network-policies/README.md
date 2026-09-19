@@ -90,6 +90,25 @@ kubectl -n school exec deploy/school-analytics -- \
 # → 200 🎉  (if this ALSO fails: your CNI isn't enforcing — see the catch above)
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get networkpolicy` · `kubectl exec spy -- curl …`
+
+🔗 **Builds on:** 🪪 AWS L10 (security groups) · L21 (NACLs)
+
+## ✅ Verify — what you should see
+
+the spy pod's `curl` to the DB times out after the default-deny; the analytics → api call still works.
+
+## 🧹 Clean up
+
+`kubectl delete networkpolicy …` — or keep them, they're the point
+
+## ⚠️ Common mistakes
+
+- policies on a CNI that doesn't enforce them — silently ignored, always test
+- forgetting DNS egress in a default-deny (everything 'breaks' at once)
+
 ## ⏭️ Next
 
 Which pods may sit at which desks — reserved seats, allergy tables, and
