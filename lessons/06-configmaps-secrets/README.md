@@ -56,6 +56,15 @@ flowchart LR
   add encryption-at-rest or a manager like AWS Secrets Manager.
 - Pods reference them by name — change the config, restart the pods, same image.
 
+### 🔐 One security sentence
+
+> **A Kubernetes Secret is not automatically a secure vault because it is
+> called a Secret.** By default it is base64 in etcd — turn on encryption at
+> rest, restrict who may `get secrets` (RBAC, L17), and never commit it.
+> The git-ignored `secret.yaml` in this repo is **learning-only secret
+> handling** — production uses a dedicated secret manager (External Secrets
+> or Sealed Secrets — ArgoCD school L12; AWS Secrets Manager — AWS school).
+
 ## 🤔 Why
 
 The **same image** must run on your laptop (fake DB), in staging, and in prod
@@ -104,6 +113,25 @@ kubectl -n school get secret school-api-secrets \
 # Change config → roll pods → same image, new settings:
 kubectl -n school rollout restart deployment school-api
 ```
+
+## 🔧 kubectl for this lesson
+
+`kubectl get cm,secret` · `kubectl describe cm` · `kubectl create secret generic`
+
+🔗 **Builds on:** 🪪 AWS L05 (machines get roles, not keys) · 🍱 Docker L08 (never bake secrets)
+
+## ✅ Verify — what you should see
+
+`kubectl exec POD -- env | grep PORT` shows the ConfigMap value; the Secret value appears too — because a Secret is only base64 at rest by default.
+
+## 🧹 Clean up
+
+`kubectl delete secret school-db` — and never commit `secret.yaml`
+
+## ⚠️ Common mistakes
+
+- believing a Secret is encrypted because of its name — enable encryption at rest + RBAC
+- baking the password into the image (Docker L08) instead of injecting it
 
 ## ⏭️ Next
 
