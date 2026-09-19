@@ -56,6 +56,17 @@ flowchart LR
 - `port: 80` is what callers dial; `targetPort: 3000` is where the container
   actually listens. Reception forwards the call.
 
+### 🧠 Pod IP vs Service — the one sentence
+
+```text
+Pod IP            → temporary (changes on every restart)
+Service           → stable DNS name + virtual IP, for as long as you keep it
+Service selector  → finds the matching, READY Pods behind the name
+```
+
+> **A Service does not run your application; it provides stable networking
+> to the Pods that do.** Deployments run things; Services find things.
+
 ## 🤔 Why
 
 Lesson 03 made pods disposable — new pod, new IP, every time. Hard-coding pod
@@ -102,6 +113,25 @@ kubectl -n school run tester --rm -it --image=curlimages/curl --restart=Never \
 # Delete a pod (lesson 03 chaos!) and check endpointslices again —
 # reception updated its list all by itself.
 ```
+
+## 🔧 kubectl for this lesson
+
+`kubectl get svc` · `kubectl get endpointslices` · `kubectl port-forward svc/school-api 3000:80`
+
+🔗 **Builds on:** 🪪 AWS L15 (reception desk = ALB idea) · 🍱 Docker L05 (names, not IPs)
+
+## ✅ Verify — what you should see
+
+from another pod `curl http://school-api` answers; `kubectl get endpointslices` lists exactly the READY pod IPs.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- selector labels ≠ pod labels → empty endpoints, silent 'connection refused'
+- using a pod IP in config — pods move; use the Service name
 
 ## ⏭️ Next
 

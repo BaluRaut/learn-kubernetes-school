@@ -76,6 +76,25 @@ kubectl -n school describe pod sick3 | grep -A3 Events
 kubectl -n school delete pod sick1 sick2 sick3
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl describe` · `kubectl get events` · `kubectl logs --previous` · `kubectl exec`
+
+🔗 **Builds on:** 🪪 AWS L05 (ImagePullBackOff is usually an ECR permission)
+
+## ✅ Verify — what you should see
+
+each sick pod in the infirmary gets a diagnosis from describe → events → logs (--previous) → exec, without peeking.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- reading logs before events — events tell you WHY it never started
+- forgetting `--previous` on a CrashLoopBackOff
+
 ## ⏭️ Next
 
 Who is even ALLOWED to run these commands — and why your CI robot

@@ -107,6 +107,25 @@ curl http://<ALB-address>/students            # → Node API
 curl http://<ALB-address>/analytics/summary   # → Python API
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get ingress` · `kubectl describe ingress`
+
+🔗 **Builds on:** 🪪 AWS L15 (ALB) · L16 (Route 53)
+
+## ✅ Verify — what you should see
+
+`curl -H 'Host: school.local' http://INGRESS_IP/analytics/` reaches the Python service; `/` reaches Node — one address, routed by path.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour; on EKS the ALB it created bills hourly
+
+## ⚠️ Common mistakes
+
+- specific paths after `/` — order matters
+- forgetting the ingress controller add-on — an Ingress object with no controller does nothing
+
 ## ⏭️ Next
 
 Traffic flows! Now: how do you ship **version 2** without a second of downtime —
