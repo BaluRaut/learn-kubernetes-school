@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="mr">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title data-en="School Platform — Before You Start">School Platform — सुरू करण्यापूर्वी</title>
+<title>School Platform — Before You Start</title>
 <meta content="The 7 foundations to learn before diving into the School Platform learning repo (Docker, Kubernetes, Terraform, AWS, CircleCI)." name="description"/>
 <meta content="School Platform — Before You Start" property="og:title"/>
 <meta content="The 7 foundations to learn before diving into the School Platform learning repo (Docker, Kubernetes, Terraform, AWS, CircleCI)." property="og:description"/>
@@ -75,63 +75,56 @@
 
   @media (min-width: 1660px) { .wrap { max-width: 1580px; } }
 </style>
-
-<style id="i18n-css">
-#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
-html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
-@media print{#lang-pick{display:none}}
-</style></head>
-<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
-<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
+</head>
+<body>
 <div class="wrap">
 <header class="hero">
-<p data-en='&lt;a href="index.html"&gt;← Back to the course home&lt;/a&gt;'><a href="index.html">← कोर्सच्या मुख्य पानाकडे परत</a></p>
-<h1 data-en="🎒 Before You Start">🎒 सुरू करण्यापूर्वी</h1>
-<p class="sub" data-en='The 7 foundations to learn &lt;b&gt;before&lt;/b&gt; diving into the
-      &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school" style="color:inherit"&gt;School Platform&lt;/a&gt;
-      learning repo. Tick a box when its self-check is honestly a "yes" — your progress is saved in this browser.'><a href="https://github.com/BaluRaut/learn-kubernetes-school" style="color:inherit">School Platform</a> शिकण्याच्या रेपोमध्ये उडी घेण्या<b>आधी</b> शिकायचे 7 पाया. स्व-तपासणीचे उत्तर प्रामाणिकपणे "हो" असेल तेव्हा खूण करा — तुमची प्रगती या ब्राउझरमध्ये जपली जाते.</p>
-<div class="chips" data-en='
-&lt;span class="chip"&gt;🐳 Docker&lt;/span&gt;&lt;span class="chip"&gt;☸️ Kubernetes&lt;/span&gt;
-&lt;span class="chip"&gt;🏗️ Terraform&lt;/span&gt;&lt;span class="chip"&gt;☁️ AWS&lt;/span&gt;
-&lt;span class="chip"&gt;🔄 CircleCI&lt;/span&gt;&lt;span class="chip"&gt;— taught by the repo, not required here&lt;/span&gt;
-'><span class="chip">🐳 Docker</span><span class="chip">☸️ Kubernetes</span> <span class="chip">🏗️ Terraform</span><span class="chip">☁️ AWS</span> <span class="chip">🔄 CircleCI</span><span class="chip">— रेपो शिकवतो, इथे आवश्यक नाही</span></div>
+<p><a href="index.html">← Back to the course home</a></p>
+<h1>🎒 Before You Start</h1>
+<p class="sub">The 7 foundations to learn <b>before</b> diving into the
+      <a href="https://github.com/BaluRaut/learn-kubernetes-school" style="color:inherit">School Platform</a>
+      learning repo. Tick a box when its self-check is honestly a "yes" — your progress is saved in this browser.</p>
+<div class="chips">
+<span class="chip">🐳 Docker</span><span class="chip">☸️ Kubernetes</span>
+<span class="chip">🏗️ Terraform</span><span class="chip">☁️ AWS</span>
+<span class="chip">🔄 CircleCI</span><span class="chip">— taught by the repo, not required here</span>
+</div>
 </header>
 <div class="diagram">
 <img alt="The 7 foundations to learn before starting, as numbered cards: terminal, git, how the web works, JavaScript or Python, networking words, YAML, what a server is — then you're ready." src="images/10-before-you-start-4k.png"/>
-<p class="cap" data-en='4K diagram — also in the repo as an &lt;a href="images/10-before-you-start.svg"&gt;infinitely zoomable SVG&lt;/a&gt;'>4K आकृती — रेपोमध्ये <a href="images/10-before-you-start.svg">अमर्याद zoom करता येणारे SVG</a> म्हणूनही</p>
+<p class="cap">4K diagram — also in the repo as an <a href="images/10-before-you-start.svg">infinitely zoomable SVG</a></p>
 </div>
 <div class="progress-box">
 <div class="progress-inner">
-<span data-en="0 / 7 ready" id="progress-label">0 / 7 तयार</span>
+<span id="progress-label">0 / 7 ready</span>
 <div class="bar"><div id="progress-fill"></div></div>
 </div>
 </div>
 <section class="cards" id="cards"><!-- cards injected by JS --></section>
 <div id="ready">
-<h2 data-en="🚀 All 7 checked — you're ready!">🚀 सर्व 7 खुणा — तुम्ही तयार आहात!</h2>
-<p data-en="Don't study Docker, Kubernetes, Terraform or AWS in advance — the repo teaches them
-       with 4K diagrams, a narrated video and a zero-cost local path.">Docker, Kubernetes, Terraform किंवा AWS आधी शिकू नका — रेपो ते 4K आकृत्या, निवेदनासह व्हिडिओ आणि शून्य-खर्चाच्या स्थानिक मार्गाने शिकवतो.</p>
-<a class="btn" data-en="Open the README" href="https://github.com/BaluRaut/learn-kubernetes-school#readme">README उघडा</a>
-<a class="btn alt" data-en="Local setup guide" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">स्थानिक setup मार्गदर्शक</a>
+<h2>🚀 All 7 checked — you're ready!</h2>
+<p>Don't study Docker, Kubernetes, Terraform or AWS in advance — the repo teaches them
+       with 4K diagrams, a narrated video and a zero-cost local path.</p>
+<a class="btn" href="https://github.com/BaluRaut/learn-kubernetes-school#readme">Open the README</a>
+<a class="btn alt" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">Local setup guide</a>
 </div>
 <div class="next">
-<h2 data-en="📚 The path after this page">📚 या पानानंतरचा मार्ग</h2>
+<h2>📚 The path after this page</h2>
 <ol>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school#readme"&gt;Main README&lt;/a&gt; — the big picture + 6 numbered 4K architecture diagrams'><a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">मुख्य README</a> — संपूर्ण चित्र + 6 क्रमांकित 4K आर्किटेक्चर आकृत्या</li>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md"&gt;local-setup.md&lt;/a&gt; — run everything on your machine in 3 levels, zero AWS cost'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">local-setup.md</a> — तुमच्या मशीनवर सगळे 3 पातळ्यांत चालवा, AWS खर्च शून्य</li>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md"&gt;under-the-hood.md&lt;/a&gt; — what &lt;i&gt;really&lt;/i&gt; happens beneath docker run, kubectl apply, and one HTTP request'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — docker run, kubectl apply आणि एका HTTP विनंतीखाली <i>खरोखर</i> काय घडते</li>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/video/walkthrough-4k.mp4"&gt;walkthrough-4k.mp4&lt;/a&gt; — 6-minute narrated video tour'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/video/walkthrough-4k.mp4">walkthrough-4k.mp4</a> — 6 मिनिटांचा निवेदनासह व्हिडिओ फेरफटका</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">Main README</a> — the big picture + 6 numbered 4K architecture diagrams</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">local-setup.md</a> — run everything on your machine in 3 levels, zero AWS cost</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — what <i>really</i> happens beneath docker run, kubectl apply, and one HTTP request</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/video/walkthrough-4k.mp4">walkthrough-4k.mp4</a> — 6-minute narrated video tour</li>
 </ol>
 </div>
-<footer data-en='
+<footer>
     School Platform learning monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI ·
-    &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school"&gt;github.com/BaluRaut/learn-kubernetes-school&lt;/a&gt;
+    <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a>
    ·
-  &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt;
+  <a href="https://baluraut.github.io/school/">🏫 all schools</a>
  ·
-  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;
-'>School Platform शिकण्याचा monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI · <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 found a mistake?</a>
+</footer>
 </div>
 <script>
 const FOUNDATIONS = [
@@ -207,22 +200,5 @@ cardsEl.addEventListener("change", (e) => {
 
 refresh();
 </script>
-
-<script id="i18n-js">
-function schoolSetLang(l){
-  try{localStorage.setItem('school-lang',l)}catch(e){}
-  document.documentElement.setAttribute('lang',l);
-  document.querySelectorAll('[data-en]').forEach(function(el){
-    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
-    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
-  });
-  document.querySelectorAll('[data-en-ph]').forEach(function(el){
-    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
-    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
-  });
-  var p=document.getElementById('lang-pick'); if(p) p.value=l;
-}
-(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
-</script></body>
+</body>
 </html>

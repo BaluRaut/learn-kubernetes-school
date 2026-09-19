@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="mr">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title data-en="School Platform — Learn Kubernetes step-by-step">School Platform — Kubernetes टप्प्याटप्प्याने शिका</title>
+<title>School Platform — Learn Kubernetes step-by-step</title>
 <meta content="Learn Docker, Kubernetes, Terraform, AWS and CI/CD with a real school platform: 14 branch-by-branch lessons with ELI5 analogies, diagrams and hands-on labs." name="description"/>
 <meta content="School Platform — Learn Kubernetes step-by-step" property="og:title"/>
 <meta content="Learn Docker, Kubernetes, Terraform, AWS and CI/CD with a real school platform: 14 branch-by-branch lessons with ELI5 analogies, diagrams and hands-on labs." property="og:description"/>
@@ -76,15 +76,8 @@
   .nc { fill: var(--c, var(--accent)); }
   .nt { font: 700 12px -apple-system, sans-serif; fill: #fff; text-anchor: middle; }
 </style>
-
-<style id="i18n-css">
-#lang-pick{position:fixed;top:10px;right:10px;z-index:9999;font:600 .85rem -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--card,#fff);color:var(--ink,#0f172a);border:1px solid var(--line,#e2e8f0);border-radius:999px;padding:6px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer}
-html[lang="mr"] body{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari Sangam MN","Nirmala UI",sans-serif}
-@media print{#lang-pick{display:none}}
-</style></head>
-<body><select aria-label="Language / भाषा" id="lang-pick" onchange="schoolSetLang(this.value)">
-<option value="mr">🇮🇳 मराठी</option><option value="en">🇬🇧 English</option></select>
+</head>
+<body>
 <svg height="0" style="position:absolute" width="0"><defs>
 <marker id="arw" markerheight="7" markerwidth="7" orient="auto-start-reverse" refx="9" refy="5" viewbox="0 0 10 10">
 <path d="M0 0 L10 5 L0 10 z" fill="#64748b"></path>
@@ -92,10 +85,10 @@ html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari 
 </defs></svg>
 <div class="wrap">
 <header>
-<h1 data-en="🏫 School Platform — learn Kubernetes step-by-step">🏫 School Platform — Kubernetes टप्प्याटप्प्याने शिका</h1>
-<p class="sub" data-en="One real project — a school management system with two services — used to teach
+<h1>🏫 School Platform — learn Kubernetes step-by-step</h1>
+<p class="sub">One real project — a school management system with two services — used to teach
     every DevOps tool with a job to do. Complex ideas, explained like you're five, with school
-    analogies, diagrams and hands-on labs.">एक खरा प्रोजेक्ट — दोन services असलेली शाळा व्यवस्थापन प्रणाली — प्रत्येक DevOps साधन त्याच्या कामासह शिकवण्यासाठी वापरलेला. गुंतागुंतीच्या कल्पना, पाच वर्षांच्या मुलाला समजतील अशा, शाळेच्या उपमा, आकृत्या आणि प्रत्यक्ष प्रयोगांसह.</p>
+    analogies, diagrams and hands-on labs.</p>
 <div class="chips">
 <span class="chip">🐳 Docker</span><span class="chip">☸️ Kubernetes</span>
 <span class="chip">🏗️ Terraform</span><span class="chip">☁️ AWS</span>
@@ -103,146 +96,146 @@ html[lang="mr"] svg text{font-family:"Noto Sans Devanagari","Mukta","Devanagari 
 </div>
 </header>
 <section class="steps">
-<div class="step" data-en='&lt;span class="n"&gt;1&lt;/span&gt;&lt;b&gt;Check your foundations&lt;/b&gt;
-      Terminal, git, YAML &amp;amp; 4 more — with an interactive tick-off checklist.
-      &lt;br/&gt;&lt;a href="before-you-start.html"&gt;Open the checklist →&lt;/a&gt; · &lt;a href="study-plan.html"&gt;Study plan →&lt;/a&gt;'><span class="n">1</span><b>तुमचा पाया तपासा</b> टर्मिनल, git, YAML &amp; आणखी 4 — परस्परसंवादी खूण-यादीसह. <br/><a href="before-you-start.html">यादी उघडा →</a> · <a href="study-plan.html">अभ्यास योजना →</a></div>
-<div class="step" data-en='&lt;span class="n"&gt;2&lt;/span&gt;&lt;b&gt;Take the 14 lessons&lt;/b&gt;
-      One git branch = one idea. Each lesson: ELI5 story, analogy, diagram, What/Why/How, and commands to try.'><span class="n">2</span><b>14 धडे घ्या</b> एक git ब्रँच = एक कल्पना. प्रत्येक धडा: ELI5 गोष्ट, उपमा, आकृती, काय/का/कसे, आणि करून पाहण्याच्या commands.</div>
-<div class="step" data-en='&lt;span class="n"&gt;3&lt;/span&gt;&lt;b&gt;Go deeper&lt;/b&gt;
-      4K architecture diagrams, the production design doc, and a narrated video tour — all below.'><span class="n">3</span><b>खोलात जा</b> 4K आर्किटेक्चर आकृत्या, production डिझाइन दस्तऐवज, आणि निवेदनासह व्हिडिओ फेरफटका — सगळे खाली.</div>
+<div class="step"><span class="n">1</span><b>Check your foundations</b>
+      Terminal, git, YAML &amp; 4 more — with an interactive tick-off checklist.
+      <br/><a href="before-you-start.html">Open the checklist →</a> · <a href="study-plan.html">Study plan →</a></div>
+<div class="step"><span class="n">2</span><b>Take the 14 lessons</b>
+      One git branch = one idea. Each lesson: ELI5 story, analogy, diagram, What/Why/How, and commands to try.</div>
+<div class="step"><span class="n">3</span><b>Go deeper</b>
+      4K architecture diagrams, the production design doc, and a narrated video tour — all below.</div>
 </section>
-<h2 data-en="🗺️ The big picture — one diagram, the whole school" id="big-picture">🗺️ संपूर्ण चित्र — एक आकृती, संपूर्ण शाळा</h2>
-<p class="sub" data-en='All 26 lessons on one canvas. Click for the &lt;a href="images/big-picture-4k.png"&gt;4K version&lt;/a&gt;.'>सर्व 26 धडे एका कॅनव्हासवर. <a href="images/big-picture-4k.png">4K आवृत्तीसाठी</a> क्लिक करा.</p>
+<h2 id="big-picture">🗺️ The big picture — one diagram, the whole school</h2>
+<p class="sub">All 26 lessons on one canvas. Click for the <a href="images/big-picture-4k.png">4K version</a>.</p>
 <figure style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px">
 <a href="images/big-picture-4k.png"><img alt="The big picture: the core Kubernetes school (lessons 1-13) and shipping plus running it for real (lessons 14-26)" loading="lazy" src="images/big-picture.svg" style="width:100%;height:auto;border-radius:8px;background:#fff"/></a>
 </figure>
-<h2 data-en="🎓 The 26 lessons">🎓 26 धडे</h2>
-<p class="sub" data-en='📅 Not sure how to pace it? Follow the &lt;a href="study-plan.html"&gt;&lt;b&gt;9-week study plan&lt;/b&gt;&lt;/a&gt; — sequence, time estimates, weekly milestones and a capstone, with progress saved in your browser.'>📅 गती कशी ठेवावी कळत नाही? <a href="study-plan.html"><b>9-आठवड्यांची अभ्यास योजना</b></a> अनुसरा — क्रम, वेळेचे अंदाज, साप्ताहिक टप्पे आणि कळस-प्रकल्प, प्रगती ब्राउझरमध्ये जपलेली.</p>
-<p class="sub" data-en='Lessons live on &lt;b&gt;branches&lt;/b&gt; — branch 05 contains lessons 01–05, so you can stop and
+<h2>🎓 The 26 lessons</h2>
+<p class="sub">📅 Not sure how to pace it? Follow the <a href="study-plan.html"><b>9-week study plan</b></a> — sequence, time estimates, weekly milestones and a capstone, with progress saved in your browser.</p>
+<p class="sub">Lessons live on <b>branches</b> — branch 05 contains lessons 01–05, so you can stop and
   resume anywhere. Click a card to read the lesson right on GitHub (diagrams render there), or
   check the branch out locally. Prefer pictures? All 14 lessons are also drawn as
-  &lt;a href="lesson-diagrams.html"&gt;&lt;b&gt;numbered box-and-arrow diagrams on one page&lt;/b&gt;&lt;/a&gt;.'>धडे <b>ब्रँचवर</b> राहतात — ब्रँच 05 मध्ये धडे 01–05 आहेत, म्हणून कुठेही थांबून पुन्हा सुरू करू शकता. धडा थेट GitHub वर वाचण्यासाठी कार्डवर क्लिक करा (आकृत्या तिथे दिसतात), किंवा ब्रँच स्थानिक checkout करा. चित्रे आवडतात? सर्व 14 धडे <a href="lesson-diagrams.html"><b>एका पानावर क्रमांकित बॉक्स-आणि-बाण आकृत्या</b></a> म्हणूनही काढले आहेत.</p>
+  <a href="lesson-diagrams.html"><b>numbered box-and-arrow diagrams on one page</b></a>.</p>
 <div class="grid">
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">1</span><h3 data-en="🍱 Containers &amp;amp; images">🍱 कंटेनर &amp; इमेज</h3></div><span class="ana" data-en="A packed lunchbox — everything the app needs, inside the box.">भरलेला डबा — ॲपला लागणारे सगळे, डब्याच्या आत.</span><code>lesson-01-containers</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l01">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">2</span><h3>🪑 Pods</h3></div><span class="ana" data-en="One school desk — the smallest unit; replaceable, never repaired.">शाळेतील एक बाक — सर्वात लहान एकक; बदलता येतो, दुरुस्त केला जात नाही.</span><code>lesson-02-pods</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l02">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">3</span><h3>🧑‍🏫 Deployments</h3></div><span class="ana" data-en='A strict class monitor — "there shall ALWAYS be 2" (self-healing).'>कडक वर्गप्रमुख — "नेहमी 2 असतीलच" (स्व-उपचार).</span><code>lesson-03-deployments</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l03">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">4</span><h3>☎️ Services</h3></div><span class="ana" data-en="The reception desk — one number that never changes, kids move around.">रिसेप्शन डेस्क — एक नंबर जो कधीच बदलत नाही, मुले फिरत राहतात.</span><code>lesson-04-services</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l04">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">5</span><h3>🚪 Namespaces</h3></div><span class="ana" data-en="Separate classrooms — two kids named Aarav, no confusion.">वेगळे वर्ग — आरव नावाची दोन मुले, गोंधळ नाही.</span><code>lesson-05-namespaces</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l05">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">6</span><h3>🔑 ConfigMaps &amp; Secrets</h3></div><span class="ana" data-en="Notice board vs locker key — settings outside the lunchbox.">सूचना फलक विरुद्ध लॉकरची किल्ली — डब्याबाहेरची settings.</span><code>lesson-06-configmaps-secrets</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l06">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">7</span><h3>🙋 Health probes</h3></div><span class="ana" data-en='"Are you awake? Are you ready?" — two questions, two consequences.'>"जागा आहेस? तयार आहेस?" — दोन प्रश्न, दोन परिणाम.</span><code>lesson-07-health-probes</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l07">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">8</span><h3>🍛 Requests &amp; limits</h3></div><span class="ana" data-en="Lunch portions — a promised plate, and a cap on seconds.">जेवणाचे वाटप — वचन दिलेली थाळी, आणि दुसऱ्या वाढीवर मर्यादा.</span><code>lesson-08-resources</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l08">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">9</span><h3>🚌 Autoscaling</h3></div><span class="ana" data-en="Extra buses on rainy days — pods multiply under load.">पावसाळी दिवशी जादा बस — load खाली pod वाढतात.</span><code>lesson-09-autoscaling</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l09">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">10</span><h3>🏫 Ingress</h3></div><span class="ana" data-en="The main gate + signboard — one entrance, routed by path.">मुख्य गेट + दिशादर्शक फलक — एक प्रवेशद्वार, path नुसार वाट.</span><code>lesson-10-ingress</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l10">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">11</span><h3>⚽ Rollouts &amp; rollbacks</h3></div><span class="ana" data-en="Substituting players mid-game — the crowd never notices.">खेळ चालू असताना खेळाडू बदलणे — प्रेक्षकांना कळतही नाही.</span><code>lesson-11-rollouts</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l11">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">12</span><h3>📚 Storage &amp; state</h3></div><span class="ana" data-en="Backpack vs library shelf — what survives when a pod dies.">दप्तर विरुद्ध ग्रंथालयाचे कपाट — pod मेल्यावर काय टिकते.</span><code>lesson-12-storage</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l12">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#16a34a"><div class="top"><span class="num">13</span><h3 data-en="🏢 Under the hood">🏢 पडद्यामागे</h3></div><span class="ana" data-en="The school office — API server, etcd, scheduler, kubelet.">शाळेचे कार्यालय — API server, etcd, scheduler, kubelet.</span><code>lesson-13-under-the-hood</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l13">आकृती पहा ↗</a></div>
-<div class="lesson bonus" style="--c:#16a34a"><div class="top"><span class="num">14</span><h3 data-en="🤖 Bonus: CI/CD &amp;amp; ArgoCD">🤖 बोनस: CI/CD &amp; ArgoCD</h3></div><span class="ana" data-en="The caretaker robot with the master plan book — GitOps.">मास्टर प्लॅनची वही असलेला केअरटेकर रोबोट — GitOps.</span><code>lesson-14-deploy-gitops</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l14">आकृती पहा ↗</a></div>
-<div class="lesson bonus" style="--c:#0d9488"><div class="top"><span class="num">15</span><h3 data-en="🏫🏫 Bonus: Multi-AZ &amp;amp; scaling">🏫🏫 बोनस: Multi-AZ &amp; scaling</h3></div><span class="ana" data-en="Many buildings + the exam-day ladder — fires and rushes, survived.">अनेक इमारती + परीक्षेच्या दिवसाची शिडी — आगी आणि गर्दी, दोन्ही निभावल्या.</span><code>lesson-15-multi-az-scaling</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l15">आकृती पहा ↗</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">1</span><h3>🍱 Containers &amp; images</h3></div><span class="ana">A packed lunchbox — everything the app needs, inside the box.</span><code>lesson-01-containers</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l01">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">2</span><h3>🪑 Pods</h3></div><span class="ana">One school desk — the smallest unit; replaceable, never repaired.</span><code>lesson-02-pods</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l02">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">3</span><h3>🧑‍🏫 Deployments</h3></div><span class="ana">A strict class monitor — "there shall ALWAYS be 2" (self-healing).</span><code>lesson-03-deployments</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l03">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">4</span><h3>☎️ Services</h3></div><span class="ana">The reception desk — one number that never changes, kids move around.</span><code>lesson-04-services</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l04">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">5</span><h3>🚪 Namespaces</h3></div><span class="ana">Separate classrooms — two kids named Aarav, no confusion.</span><code>lesson-05-namespaces</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l05">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">6</span><h3>🔑 ConfigMaps &amp; Secrets</h3></div><span class="ana">Notice board vs locker key — settings outside the lunchbox.</span><code>lesson-06-configmaps-secrets</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l06">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">7</span><h3>🙋 Health probes</h3></div><span class="ana">"Are you awake? Are you ready?" — two questions, two consequences.</span><code>lesson-07-health-probes</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l07">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">8</span><h3>🍛 Requests &amp; limits</h3></div><span class="ana">Lunch portions — a promised plate, and a cap on seconds.</span><code>lesson-08-resources</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l08">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">9</span><h3>🚌 Autoscaling</h3></div><span class="ana">Extra buses on rainy days — pods multiply under load.</span><code>lesson-09-autoscaling</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l09">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">10</span><h3>🏫 Ingress</h3></div><span class="ana">The main gate + signboard — one entrance, routed by path.</span><code>lesson-10-ingress</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l10">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">11</span><h3>⚽ Rollouts &amp; rollbacks</h3></div><span class="ana">Substituting players mid-game — the crowd never notices.</span><code>lesson-11-rollouts</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l11">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">12</span><h3>📚 Storage &amp; state</h3></div><span class="ana">Backpack vs library shelf — what survives when a pod dies.</span><code>lesson-12-storage</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l12">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#16a34a"><div class="top"><span class="num">13</span><h3>🏢 Under the hood</h3></div><span class="ana">The school office — API server, etcd, scheduler, kubelet.</span><code>lesson-13-under-the-hood</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l13">See the diagram ↗</a></div>
+<div class="lesson bonus" style="--c:#16a34a"><div class="top"><span class="num">14</span><h3>🤖 Bonus: CI/CD &amp; ArgoCD</h3></div><span class="ana">The caretaker robot with the master plan book — GitOps.</span><code>lesson-14-deploy-gitops</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l14">See the diagram ↗</a></div>
+<div class="lesson bonus" style="--c:#0d9488"><div class="top"><span class="num">15</span><h3>🏫🏫 Bonus: Multi-AZ &amp; scaling</h3></div><span class="ana">Many buildings + the exam-day ladder — fires and rushes, survived.</span><code>lesson-15-multi-az-scaling</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l15">See the diagram ↗</a></div>
 </div>
-<h2 data-en="🧰 Part 3 — running it for real (lessons 16–26)" id="part3">🧰 भाग 3 — खऱ्या जगात चालवणे (धडे 16–26)</h2>
-<p class="sub" data-en="The cluster stands — now learn to &lt;b&gt;operate&lt;/b&gt; it: debug it, secure it,
-  schedule it, upgrade it, extend it, and watch it breathe. Same format, same school.">cluster उभा आहे — आता तो <b>चालवायला</b> शिका: debug करा, सुरक्षित करा, schedule करा, अपग्रेड करा, वाढवा, आणि त्याचा श्वास पहा. तेच स्वरूप, तीच शाळा.</p>
+<h2 id="part3">🧰 Part 3 — running it for real (lessons 16–26)</h2>
+<p class="sub">The cluster stands — now learn to <b>operate</b> it: debug it, secure it,
+  schedule it, upgrade it, extend it, and watch it breathe. Same format, same school.</p>
 <div class="grid">
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">16</span><h3 data-en="🩺 Debugging playbook">🩺 Debugging मार्गदर्शिका</h3></div><span class="ana" data-en="The nurse's triage chart — describe, events, logs, exec, in order.">नर्सचा triage तक्ता — describe, events, logs, exec, क्रमाने.</span><code>lesson-16-debugging</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l16">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">17</span><h3>🪪 RBAC &amp; ServiceAccounts</h3></div><span class="ana" data-en="Hall passes — kids, teachers and robots open different doors.">हॉल पास — मुले, शिक्षक आणि रोबोट वेगवेगळी दारे उघडतात.</span><code>lesson-17-rbac</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l17">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">18</span><h3>⏰ Jobs &amp; CronJobs</h3></div><span class="ana" data-en="Homework vs the morning bell — includes the REAL backup CronJob.">गृहपाठ विरुद्ध सकाळची घंटा — खऱ्या backup CronJob सह.</span><code>lesson-18-jobs-cronjobs</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l18">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">19</span><h3>🚫📝 NetworkPolicies</h3></div><span class="ana" data-en="Passing-notes rules — by default every pod whispers to every pod.">चिठ्ठ्या पाठवण्याचे नियम — मुळात प्रत्येक pod प्रत्येक pod शी कुजबुजतो.</span><code>lesson-19-network-policies</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l19">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">20</span><h3>🎫 Taints &amp; affinity</h3></div><span class="ana" data-en="Assigned seating — signs on desks, chits and wishes on kids.">ठरलेली बैठक — बाकांवर पाट्या, मुलांवर चिठ्ठ्या आणि इच्छा.</span><code>lesson-20-taints-affinity</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l20">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">21</span><h3>🧯 DaemonSets</h3></div><span class="ana" data-en="One fire extinguisher on EVERY floor — no exceptions.">प्रत्येक मजल्यावर एक अग्निशामक — अपवाद नाही.</span><code>lesson-21-daemonsets</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l21">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">22</span><h3>🏷️ StatefulSets</h3></div><span class="ana" data-en="Desks with name plates — postgres-0 keeps its own drawer.">नावाच्या पाट्या असलेले बाक — postgres-0 चा स्वतःचा ड्रॉवर.</span><code>lesson-22-statefulsets</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l22">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">23</span><h3>🍽️ QoS &amp; evictions</h3></div><span class="ana" data-en="Who leaves when lunch runs short — the pecking order you're in.">जेवण कमी पडले तर कोण उठतो — तुमचा क्रमांक कोणता.</span><code>lesson-23-qos-evictions</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l23">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">24</span><h3 data-en="🏗️ Cluster upgrades">🏗️ Cluster अपग्रेड</h3></div><span class="ana" data-en="Renovating while school stays open — cordon, drain, PDBs on stage.">शाळा चालू ठेवून नूतनीकरण — cordon, drain, PDB मंचावर.</span><code>lesson-24-cluster-upgrades</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l24">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">25</span><h3>🤖 CRDs &amp; operators</h3></div><span class="ana" data-en="Teaching the office new words — how ArgoCD's Application works.">कार्यालयाला नवे शब्द शिकवणे — ArgoCD चे Application कसे चालते.</span><code>lesson-25-crds-operators</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l25">आकृती पहा ↗</a></div>
-<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">26</span><h3>📈 Observability</h3></div><span class="ana" data-en="Report cards, diaries, alarm bells — eyes on everything.">प्रगतिपुस्तके, डायऱ्या, धोक्याच्या घंटा — सगळ्यावर नजर.</span><code>lesson-26-observability</code><a class="go" data-en="Read lesson →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">धडा वाचा →</a><a class="go" data-en="See the diagram ↗" href="lesson-diagrams.html#l26">आकृती पहा ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">16</span><h3>🩺 Debugging playbook</h3></div><span class="ana">The nurse's triage chart — describe, events, logs, exec, in order.</span><code>lesson-16-debugging</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l16">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">17</span><h3>🪪 RBAC &amp; ServiceAccounts</h3></div><span class="ana">Hall passes — kids, teachers and robots open different doors.</span><code>lesson-17-rbac</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l17">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">18</span><h3>⏰ Jobs &amp; CronJobs</h3></div><span class="ana">Homework vs the morning bell — includes the REAL backup CronJob.</span><code>lesson-18-jobs-cronjobs</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l18">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">19</span><h3>🚫📝 NetworkPolicies</h3></div><span class="ana">Passing-notes rules — by default every pod whispers to every pod.</span><code>lesson-19-network-policies</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l19">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">20</span><h3>🎫 Taints &amp; affinity</h3></div><span class="ana">Assigned seating — signs on desks, chits and wishes on kids.</span><code>lesson-20-taints-affinity</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l20">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">21</span><h3>🧯 DaemonSets</h3></div><span class="ana">One fire extinguisher on EVERY floor — no exceptions.</span><code>lesson-21-daemonsets</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l21">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">22</span><h3>🏷️ StatefulSets</h3></div><span class="ana">Desks with name plates — postgres-0 keeps its own drawer.</span><code>lesson-22-statefulsets</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l22">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">23</span><h3>🍽️ QoS &amp; evictions</h3></div><span class="ana">Who leaves when lunch runs short — the pecking order you're in.</span><code>lesson-23-qos-evictions</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l23">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">24</span><h3>🏗️ Cluster upgrades</h3></div><span class="ana">Renovating while school stays open — cordon, drain, PDBs on stage.</span><code>lesson-24-cluster-upgrades</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l24">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">25</span><h3>🤖 CRDs &amp; operators</h3></div><span class="ana">Teaching the office new words — how ArgoCD's Application works.</span><code>lesson-25-crds-operators</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l25">See the diagram ↗</a></div>
+<div class="lesson" style="--c:#be123c"><div class="top"><span class="num">26</span><h3>📈 Observability</h3></div><span class="ana">Report cards, diaries, alarm bells — eyes on everything.</span><code>lesson-26-observability</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">Read lesson →</a><a class="go" href="lesson-diagrams.html#l26">See the diagram ↗</a></div>
 </div>
 <pre><code># take the course locally:
 git clone https://github.com/BaluRaut/learn-kubernetes-school.git
 cd learn-kubernetes-school
 git checkout lesson-01-containers   # then open lessons/01-containers/README.md</code></pre>
-<div class="callout" data-en='🎒 &lt;b&gt;Completely new to all of this?&lt;/b&gt; Do the
-    &lt;a href="before-you-start.html"&gt;Before-You-Start checklist&lt;/a&gt; first — 7 foundations
+<div class="callout">🎒 <b>Completely new to all of this?</b> Do the
+    <a href="before-you-start.html">Before-You-Start checklist</a> first — 7 foundations
     (terminal, git, HTTP, YAML…), each with a self-check and free resources. Your ticks are saved
-    in the browser.'>🎒 <b>या सगळ्यात पूर्ण नवीन?</b> आधी <a href="before-you-start.html">सुरू-करण्यापूर्वीची यादी</a> करा — 7 पाया (टर्मिनल, git, HTTP, YAML…), प्रत्येकासाठी स्व-तपासणी आणि मोफत साधने. तुमच्या खुणा ब्राउझरमध्ये जपल्या जातात.</div>
-<h2 data-en="☸️ The real k8s manifests">☸️ खरे k8s manifests</h2>
-<p class="sub" data-en="The actual YAML files the lessons teach — every one heavily commented, in
-  &lt;a href=&quot;https://github.com/BaluRaut/learn-kubernetes-school/tree/main/k8s&quot;&gt;k8s/&lt;/a&gt;.
-  Read them in this order (it's also the apply order):">धडे शिकवतात त्या खऱ्या YAML फाइल्स — प्रत्येक भरपूर टिप्पण्यांसह, <a href="https://github.com/BaluRaut/learn-kubernetes-school/tree/main/k8s">k8s/</a> मध्ये. या क्रमाने वाचा (हाच apply चा क्रम आहे):</p>
+    in the browser.</div>
+<h2>☸️ The real k8s manifests</h2>
+<p class="sub">The actual YAML files the lessons teach — every one heavily commented, in
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school/tree/main/k8s">k8s/</a>.
+  Read them in this order (it's also the apply order):</p>
 <div class="grid">
-<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">a</span><h3>🚪 namespace.yaml</h3></div><span class="ana" data-en="The classroom everything else lives in — apply this first.">बाकी सगळे ज्यात राहते तो वर्ग — हे आधी apply करा.</span><code data-en="lesson 05">धडा 05</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/namespace.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">b</span><h3>📌 configmap.yaml</h3></div><span class="ana" data-en="Non-secret settings on the notice board: PORT, APP_VERSION.">सूचना फलकावरील गुप्त नसलेली settings: PORT, APP_VERSION.</span><code data-en="lesson 06">धडा 06</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/configmap.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">c</span><h3>🔑 secret.example.yaml</h3></div><span class="ana" data-en="Locker-key template — copy to git-ignored secret.yaml, fill in the DB password.">लॉकर-किल्लीचा नमुना — git-ignored secret.yaml मध्ये कॉपी करा, DB पासवर्ड भरा.</span><code data-en="lesson 06">धडा 06</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/secret.example.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">d</span><h3>🧑‍🏫 deployment.yaml</h3></div><span class="ana" data-en="The heart: 2 replicas, rolling updates, probes, resources — 4 lessons in one file.">हृदय: 2 replicas, rolling updates, probes, resources — एका फाइलमध्ये 4 धडे.</span><code data-en="lessons 03 · 07 · 08 · 11">धडे 03 · 07 · 08 · 11</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/deployment.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">e</span><h3>☎️ service.yaml</h3></div><span class="ana" data-en="The reception desk: stable name + IP in front of the Node API pods.">रिसेप्शन डेस्क: Node API pods समोर स्थिर नाव + IP.</span><code data-en="lesson 04">धडा 04</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/service.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">f</span><h3>🐍 analytics-deployment.yaml</h3></div><span class="ana" data-en="Second service, same patterns — calls the Node API by Service name.">दुसरी service, तेच पॅटर्न — Service नावाने Node API ला कॉल करते.</span><code data-en="lessons 03 · 04">धडे 03 · 04</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/analytics-deployment.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">g</span><h3>☎️ analytics-service.yaml</h3></div><span class="ana" data-en="Reception desk #2, for the Python analytics pods.">रिसेप्शन डेस्क #2, Python analytics pods साठी.</span><code data-en="lesson 04">धडा 04</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/analytics-service.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">h</span><h3>🚌 hpa.yaml</h3></div><span class="ana" data-en="The transport manager: 2–5 pods, more buses at 70% CPU.">वाहतूक व्यवस्थापक: 2–5 pods, 70% CPU वर जास्त बस.</span><code data-en="lesson 09">धडा 09</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/hpa.yaml">फाइल उघडा →</a></div>
-<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">i</span><h3>🏫 ingress.yaml</h3></div><span class="ana" data-en="The main gate: one ALB, /analytics → Python, everything else → Node.">मुख्य गेट: एक ALB, /analytics → Python, बाकी सगळे → Node.</span><code data-en="lesson 10">धडा 10</code><a class="go" data-en="Open file →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/ingress.yaml">फाइल उघडा →</a></div>
+<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">a</span><h3>🚪 namespace.yaml</h3></div><span class="ana">The classroom everything else lives in — apply this first.</span><code>lesson 05</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/namespace.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">b</span><h3>📌 configmap.yaml</h3></div><span class="ana">Non-secret settings on the notice board: PORT, APP_VERSION.</span><code>lesson 06</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/configmap.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#2563eb"><div class="top"><span class="num">c</span><h3>🔑 secret.example.yaml</h3></div><span class="ana">Locker-key template — copy to git-ignored secret.yaml, fill in the DB password.</span><code>lesson 06</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/secret.example.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">d</span><h3>🧑‍🏫 deployment.yaml</h3></div><span class="ana">The heart: 2 replicas, rolling updates, probes, resources — 4 lessons in one file.</span><code>lessons 03 · 07 · 08 · 11</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/deployment.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">e</span><h3>☎️ service.yaml</h3></div><span class="ana">The reception desk: stable name + IP in front of the Node API pods.</span><code>lesson 04</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/service.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">f</span><h3>🐍 analytics-deployment.yaml</h3></div><span class="ana">Second service, same patterns — calls the Node API by Service name.</span><code>lessons 03 · 04</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/analytics-deployment.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#0ea5e9"><div class="top"><span class="num">g</span><h3>☎️ analytics-service.yaml</h3></div><span class="ana">Reception desk #2, for the Python analytics pods.</span><code>lesson 04</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/analytics-service.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#7c3aed"><div class="top"><span class="num">h</span><h3>🚌 hpa.yaml</h3></div><span class="ana">The transport manager: 2–5 pods, more buses at 70% CPU.</span><code>lesson 09</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/hpa.yaml">Open file →</a></div>
+<div class="lesson" style="--c:#ea580c"><div class="top"><span class="num">i</span><h3>🏫 ingress.yaml</h3></div><span class="ana">The main gate: one ALB, /analytics → Python, everything else → Node.</span><code>lesson 10</code><a class="go" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/k8s/ingress.yaml">Open file →</a></div>
 </div>
-<h2 data-en="☁️ The AWS components under the cluster — purpose, required or optional" id="aws-map">☁️ cluster खालचे AWS घटक — उद्देश, आवश्यक की ऐच्छिक</h2>
-<p class="sub" data-en="&lt;b&gt;&quot;Is EC2 connected to Kubernetes?&quot;&lt;/b&gt; — completely: Kubernetes doesn't replace EC2,
-  it sits on top of it. Every &lt;b&gt;node&lt;/b&gt; you see in &lt;code&gt;kubectl get nodes&lt;/code&gt; IS an EC2 instance
-  (a rented desk 🖥️); an EKS &lt;b&gt;node group&lt;/b&gt; is an Auto Scaling Group of those desks; the HPA adds
-  &lt;i&gt;pods&lt;/i&gt; and, when they no longer fit, the cluster autoscaler asks the ASG for more &lt;i&gt;desks&lt;/i&gt;.
-  A &lt;code&gt;NotReady&lt;/code&gt; node is usually an EC2 story underneath (spot reclaimed, instance died).
-  The map below shows every AWS piece this repo's &lt;a href=&quot;https://github.com/BaluRaut/learn-kubernetes-school/tree/main/terraform&quot;&gt;terraform/&lt;/a&gt;
-  touches — what each is &lt;b&gt;for&lt;/b&gt;, and whether it's
-  &lt;b style=&quot;color:#2563eb&quot;&gt;REQUIRED&lt;/b&gt; or &lt;b style=&quot;color:#f59e0b&quot;&gt;OPTIONAL&lt;/b&gt;.
-  Click for the &lt;a href=&quot;images/aws-components-4k.png&quot;&gt;4K version&lt;/a&gt;."><b>"EC2 चा Kubernetes शी संबंध आहे का?"</b> — पूर्णपणे: Kubernetes EC2 ची जागा घेत नाही, तो त्याच्यावर बसतो. <code>kubectl get nodes</code> मध्ये दिसणारा प्रत्येक <b>node</b> हा EC2 instance च आहे (भाड्याचा बाक 🖥️); EKS <b>node group</b> म्हणजे अशा बाकांचा Auto Scaling Group; HPA <i>pods</i> वाढवतो आणि ते मावेनासे झाले की cluster autoscaler ASG कडे आणखी <i>बाक</i> मागतो. <code>NotReady</code> node म्हणजे बहुधा खाली EC2 ची गोष्ट (spot परत घेतला, instance मेला). खालचा नकाशा या रेपोचे <a href="https://github.com/BaluRaut/learn-kubernetes-school/tree/main/terraform">terraform/</a> स्पर्श करते तो प्रत्येक AWS घटक दाखवतो — प्रत्येक <b>कशासाठी</b> आहे, आणि तो <b style="color:#2563eb">आवश्यक</b> की <b style="color:#f59e0b">ऐच्छिक</b>. <a href="images/aws-components-4k.png">4K आवृत्तीसाठी</a> क्लिक करा.</p>
+<h2 id="aws-map">☁️ The AWS components under the cluster — purpose, required or optional</h2>
+<p class="sub"><b>"Is EC2 connected to Kubernetes?"</b> — completely: Kubernetes doesn't replace EC2,
+  it sits on top of it. Every <b>node</b> you see in <code>kubectl get nodes</code> IS an EC2 instance
+  (a rented desk 🖥️); an EKS <b>node group</b> is an Auto Scaling Group of those desks; the HPA adds
+  <i>pods</i> and, when they no longer fit, the cluster autoscaler asks the ASG for more <i>desks</i>.
+  A <code>NotReady</code> node is usually an EC2 story underneath (spot reclaimed, instance died).
+  The map below shows every AWS piece this repo's <a href="https://github.com/BaluRaut/learn-kubernetes-school/tree/main/terraform">terraform/</a>
+  touches — what each is <b>for</b>, and whether it's
+  <b style="color:#2563eb">REQUIRED</b> or <b style="color:#f59e0b">OPTIONAL</b>.
+  Click for the <a href="images/aws-components-4k.png">4K version</a>.</p>
 <figure style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px">
 <a href="images/aws-components-4k.png"><img alt="Map of AWS components under the Kubernetes cluster: VPC, subnets, gateways, EKS control plane, EC2 node group, IAM, ECR required; ALB, RDS, EBS, CloudWatch, Route 53 optional" loading="lazy" src="images/aws-components.svg" style="width:100%;height:auto;border-radius:8px;background:#fff"/></a>
 </figure>
-<p class="sub" data-en='Deep-dive on the two foundations (IAM &amp;amp; EC2) in the
-  &lt;a href="https://baluraut.github.io/learn-aws-school/"&gt;AWS foundations course&lt;/a&gt; — its lesson 12
-  is exactly this reveal.' style="margin-top:10px">दोन पायांचा (IAM &amp; EC2) खोल अभ्यास <a href="https://baluraut.github.io/learn-aws-school/">AWS पाया कोर्समध्ये</a> — त्याचा धडा 12 म्हणजे नेमका हाच उलगडा.</p>
-<h2 data-en="🗺️ The architecture diagrams">🗺️ आर्किटेक्चर आकृत्या</h2>
-<p class="sub" data-en='The big numbered diagrams from the README, one after another — readable right here;
+<p class="sub" style="margin-top:10px">Deep-dive on the two foundations (IAM &amp; EC2) in the
+  <a href="https://baluraut.github.io/learn-aws-school/">AWS foundations course</a> — its lesson 12
+  is exactly this reveal.</p>
+<h2>🗺️ The architecture diagrams</h2>
+<p class="sub">The big numbered diagrams from the README, one after another — readable right here;
   click any to open the 4K version. Every one is also explained step-by-step
-  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school#readme"&gt;in the README&lt;/a&gt;.'>README मधील मोठ्या क्रमांकित आकृत्या, एकामागून एक — इथेच वाचता येतील; 4K आवृत्ती उघडण्यासाठी कोणत्याहीवर क्लिक करा. प्रत्येक <a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">README मध्ये</a> टप्प्याटप्प्याने समजावलेलीही आहे.</p>
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">in the README</a>.</p>
 <div class="dgrid">
-<figure class="fig"><a href="images/01-big-picture-4k.png"><img alt="Big picture architecture" loading="lazy" src="images/01-big-picture.svg"/></a><figcaption data-en="&lt;b&gt;1 · The big picture&lt;/b&gt; — how all the tools fit together"><b>1 · संपूर्ण चित्र</b> — सगळी साधने एकत्र कशी बसतात</figcaption></figure>
-<figure class="fig"><a href="images/02-docker-4k.png"><img alt="Docker" loading="lazy" src="images/02-docker.svg"/></a><figcaption data-en="&lt;b&gt;2 · Docker&lt;/b&gt; — image build &amp;amp; local compose"><b>2 · Docker</b> — इमेज build &amp; स्थानिक compose</figcaption></figure>
-<figure class="fig"><a href="images/03-kubernetes-4k.png"><img alt="Kubernetes" loading="lazy" src="images/03-kubernetes.svg"/></a><figcaption data-en="&lt;b&gt;3 · Kubernetes&lt;/b&gt; — pods, services, HPA in the cluster"><b>3 · Kubernetes</b> — cluster मधील pods, services, HPA</figcaption></figure>
-<figure class="fig"><a href="images/04-terraform-aws-4k.png"><img alt="Terraform and AWS" loading="lazy" src="images/04-terraform-aws.svg"/></a><figcaption data-en="&lt;b&gt;4 · Terraform → AWS&lt;/b&gt; — VPC, EKS, ECR, RDS from code"><b>4 · Terraform → AWS</b> — कोडमधून VPC, EKS, ECR, RDS</figcaption></figure>
+<figure class="fig"><a href="images/01-big-picture-4k.png"><img alt="Big picture architecture" loading="lazy" src="images/01-big-picture.svg"/></a><figcaption><b>1 · The big picture</b> — how all the tools fit together</figcaption></figure>
+<figure class="fig"><a href="images/02-docker-4k.png"><img alt="Docker" loading="lazy" src="images/02-docker.svg"/></a><figcaption><b>2 · Docker</b> — image build &amp; local compose</figcaption></figure>
+<figure class="fig"><a href="images/03-kubernetes-4k.png"><img alt="Kubernetes" loading="lazy" src="images/03-kubernetes.svg"/></a><figcaption><b>3 · Kubernetes</b> — pods, services, HPA in the cluster</figcaption></figure>
+<figure class="fig"><a href="images/04-terraform-aws-4k.png"><img alt="Terraform and AWS" loading="lazy" src="images/04-terraform-aws.svg"/></a><figcaption><b>4 · Terraform → AWS</b> — VPC, EKS, ECR, RDS from code</figcaption></figure>
 <figure class="fig"><a href="images/05-cicd-circleci-4k.png"><img alt="CI/CD pipeline" loading="lazy" src="images/05-cicd-circleci.svg"/></a><figcaption><b>5 · CI/CD</b> — test → build → approve → deploy</figcaption></figure>
-<figure class="fig"><a href="images/06-multi-tenancy-4k.png"><img alt="Multi-tenancy" loading="lazy" src="images/06-multi-tenancy.svg"/></a><figcaption data-en="&lt;b&gt;6 · Multi-tenancy&lt;/b&gt; — 100 schools, zero mix-ups"><b>6 · Multi-tenancy</b> — 100 शाळा, शून्य गोंधळ</figcaption></figure>
-<figure class="fig"><a href="images/07-under-the-hood-docker-4k.png"><img alt="docker run internals" loading="lazy" src="images/07-under-the-hood-docker.svg"/></a><figcaption data-en="&lt;b&gt;7 · Under the hood&lt;/b&gt; — what &lt;code&gt;docker run&lt;/code&gt; really does"><b>7 · पडद्यामागे</b> — <code>docker run</code> खरोखर काय करते</figcaption></figure>
-<figure class="fig"><a href="images/08-under-the-hood-kubectl-4k.png"><img alt="kubectl apply internals" loading="lazy" src="images/08-under-the-hood-kubectl.svg"/></a><figcaption data-en="&lt;b&gt;8 · Under the hood&lt;/b&gt; — how &lt;code&gt;kubectl apply&lt;/code&gt; becomes a pod"><b>8 · पडद्यामागे</b> — <code>kubectl apply</code> चे pod कसे बनते</figcaption></figure>
-<figure class="fig"><a href="images/09-under-the-hood-request-4k.png"><img alt="Life of a request" loading="lazy" src="images/09-under-the-hood-request.svg"/></a><figcaption data-en="&lt;b&gt;9 · Under the hood&lt;/b&gt; — the life of one HTTP request"><b>9 · पडद्यामागे</b> — एका HTTP विनंतीचे आयुष्य</figcaption></figure>
-<figure class="fig"><a href="images/10-before-you-start-4k.png"><img alt="Before you start foundations" loading="lazy" src="images/10-before-you-start.svg"/></a><figcaption data-en="&lt;b&gt;10 · Before you start&lt;/b&gt; — the 7 foundations"><b>10 · सुरू करण्यापूर्वी</b> — 7 पाया</figcaption></figure>
+<figure class="fig"><a href="images/06-multi-tenancy-4k.png"><img alt="Multi-tenancy" loading="lazy" src="images/06-multi-tenancy.svg"/></a><figcaption><b>6 · Multi-tenancy</b> — 100 schools, zero mix-ups</figcaption></figure>
+<figure class="fig"><a href="images/07-under-the-hood-docker-4k.png"><img alt="docker run internals" loading="lazy" src="images/07-under-the-hood-docker.svg"/></a><figcaption><b>7 · Under the hood</b> — what <code>docker run</code> really does</figcaption></figure>
+<figure class="fig"><a href="images/08-under-the-hood-kubectl-4k.png"><img alt="kubectl apply internals" loading="lazy" src="images/08-under-the-hood-kubectl.svg"/></a><figcaption><b>8 · Under the hood</b> — how <code>kubectl apply</code> becomes a pod</figcaption></figure>
+<figure class="fig"><a href="images/09-under-the-hood-request-4k.png"><img alt="Life of a request" loading="lazy" src="images/09-under-the-hood-request.svg"/></a><figcaption><b>9 · Under the hood</b> — the life of one HTTP request</figcaption></figure>
+<figure class="fig"><a href="images/10-before-you-start-4k.png"><img alt="Before you start foundations" loading="lazy" src="images/10-before-you-start.svg"/></a><figcaption><b>10 · Before you start</b> — the 7 foundations</figcaption></figure>
 </div>
-<h2 data-en="📚 Go deeper">📚 आणखी खोलात</h2>
+<h2>📚 Go deeper</h2>
 <ul class="links">
-<li data-en='&lt;a href="architecture.html"&gt;Production design doc&lt;/a&gt; — multi-tenancy for 100 schools, single-domain routing, backups &amp;amp; DR runbook, security checklists (English + मराठी toggle)'><a href="architecture.html">Production डिझाइन दस्तऐवज</a> — 100 शाळांसाठी multi-tenancy, एकाच domain वरील routing, backups &amp; DR runbook, सुरक्षा याद्या (English + मराठी टॉगल)</li>
-<li data-en='&lt;a href="video/walkthrough-4k.mp4"&gt;🎬 Narrated video walkthrough (6 min, 4K)&lt;/a&gt; — a guided tour through every numbered diagram'><a href="video/walkthrough-4k.mp4">🎬 निवेदनासह व्हिडिओ फेरफटका (6 मि., 4K)</a> — प्रत्येक क्रमांकित आकृतीतून मार्गदर्शित फेरी</li>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md"&gt;under-the-hood.md&lt;/a&gt; — what &lt;i&gt;really&lt;/i&gt; happens beneath &lt;code&gt;docker run&lt;/code&gt;, &lt;code&gt;kubectl apply&lt;/code&gt;, and one HTTP request'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — <code>docker run</code>, <code>kubectl apply</code> आणि एका HTTP विनंतीखाली <i>खरोखर</i> काय घडते</li>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md"&gt;local-setup.md&lt;/a&gt; — run everything on your machine in 3 levels, zero AWS cost'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">local-setup.md</a> — तुमच्या मशीनवर सगळे 3 पातळ्यांत चालवा, AWS खर्च शून्य</li>
-<li data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school#readme"&gt;Main README&lt;/a&gt; — the whole story in one page, with the setup checklists'><a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">मुख्य README</a> — संपूर्ण गोष्ट एका पानावर, setup याद्यांसह</li>
-<li data-en='🪪 &lt;a href="https://baluraut.github.io/learn-aws-school/"&gt;&lt;b&gt;Course 0: Learn AWS School&lt;/b&gt;&lt;/a&gt; — the foundations: IAM (who may do what) &amp;amp; EC2 (the desks EKS nodes really are)'>🪪 <a href="https://baluraut.github.io/learn-aws-school/"><b>कोर्स 0: Learn AWS School</b></a> — पाया: IAM (कोण काय करू शकते) &amp; EC2 (EKS nodes खरे तर जे बाक आहेत)</li>
-<li data-en='🍱 &lt;a href="https://baluraut.github.io/learn-docker-school/"&gt;&lt;b&gt;Course 1: Learn Docker School&lt;/b&gt;&lt;/a&gt; — 12 lessons on packing &amp;amp; shipping: images, layers, compose, multi-stage builds, registries &amp;amp; AWS ECR'>🍱 <a href="https://baluraut.github.io/learn-docker-school/"><b>कोर्स 1: Learn Docker School</b></a> — पॅकिंग &amp; पाठवण्यावर 12 धडे: इमेज, लेयर, compose, multi-stage builds, रजिस्ट्री &amp; AWS ECR</li>
-<li data-en='🤖 &lt;a href="https://baluraut.github.io/learn-argocd-school/"&gt;&lt;b&gt;Course 3: Learn ArgoCD School&lt;/b&gt;&lt;/a&gt; — 12 lessons on deployment: without ArgoCD (by hand, CI/CD push) vs with ArgoCD (GitOps pull)'>🤖 <a href="https://baluraut.github.io/learn-argocd-school/"><b>कोर्स 3: Learn ArgoCD School</b></a> — deployment वर 12 धडे: ArgoCD शिवाय (हाताने, CI/CD push) विरुद्ध ArgoCD सह (GitOps pull)</li>
+<li><a href="architecture.html">Production design doc</a> — multi-tenancy for 100 schools, single-domain routing, backups &amp; DR runbook, security checklists (English + मराठी toggle)</li>
+<li><a href="video/walkthrough-4k.mp4">🎬 Narrated video walkthrough (6 min, 4K)</a> — a guided tour through every numbered diagram</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/under-the-hood.md">under-the-hood.md</a> — what <i>really</i> happens beneath <code>docker run</code>, <code>kubectl apply</code>, and one HTTP request</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/main/docs/local-setup.md">local-setup.md</a> — run everything on your machine in 3 levels, zero AWS cost</li>
+<li><a href="https://github.com/BaluRaut/learn-kubernetes-school#readme">Main README</a> — the whole story in one page, with the setup checklists</li>
+<li>🪪 <a href="https://baluraut.github.io/learn-aws-school/"><b>Course 0: Learn AWS School</b></a> — the foundations: IAM (who may do what) &amp; EC2 (the desks EKS nodes really are)</li>
+<li>🍱 <a href="https://baluraut.github.io/learn-docker-school/"><b>Course 1: Learn Docker School</b></a> — 12 lessons on packing &amp; shipping: images, layers, compose, multi-stage builds, registries &amp; AWS ECR</li>
+<li>🤖 <a href="https://baluraut.github.io/learn-argocd-school/"><b>Course 3: Learn ArgoCD School</b></a> — 12 lessons on deployment: without ArgoCD (by hand, CI/CD push) vs with ArgoCD (GitOps pull)</li>
 </ul>
 <!-- 15 -->
-<h2 data-en="📐 The lesson diagrams — follow the numbers" id="diagrams">📐 धड्यांच्या आकृत्या — क्रमांक अनुसरा</h2>
-<p class="sub" data-en='Every lesson as one numbered box-and-arrow diagram, one after another — readable
-  right here. Also on a &lt;a href="lesson-diagrams.html"&gt;standalone page&lt;/a&gt; with jump navigation.'>प्रत्येक धडा एका क्रमांकित बॉक्स-आणि-बाण आकृतीत, एकामागून एक — इथेच वाचता येईल. <a href="lesson-diagrams.html">स्वतंत्र पानावरही</a>, उडी-मारण्याच्या दुव्यांसह.</p>
+<h2 id="diagrams">📐 The lesson diagrams — follow the numbers</h2>
+<p class="sub">Every lesson as one numbered box-and-arrow diagram, one after another — readable
+  right here. Also on a <a href="lesson-diagrams.html">standalone page</a> with jump navigation.</p>
 <section class="dsec" id="l01" style="--c:#0ea5e9">
-<h2 data-en='&lt;span class="ln"&gt;1&lt;/span&gt; 🍱 Containers &amp;amp; images — recipe → lunchbox → lunch'><span class="ln">1</span> 🍱 कंटेनर &amp; इमेज — पाककृती → डबा → जेवण</h2>
-<p class="d" data-en="One recipe (Dockerfile) bakes one frozen lunchbox (image); every opened box (container) is identical.">एक पाककृती (Dockerfile) एक गोठवलेला डबा (इमेज) बनवते; प्रत्येक उघडलेला डबा (कंटेनर) एकसारखा.</p>
+<h2><span class="ln">1</span> 🍱 Containers &amp; images — recipe → lunchbox → lunch</h2>
+<p class="d">One recipe (Dockerfile) bakes one frozen lunchbox (image); every opened box (container) is identical.</p>
 <svg aria-label="Dockerfile builds an image, the image is pushed to a registry and run as identical containers" role="img" viewbox="0 0 940 300">
 <rect class="box" height="90" rx="12" width="180" x="30" y="110"></rect>
 <text class="t m" x="120" y="148">📝 Dockerfile</text>
-<text class="s m" data-en="the recipe card" x="120" y="170">पाककृतीचे कार्ड</text>
+<text class="s m" x="120" y="170">the recipe card</text>
 <rect class="box" height="90" rx="12" width="190" x="290" y="110"></rect>
-<text class="t m" data-en="🧊 Image" x="385" y="148">🧊 इमेज</text>
-<text class="s m" data-en="school-api:v1 — frozen box" x="385" y="170">school-api:v1 — गोठवलेला डबा</text>
+<text class="t m" x="385" y="148">🧊 Image</text>
+<text class="s m" x="385" y="170">school-api:v1 — frozen box</text>
 <rect class="box" height="80" rx="12" width="290" x="620" y="30"></rect>
-<text class="t m" data-en="🗄️ Registry (ECR)" x="765" y="63">🗄️ रजिस्ट्री (ECR)</text>
-<text class="s m" data-en="the shelf where images wait" x="765" y="85">इमेज वाट पाहतात ते कपाट</text>
+<text class="t m" x="765" y="63">🗄️ Registry (ECR)</text>
+<text class="s m" x="765" y="85">the shelf where images wait</text>
 <rect class="box" height="110" rx="12" width="290" x="620" y="160"></rect>
-<text class="t m" data-en="🏃 Running containers" x="765" y="185">🏃 चालणारे कंटेनर</text>
-<rect class="soft" height="50" rx="8" width="78" x="640" y="200"></rect><text class="s m" data-en="box 1" x="679" y="230">डबा 1</text>
-<rect class="soft" height="50" rx="8" width="78" x="726" y="200"></rect><text class="s m" data-en="box 2" x="765" y="230">डबा 2</text>
-<rect class="soft" height="50" rx="8" width="78" x="812" y="200"></rect><text class="s m" data-en="box 3" x="851" y="230">डबा 3</text>
+<text class="t m" x="765" y="185">🏃 Running containers</text>
+<rect class="soft" height="50" rx="8" width="78" x="640" y="200"></rect><text class="s m" x="679" y="230">box 1</text>
+<rect class="soft" height="50" rx="8" width="78" x="726" y="200"></rect><text class="s m" x="765" y="230">box 2</text>
+<rect class="soft" height="50" rx="8" width="78" x="812" y="200"></rect><text class="s m" x="851" y="230">box 3</text>
 <line class="arr" x1="210" x2="286" y1="155" y2="155"></line>
 <g transform="translate(248,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <text class="s m" x="248" y="182">docker build</text>
@@ -251,64 +244,64 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
 <text class="s m" x="548" y="130">docker push</text>
 <line class="arr" x1="480" x2="616" y1="180" y2="212"></line>
 <g transform="translate(548,216)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="docker run ×3 — identical" x="548" y="252">docker run ×3 — एकसारखे</text>
+<text class="s m" x="548" y="252">docker run ×3 — identical</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md"&gt;Read full lesson 01 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">संपूर्ण धडा 01 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">Read full lesson 01 →</a></p>
 </section>
 <section class="dsec" id="l02" style="--c:#0ea5e9">
-<h2 data-en="&lt;span class=&quot;ln&quot;&gt;2&lt;/span&gt; 🪑 Pods — one desk, one address, replace don't repair"><span class="ln">2</span> 🪑 Pods — एक बाक, एक पत्ता, दुरुस्त नाही, बदला</h2>
-<p class="d" data-en="Kubernetes never runs a bare container — it always sits at a desk (Pod) with its own IP and shared shelf.">Kubernetes कधीच उघडा कंटेनर चालवत नाही — तो नेहमी स्वतःचा IP आणि सामायिक कपाट असलेल्या बाकावर (Pod) बसतो.</p>
+<h2><span class="ln">2</span> 🪑 Pods — one desk, one address, replace don't repair</h2>
+<p class="d">Kubernetes never runs a bare container — it always sits at a desk (Pod) with its own IP and shared shelf.</p>
 <svg aria-label="A pod contains containers sharing a volume and one IP; a dead pod is replaced by a new pod with a new IP" role="img" viewbox="0 0 940 300">
 <rect class="box" height="80" rx="12" width="180" x="40" y="115"></rect>
-<text class="t m" data-en="🌐 Cluster network" x="130" y="148">🌐 Cluster नेटवर्क</text>
-<text class="s m" data-en="callers" x="130" y="170">कॉल करणारे</text>
+<text class="t m" x="130" y="148">🌐 Cluster network</text>
+<text class="s m" x="130" y="170">callers</text>
 <rect class="box" height="230" rx="14" width="380" x="300" y="40"></rect>
 <text class="t m" x="490" y="68">🪑 Pod — IP 10.0.4.7</text>
 <rect class="soft" height="80" rx="10" width="155" x="325" y="90"></rect>
 <text class="t m" x="402" y="123">📦 school-api</text>
-<text class="s m" data-en="main container" x="402" y="145">मुख्य कंटेनर</text>
+<text class="s m" x="402" y="145">main container</text>
 <rect class="soft" height="80" rx="10" width="155" x="500" y="90"></rect>
 <text class="t m" x="577" y="123">📦 sidecar</text>
-<text class="s m" data-en="optional helper" x="577" y="145">ऐच्छिक मदतनीस</text>
+<text class="s m" x="577" y="145">optional helper</text>
 <rect class="soft" height="50" rx="10" width="200" x="390" y="200"></rect>
-<text class="t m" data-en="🗄️ shared volume" x="490" y="230">🗄️ सामायिक volume</text>
+<text class="t m" x="490" y="230">🗄️ shared volume</text>
 <line class="arr" x1="402" x2="452" y1="170" y2="198"></line>
 <line class="arr" x1="577" x2="528" y1="170" y2="198"></line>
 <line class="arr" x1="220" x2="296" y1="155" y2="155"></line>
 <g transform="translate(258,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
-<text class="s m" data-en="talks to the Pod's IP" x="258" y="182">Pod च्या IP शी बोलतो</text>
+<text class="s m" x="258" y="182">talks to the Pod's IP</text>
 <g transform="translate(490,185)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
 <rect class="dead" height="90" rx="12" width="180" x="730" y="115"></rect>
-<text class="t m" data-en="🪑 NEW Pod" x="820" y="150">🪑 नवा Pod</text>
-<text class="s m" data-en="new name, new IP 10.0.9.9" x="820" y="172">नवे नाव, नवा IP 10.0.9.9</text>
+<text class="t m" x="820" y="150">🪑 NEW Pod</text>
+<text class="s m" x="820" y="172">new name, new IP 10.0.9.9</text>
 <line class="arr dash" x1="680" x2="726" y1="155" y2="155"></line>
 <g transform="translate(703,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="💥 desks are replaced, never repaired" x="820" y="230">💥 बाक बदलले जातात, दुरुस्त नाही</text>
+<text class="s m" x="820" y="230">💥 desks are replaced, never repaired</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md"&gt;Read full lesson 02 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">संपूर्ण धडा 02 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-02-pods/lessons/02-pods/README.md">Read full lesson 02 →</a></p>
 </section>
 <section class="dsec" id="l03" style="--c:#0ea5e9">
-<h2 data-en='&lt;span class="ln"&gt;3&lt;/span&gt; 🧑‍🏫 Deployments — declare a wish, the monitor enforces it forever'><span class="ln">3</span> 🧑‍🏫 Deployments — इच्छा जाहीर करा, वर्गप्रमुख ती कायम पाळतो</h2>
-<p class="d" data-en='You say "always 2"; the ReplicaSet counts non-stop and replaces anything that dies.'>तुम्ही म्हणता "नेहमी 2"; ReplicaSet सतत मोजतो आणि मेलेले काहीही बदलतो.</p>
+<h2><span class="ln">3</span> 🧑‍🏫 Deployments — declare a wish, the monitor enforces it forever</h2>
+<p class="d">You say "always 2"; the ReplicaSet counts non-stop and replaces anything that dies.</p>
 <svg aria-label="You declare replicas 2 to a Deployment, its ReplicaSet keeps two pods alive and replaces a crashed one" role="img" viewbox="0 0 940 320">
 <rect class="box" height="80" rx="12" width="190" x="30" y="40"></rect>
-<text class="t m" data-en="🧑‍🏫 You declare" x="125" y="73">🧑‍🏫 तुम्ही जाहीर करता</text>
+<text class="t m" x="125" y="73">🧑‍🏫 You declare</text>
 <text class="s m" x="125" y="95">replicas: 2 · image: v5</text>
 <rect class="box" height="80" rx="12" width="190" x="30" y="190"></rect>
 <text class="t m" x="125" y="223">Deployment</text>
 <text class="s m" x="125" y="245">school-api</text>
 <rect class="box" height="80" rx="12" width="210" x="300" y="190"></rect>
 <text class="t m" x="405" y="223">ReplicaSet</text>
-<text class="s m" data-en="the monitor · count = 2" x="405" y="245">वर्गप्रमुख · संख्या = 2</text>
+<text class="s m" x="405" y="245">the monitor · count = 2</text>
 <rect class="box" height="70" rx="12" width="180" x="600" y="40"></rect>
 <text class="t m" x="690" y="68">🪑 pod …abc12</text>
-<text class="s m" data-en="💥 crashes!" x="690" y="90">💥 कोसळला!</text>
+<text class="s m" x="690" y="90">💥 crashes!</text>
 <rect class="box" height="70" rx="12" width="180" x="600" y="200"></rect>
 <text class="t m" x="690" y="228">🪑 pod …def34</text>
-<text class="s m" data-en="healthy" x="690" y="250">निरोगी</text>
+<text class="s m" x="690" y="250">healthy</text>
 <rect class="dead" height="70" rx="12" width="180" x="740" y="118"></rect>
 <text class="t m" x="830" y="146">🪑 pod …xyz99</text>
-<text class="s m" data-en="auto-created replacement" x="830" y="168">आपोआप बनलेला बदली</text>
+<text class="s m" x="830" y="168">auto-created replacement</text>
 <line class="arr" x1="125" x2="125" y1="120" y2="186"></line>
 <g transform="translate(108,153)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="220" x2="296" y1="230" y2="230"></line>
@@ -316,122 +309,122 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
 <line class="arr" x1="510" x2="596" y1="205" y2="90"></line>
 <line class="arr" x1="510" x2="596" y1="230" y2="230"></line>
 <g transform="translate(553,196)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="claims pods by label app: school-api" x="553" y="280">label app: school-api ने pods आपले मानतो</text>
+<text class="s m" x="553" y="280">claims pods by label app: school-api</text>
 <line class="arr dash" x1="510" x2="736" y1="205" y2="153"></line>
 <g transform="translate(620,160)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
-<text class="s m" data-en="sees 1 missing → makes a new one" x="623" y="135">1 कमी दिसतो → नवा बनवतो</text>
+<text class="s m" x="623" y="135">sees 1 missing → makes a new one</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md"&gt;Read full lesson 03 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">संपूर्ण धडा 03 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-03-deployments/lessons/03-deployments/README.md">Read full lesson 03 →</a></p>
 </section>
 <section class="dsec" id="l04" style="--c:#2563eb">
-<h2 data-en='&lt;span class="ln"&gt;4&lt;/span&gt; ☎️ Services — one number that never changes'><span class="ln">4</span> ☎️ Services — एक नंबर जो कधीच बदलत नाही</h2>
-<p class="d" data-en="Pods get new IPs all the time; callers dial the Service name and it forwards to whoever is present.">Pods ना सतत नवे IP मिळतात; कॉल करणारे Service चे नाव लावतात आणि ते जो हजर असेल त्याच्याकडे पाठवते.</p>
+<h2><span class="ln">4</span> ☎️ Services — one number that never changes</h2>
+<p class="d">Pods get new IPs all the time; callers dial the Service name and it forwards to whoever is present.</p>
 <svg aria-label="A caller pod calls the service by DNS name; the service load-balances to current ready pods and drops dead ones" role="img" viewbox="0 0 940 300">
 <rect class="box" height="90" rx="12" width="210" x="30" y="110"></rect>
 <text class="t m" x="135" y="145">🐍 analytics pod</text>
-<text class="s m" data-en="calls http://school-api" x="135" y="167">http://school-api ला कॉल करतो</text>
+<text class="s m" x="135" y="167">calls http://school-api</text>
 <rect class="box" height="90" rx="12" width="240" x="330" y="110"></rect>
 <text class="t m" x="450" y="140">☎️ Service school-api</text>
-<text class="s m" data-en="stable IP + DNS · port 80 → 3000" x="450" y="162">स्थिर IP + DNS · port 80 → 3000</text>
+<text class="s m" x="450" y="162">stable IP + DNS · port 80 → 3000</text>
 <rect class="box" height="70" rx="12" width="180" x="700" y="30"></rect>
 <text class="t m" x="790" y="58">🪑 pod 10.0.4.7</text>
-<text class="s m" data-en="ready" x="790" y="80">तयार</text>
+<text class="s m" x="790" y="80">ready</text>
 <rect class="box" height="70" rx="12" width="180" x="700" y="120"></rect>
 <text class="t m" x="790" y="148">🪑 pod 10.0.9.2</text>
-<text class="s m" data-en="ready" x="790" y="170">तयार</text>
+<text class="s m" x="790" y="170">ready</text>
 <rect class="dead" height="60" rx="12" width="180" x="700" y="215"></rect>
-<text class="t m" data-en="💀 old pod" x="790" y="240">💀 जुना pod</text>
-<text class="s m" data-en="gone — auto-removed" x="790" y="260">गेला — आपोआप काढला</text>
+<text class="t m" x="790" y="240">💀 old pod</text>
+<text class="s m" x="790" y="260">gone — auto-removed</text>
 <line class="arr" x1="240" x2="326" y1="155" y2="155"></line>
 <g transform="translate(283,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
-<text class="s m" data-en="DNS finds the Service" x="283" y="185">DNS ला Service सापडते</text>
+<text class="s m" x="283" y="185">DNS finds the Service</text>
 <line class="arr" x1="570" x2="696" y1="135" y2="70"></line>
 <line class="arr" x1="570" x2="696" y1="160" y2="152"></line>
 <g transform="translate(633,95)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="picks a READY pod by label" x="628" y="200">label ने तयार pod निवडते</text>
+<text class="s m" x="628" y="200">picks a READY pod by label</text>
 <line class="arr dash" x1="570" x2="696" y1="185" y2="242"></line>
 <g transform="translate(633,225)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md"&gt;Read full lesson 04 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">संपूर्ण धडा 04 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-04-services/lessons/04-services/README.md">Read full lesson 04 →</a></p>
 </section>
 <section class="dsec" id="l05" style="--c:#2563eb">
-<h2 data-en='&lt;span class="ln"&gt;5&lt;/span&gt; 🚪 Namespaces — classrooms inside one building'><span class="ln">5</span> 🚪 Namespaces — एका इमारतीतील वर्ग</h2>
-<p class="d" data-en="One shared cluster, partitioned into rooms — names only need to be unique inside a room.">एक सामायिक cluster, खोल्यांत विभागलेला — नावे फक्त खोलीच्या आत वेगळी असावी लागतात.</p>
+<h2><span class="ln">5</span> 🚪 Namespaces — classrooms inside one building</h2>
+<p class="d">One shared cluster, partitioned into rooms — names only need to be unique inside a room.</p>
 <svg aria-label="One cluster containing the school, kube-system and default namespaces with their contents" role="img" viewbox="0 0 940 330">
 <rect class="box" height="240" rx="14" width="880" x="30" y="30"></rect>
-<text class="t" data-en="🏫 One Kubernetes cluster — the building" x="55" y="60">🏫 एक Kubernetes cluster — इमारत</text>
+<text class="t" x="55" y="60">🏫 One Kubernetes cluster — the building</text>
 <rect class="soft" height="170" rx="12" width="330" x="55" y="80"></rect>
 <text class="t m" x="220" y="108">🚪 namespace: school</text>
 <text class="s m" x="220" y="135">Deployments: school-api, analytics</text>
 <text class="s m" x="220" y="157">Services ×2 · ConfigMap · Secret</text>
 <text class="s m" x="220" y="179">HPA · Ingress</text>
 <g transform="translate(220,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
-<text class="s m" data-en="our room — everything in this repo" x="220" y="243">आपली खोली — या रेपोतील सगळे</text>
+<text class="s m" x="220" y="243">our room — everything in this repo</text>
 <rect class="soft" height="170" rx="12" width="240" x="415" y="80"></rect>
 <text class="t m" x="535" y="108">🚪 kube-system</text>
-<text class="s m" data-en="the school office:" x="535" y="135">शाळेचे कार्यालय:</text>
+<text class="s m" x="535" y="135">the school office:</text>
 <text class="s m" x="535" y="157">CoreDNS · metrics-server</text>
 <g transform="translate(535,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="Kubernetes' own machinery" x="535" y="243">Kubernetes ची स्वतःची यंत्रणा</text>
+<text class="s m" x="535" y="243">Kubernetes' own machinery</text>
 <rect class="soft" height="170" rx="12" width="200" x="685" y="80"></rect>
 <text class="t m" x="785" y="108">🚪 default</text>
-<text class="s m" data-en="experiments land here" x="785" y="135">प्रयोग इथे येऊन पडतात</text>
-<text class="s m" data-en="if you forget -n 😅" x="785" y="157">-n विसरलात तर 😅</text>
+<text class="s m" x="785" y="135">experiments land here</text>
+<text class="s m" x="785" y="157">if you forget -n 😅</text>
 <g transform="translate(785,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en='Same name in two rooms is fine — "Aarav from 3A" vs "Aarav from 3B" · delete a room = clean sweep of only that room' x="470" y="305">दोन खोल्यांत एकच नाव चालते — "3A चा आरव" विरुद्ध "3B चा आरव" · खोली हटवा = फक्त त्याच खोलीची सफाई</text>
+<text class="s m" x="470" y="305">Same name in two rooms is fine — "Aarav from 3A" vs "Aarav from 3B" · delete a room = clean sweep of only that room</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md"&gt;Read full lesson 05 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">संपूर्ण धडा 05 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-05-namespaces/lessons/05-namespaces/README.md">Read full lesson 05 →</a></p>
 </section>
 <section class="dsec" id="l06" style="--c:#2563eb">
-<h2 data-en='&lt;span class="ln"&gt;6&lt;/span&gt; 🔑 ConfigMaps &amp;amp; Secrets — settings live outside the lunchbox'><span class="ln">6</span> 🔑 ConfigMaps &amp; Secrets — settings डब्याबाहेर राहतात</h2>
-<p class="d" data-en="Same image everywhere; the notice board (config) and locker key (secret) are injected at start-up.">सगळीकडे तीच इमेज; सूचना फलक (config) आणि लॉकरची किल्ली (secret) सुरू होताना घातले जातात.</p>
+<h2><span class="ln">6</span> 🔑 ConfigMaps &amp; Secrets — settings live outside the lunchbox</h2>
+<p class="d">Same image everywhere; the notice board (config) and locker key (secret) are injected at start-up.</p>
 <svg aria-label="ConfigMap and Secret are injected into the pod as environment variables while the image stays unchanged" role="img" viewbox="0 0 940 320">
 <rect class="box" height="90" rx="12" width="230" x="40" y="50"></rect>
 <text class="t m" x="155" y="83">📌 ConfigMap</text>
 <text class="s m" x="155" y="105">PORT: 3000 · APP_VERSION</text>
 <rect class="box" height="90" rx="12" width="230" x="40" y="190"></rect>
 <text class="t m" x="155" y="223">🔑 Secret</text>
-<text class="s m" data-en="DATABASE_URL (password!)" x="155" y="245">DATABASE_URL (पासवर्ड!)</text>
+<text class="s m" x="155" y="245">DATABASE_URL (password!)</text>
 <rect class="box" height="160" rx="14" width="270" x="420" y="90"></rect>
-<text class="t m" data-en="🪑 Pod at start-up" x="555" y="120">🪑 सुरू होतानाचा Pod</text>
+<text class="t m" x="555" y="120">🪑 Pod at start-up</text>
 <rect class="soft" height="45" rx="8" width="220" x="445" y="140"></rect>
 <text class="s m" x="555" y="168">env: PORT, DATABASE_URL…</text>
 <rect class="soft" height="40" rx="8" width="220" x="445" y="195"></rect>
-<text class="s m" data-en="app reads process.env" x="555" y="221">ॲप process.env वाचते</text>
+<text class="s m" x="555" y="221">app reads process.env</text>
 <rect class="box" height="80" rx="12" width="170" x="740" y="40"></rect>
-<text class="t m" data-en="🍱 Image" x="825" y="73">🍱 इमेज</text>
-<text class="s m" data-en="identical in dev &amp;amp; prod" x="825" y="95">dev &amp; prod मध्ये एकसारखी</text>
+<text class="t m" x="825" y="73">🍱 Image</text>
+<text class="s m" x="825" y="95">identical in dev &amp; prod</text>
 <line class="arr" x1="270" x2="416" y1="95" y2="150"></line>
 <g transform="translate(343,105)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <text class="s m" x="330" y="80">envFrom: configMapRef</text>
 <line class="arr" x1="270" x2="416" y1="235" y2="190"></line>
 <g transform="translate(343,228)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="secretKeyRef (never in git)" x="330" y="262">secretKeyRef (git मध्ये कधीच नाही)</text>
+<text class="s m" x="330" y="262">secretKeyRef (never in git)</text>
 <line class="arr" x1="740" x2="694" y1="105" y2="130"></line>
 <g transform="translate(717,100)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="change settings → restart pods → same image, new behaviour" x="555" y="290">settings बदला → pods पुन्हा सुरू → तीच इमेज, नवे वर्तन</text>
+<text class="s m" x="555" y="290">change settings → restart pods → same image, new behaviour</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md"&gt;Read full lesson 06 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">संपूर्ण धडा 06 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-06-configmaps-secrets/lessons/06-configmaps-secrets/README.md">Read full lesson 06 →</a></p>
 </section>
 <section class="dsec" id="l07" style="--c:#7c3aed">
-<h2 data-en='&lt;span class="ln"&gt;7&lt;/span&gt; 🙋 Health probes — two questions, two very different consequences'><span class="ln">7</span> 🙋 Health probes — दोन प्रश्न, दोन अगदी वेगळे परिणाम</h2>
-<p class="d" data-en="Liveness failure restarts the container; readiness failure only pauses its traffic.">liveness अपयश कंटेनर पुन्हा सुरू करते; readiness अपयश फक्त त्याचा traffic थांबवते.</p>
+<h2><span class="ln">7</span> 🙋 Health probes — two questions, two very different consequences</h2>
+<p class="d">Liveness failure restarts the container; readiness failure only pauses its traffic.</p>
 <svg aria-label="Kubelet asks liveness and readiness endpoints; liveness failure restarts, readiness failure removes from service" role="img" viewbox="0 0 940 320">
 <rect class="box" height="90" rx="12" width="200" x="40" y="115"></rect>
 <text class="t m" x="140" y="150">🧑‍🏫 kubelet</text>
-<text class="s m" data-en="asks every few seconds" x="140" y="172">दर काही सेकंदांनी विचारतो</text>
+<text class="s m" x="140" y="172">asks every few seconds</text>
 <rect class="box" height="80" rx="12" width="240" x="330" y="40"></rect>
-<text class="t m" data-en="GET /healthz — alive?" x="450" y="72">GET /healthz — जिवंत?</text>
+<text class="t m" x="450" y="72">GET /healthz — alive?</text>
 <text class="s m" x="450" y="94">liveness probe</text>
 <rect class="box" height="80" rx="12" width="240" x="330" y="200"></rect>
-<text class="t m" data-en="GET /readyz — ready?" x="450" y="232">GET /readyz — तयार?</text>
+<text class="t m" x="450" y="232">GET /readyz — ready?</text>
 <text class="s m" x="450" y="254">readiness probe</text>
 <rect class="box" height="80" rx="12" width="250" x="660" y="40"></rect>
-<text class="t m" data-en="🔄 fails ×3 → RESTART" x="785" y="72">🔄 ×3 अपयश → पुन्हा सुरू</text>
-<text class="s m" data-en="same pod, fresh container" x="785" y="94">तोच pod, नवा कंटेनर</text>
+<text class="t m" x="785" y="72">🔄 fails ×3 → RESTART</text>
+<text class="s m" x="785" y="94">same pod, fresh container</text>
 <rect class="box" height="80" rx="12" width="250" x="660" y="200"></rect>
-<text class="t m" data-en="⏸️ fails → NO traffic" x="785" y="232">⏸️ अपयश → traffic नाही</text>
-<text class="s m" data-en="out of the Service list, no restart" x="785" y="254">Service यादीतून बाहेर, पुन्हा सुरू नाही</text>
+<text class="t m" x="785" y="232">⏸️ fails → NO traffic</text>
+<text class="s m" x="785" y="254">out of the Service list, no restart</text>
 <line class="arr" x1="240" x2="326" y1="140" y2="85"></line>
 <g transform="translate(283,95)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="240" x2="326" y1="180" y2="235"></line>
@@ -440,17 +433,17 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
 <g transform="translate(613,63)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 <line class="arr" x1="570" x2="656" y1="240" y2="240"></line>
 <g transform="translate(613,223)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
-<text class="s m" data-en="mixing the two up is one of the most common Kubernetes mistakes!" x="470" y="305">या दोघांची गल्लत ही Kubernetes मधील सर्वात सामान्य चुकांपैकी एक!</text>
+<text class="s m" x="470" y="305">mixing the two up is one of the most common Kubernetes mistakes!</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md"&gt;Read full lesson 07 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">संपूर्ण धडा 07 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-07-health-probes/lessons/07-health-probes/README.md">Read full lesson 07 →</a></p>
 </section>
 <section class="dsec" id="l08" style="--c:#7c3aed">
-<h2 data-en='&lt;span class="ln"&gt;8&lt;/span&gt; 🍛 Requests &amp;amp; limits — promised plates and capped seconds'><span class="ln">8</span> 🍛 Requests &amp; limits — वचन दिलेल्या थाळ्या आणि मर्यादित दुसरी वाढ</h2>
-<p class="d" data-en="Requests are reservations the scheduler counts; limits are hard caps with different penalties for CPU vs memory.">requests म्हणजे scheduler मोजतो त्या आरक्षणे; limits म्हणजे कठोर मर्यादा, CPU आणि memory साठी वेगळ्या शिक्षा.</p>
+<h2><span class="ln">8</span> 🍛 Requests &amp; limits — promised plates and capped seconds</h2>
+<p class="d">Requests are reservations the scheduler counts; limits are hard caps with different penalties for CPU vs memory.</p>
 <svg aria-label="Scheduler places pods on a node only where requests fit; CPU over limit throttles, memory over limit kills" role="img" viewbox="0 0 940 320">
 <rect class="box" height="100" rx="12" width="210" x="40" y="110"></rect>
 <text class="t m" x="145" y="145">📋 Scheduler</text>
-<text class="s m" data-en="the cook counting plates" x="145" y="167">थाळ्या मोजणारा स्वयंपाकी</text>
+<text class="s m" x="145" y="167">the cook counting plates</text>
 <rect class="box" height="250" rx="14" width="330" x="330" y="40"></rect>
 <text class="t m" x="495" y="68">🖥️ Node — 2 CPU · 4 Gi</text>
 <rect class="soft" height="60" rx="10" width="280" x="355" y="85"></rect>
@@ -460,34 +453,34 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
 <text class="s" x="370" y="180">🪑 analytics — req 100m / 128Mi</text>
 <text class="s" x="370" y="200">limit 500m / 256Mi</text>
 <rect class="dead" height="50" rx="10" width="280" x="355" y="225"></rect>
-<text class="s m" data-en="🟩 unreserved — room for more pods" x="495" y="255">🟩 आरक्षित नसलेले — आणखी pods साठी जागा</text>
+<text class="s m" x="495" y="255">🟩 unreserved — room for more pods</text>
 <rect class="box" height="90" rx="12" width="190" x="720" y="60"></rect>
-<text class="t m" data-en="🍲 CPU over limit" x="815" y="90">🍲 CPU मर्यादेपलीकडे</text>
-<text class="s m" data-en="→ throttled (slower)" x="815" y="112">→ throttled (हळू)</text>
+<text class="t m" x="815" y="90">🍲 CPU over limit</text>
+<text class="s m" x="815" y="112">→ throttled (slower)</text>
 <rect class="box" height="90" rx="12" width="190" x="720" y="185"></rect>
-<text class="t m" data-en="🫃 RAM over limit" x="815" y="215">🫃 RAM मर्यादेपलीकडे</text>
+<text class="t m" x="815" y="215">🫃 RAM over limit</text>
 <text class="s m" x="815" y="237">→ OOMKilled 💀</text>
 <line class="arr" x1="250" x2="326" y1="160" y2="160"></line>
 <g transform="translate(288,143)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
-<text class="s m" data-en="places pods only where requests fit" x="288" y="190">requests बसतील तिथेच pods ठेवतो</text>
+<text class="s m" x="288" y="190">places pods only where requests fit</text>
 <g transform="translate(700,105)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
 <g transform="translate(700,230)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md"&gt;Read full lesson 08 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">संपूर्ण धडा 08 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-08-resources/lessons/08-resources/README.md">Read full lesson 08 →</a></p>
 </section>
 <section class="dsec" id="l09" style="--c:#7c3aed">
-<h2 data-en='&lt;span class="ln"&gt;9&lt;/span&gt; 🚌 Autoscaling — the transport manager watches the buses'><span class="ln">9</span> 🚌 Autoscaling — वाहतूक व्यवस्थापक बसांवर लक्ष ठेवतो</h2>
-<p class="d" data-en="Above 70% average CPU it adds pods (max 5); when quiet it parks them (never below 2).">सरासरी CPU 70% वर गेल्यास pods वाढवतो (कमाल 5); शांत असताना ते उभे करतो (2 खाली कधीच नाही).</p>
+<h2><span class="ln">9</span> 🚌 Autoscaling — the transport manager watches the buses</h2>
+<p class="d">Above 70% average CPU it adds pods (max 5); when quiet it parks them (never below 2).</p>
 <svg aria-label="Metrics server feeds the HPA which edits the deployment replica count, creating or removing pods" role="img" viewbox="0 0 940 300">
 <rect class="box" height="90" rx="12" width="200" x="30" y="110"></rect>
 <text class="t m" x="130" y="145">📊 metrics-server</text>
-<text class="s m" data-en="measures pod CPU" x="130" y="167">pod चे CPU मोजतो</text>
+<text class="s m" x="130" y="167">measures pod CPU</text>
 <rect class="box" height="90" rx="12" width="230" x="300" y="110"></rect>
 <text class="t m" x="415" y="140">🧑‍💼 HPA</text>
-<text class="s m" data-en="target 70% · min 2 · max 5" x="415" y="162">लक्ष्य 70% · किमान 2 · कमाल 5</text>
+<text class="s m" x="415" y="162">target 70% · min 2 · max 5</text>
 <rect class="box" height="90" rx="12" width="180" x="600" y="110"></rect>
 <text class="t m" x="690" y="145">Deployment</text>
-<text class="s m" data-en="replicas: ← edited" x="690" y="167">replicas: ← बदलले</text>
+<text class="s m" x="690" y="167">replicas: ← edited</text>
 <rect class="box" height="50" rx="10" width="80" x="830" y="30"></rect><text class="s m" x="870" y="60">🚌 1</text>
 <rect class="box" height="50" rx="10" width="80" x="830" y="95"></rect><text class="s m" x="870" y="125">🚌 2</text>
 <rect class="dead" height="50" rx="10" width="80" x="830" y="160"></rect><text class="s m" x="870" y="190">🚌 3</text>
@@ -496,33 +489,33 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
 <g transform="translate(263,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="530" x2="596" y1="155" y2="155"></line>
 <g transform="translate(563,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="85% → scale up!" x="563" y="185">85% → वाढवा!</text>
+<text class="s m" x="563" y="185">85% → scale up!</text>
 <line class="arr" x1="780" x2="826" y1="140" y2="100"></line>
 <line class="arr dash" x1="780" x2="826" y1="170" y2="195"></line>
 <g transform="translate(803,150)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="scale-up is fast · scale-down is slow on purpose (don't park the bus the second the rain stops)" x="470" y="280">वाढवणे जलद · कमी करणे मुद्दाम हळू (पाऊस थांबल्याक्षणी बस उभी करू नका)</text>
+<text class="s m" x="470" y="280">scale-up is fast · scale-down is slow on purpose (don't park the bus the second the rain stops)</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md"&gt;Read full lesson 09 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">संपूर्ण धडा 09 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-09-autoscaling/lessons/09-autoscaling/README.md">Read full lesson 09 →</a></p>
 </section>
 <section class="dsec" id="l10" style="--c:#ea580c">
-<h2 data-en='&lt;span class="ln"&gt;10&lt;/span&gt; 🏫 Ingress — one gate, routed by the signboard'><span class="ln">10</span> 🏫 Ingress — एक गेट, फलकानुसार वाट</h2>
-<p class="d" data-en="One load balancer for everything; the URL path decides which Service the visitor reaches.">सगळ्यासाठी एकच लोड बॅलन्सर; URL चा path ठरवतो पाहुणा कोणत्या Service पर्यंत पोहोचतो.</p>
+<h2><span class="ln">10</span> 🏫 Ingress — one gate, routed by the signboard</h2>
+<p class="d">One load balancer for everything; the URL path decides which Service the visitor reaches.</p>
 <svg aria-label="Internet traffic enters one ALB created by the ingress controller and is routed by path to two services and their pods" role="img" viewbox="0 0 940 320">
 <rect class="box" height="80" rx="12" width="170" x="30" y="120"></rect>
-<text class="t m" data-en="🌍 Internet" x="115" y="153">🌍 इंटरनेट</text>
-<text class="s m" data-en="parent's browser" x="115" y="175">पालकांचा ब्राउझर</text>
+<text class="t m" x="115" y="153">🌍 Internet</text>
+<text class="s m" x="115" y="175">parent's browser</text>
 <rect class="box" height="80" rx="12" width="200" x="270" y="120"></rect>
-<text class="t m" data-en="🏫 Main gate — ALB" x="370" y="150">🏫 मुख्य गेट — ALB</text>
-<text class="s m" data-en="built by the controller" x="370" y="172">controller ने बांधलेले</text>
+<text class="t m" x="370" y="150">🏫 Main gate — ALB</text>
+<text class="s m" x="370" y="172">built by the controller</text>
 <rect class="box" height="80" rx="12" width="150" x="540" y="120"></rect>
 <text class="t m" x="615" y="153">🪧 path?</text>
-<text class="s m" data-en="the signboard" x="615" y="175">दिशादर्शक फलक</text>
+<text class="s m" x="615" y="175">the signboard</text>
 <rect class="box" height="80" rx="12" width="180" x="740" y="40"></rect>
 <text class="t m" x="830" y="70">☎️ analytics svc</text>
 <text class="s m" x="830" y="92">/analytics/*</text>
 <rect class="box" height="80" rx="12" width="180" x="740" y="200"></rect>
 <text class="t m" x="830" y="230">☎️ school-api svc</text>
-<text class="s m" data-en="/* everything else" x="830" y="252">/* बाकी सगळे</text>
+<text class="s m" x="830" y="252">/* everything else</text>
 <line class="arr" x1="200" x2="266" y1="160" y2="160"></line>
 <g transform="translate(233,143)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="470" x2="536" y1="160" y2="160"></line>
@@ -531,312 +524,295 @@ git checkout lesson-01-containers   # then open lessons/01-containers/README.md<
 <g transform="translate(713,105)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 <line class="arr" x1="690" x2="736" y1="180" y2="230"></line>
 <g transform="translate(713,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
-<text class="s m" data-en="specific paths first (/analytics before /) · health-checks reuse lesson 07's /healthz · one gate = one bill + one TLS setup" x="470" y="300">विशिष्ट paths आधी (/analytics आधी, / नंतर) · health-checks धडा 07 चे /healthz पुन्हा वापरतात · एक गेट = एक बिल + एक TLS setup</text>
+<text class="s m" x="470" y="300">specific paths first (/analytics before /) · health-checks reuse lesson 07's /healthz · one gate = one bill + one TLS setup</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md"&gt;Read full lesson 10 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">संपूर्ण धडा 10 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-10-ingress/lessons/10-ingress/README.md">Read full lesson 10 →</a></p>
 </section>
 <section class="dsec" id="l11" style="--c:#ea580c">
-<h2 data-en='&lt;span class="ln"&gt;11&lt;/span&gt; ⚽ Rollouts — substitute one player at a time, keep the bench'><span class="ln">11</span> ⚽ Rollouts — एका वेळी एक खेळाडू बदला, बेंच ठेवा</h2>
-<p class="d" data-en="A full team is always on the field; the old version stays benched for instant rollback.">मैदानावर नेहमी पूर्ण संघ; जुनी आवृत्ती तात्काळ rollback साठी बेंचवर राहते.</p>
+<h2><span class="ln">11</span> ⚽ Rollouts — substitute one player at a time, keep the bench</h2>
+<p class="d">A full team is always on the field; the old version stays benched for instant rollback.</p>
 <svg aria-label="During a rolling update a new pod warms up and only replaces an old one when ready; the old ReplicaSet stays for rollback" role="img" viewbox="0 0 940 330">
 <rect class="box" height="200" rx="14" width="250" x="30" y="50"></rect>
-<text class="t m" data-en="⏱️ during rollout" x="155" y="80">⏱️ rollout दरम्यान</text>
-<rect class="soft" height="40" rx="8" width="200" x="55" y="100"></rect><text class="s m" data-en="🪑 v1 pod — playing ✅" x="155" y="125">🪑 v1 pod — खेळतोय ✅</text>
-<rect class="soft" height="40" rx="8" width="200" x="55" y="150"></rect><text class="s m" data-en="🪑 v1 pod — playing ✅" x="155" y="175">🪑 v1 pod — खेळतोय ✅</text>
-<rect class="dead" height="40" rx="8" width="200" x="55" y="200"></rect><text class="s m" data-en="🏃 v2 pod — warming up" x="155" y="225">🏃 v2 pod — सराव करतोय</text>
+<text class="t m" x="155" y="80">⏱️ during rollout</text>
+<rect class="soft" height="40" rx="8" width="200" x="55" y="100"></rect><text class="s m" x="155" y="125">🪑 v1 pod — playing ✅</text>
+<rect class="soft" height="40" rx="8" width="200" x="55" y="150"></rect><text class="s m" x="155" y="175">🪑 v1 pod — playing ✅</text>
+<rect class="dead" height="40" rx="8" width="200" x="55" y="200"></rect><text class="s m" x="155" y="225">🏃 v2 pod — warming up</text>
 <g transform="translate(300,220)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
-<text class="s m" data-en="maxSurge: 1 extra allowed" x="330" y="255">maxSurge: 1 जादा चालतो</text>
+<text class="s m" x="330" y="255">maxSurge: 1 extra allowed</text>
 <rect class="box" height="110" rx="12" width="230" x="420" y="50"></rect>
-<text class="t m" data-en="🙋 readiness gate" x="535" y="85">🙋 readiness गेट</text>
-<text class="s m" data-en="v2 gets traffic ONLY" x="535" y="107">v2 ला traffic फक्त</text>
-<text class="s m" data-en="after /readyz says yes" x="535" y="127">/readyz हो म्हणाल्यावर</text>
+<text class="t m" x="535" y="85">🙋 readiness gate</text>
+<text class="s m" x="535" y="107">v2 gets traffic ONLY</text>
+<text class="s m" x="535" y="127">after /readyz says yes</text>
 <g transform="translate(535,145)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
 <rect class="box" height="110" rx="12" width="200" x="710" y="50"></rect>
-<text class="t m" data-en="✅ done — all v2" x="810" y="80">✅ झाले — सगळे v2</text>
-<text class="s m" data-en="old pods left one by one," x="810" y="102">जुने pods एकेक करून गेले,</text>
-<text class="s m" data-en="never below full team" x="810" y="122">पूर्ण संघाखाली कधीच नाही</text>
+<text class="t m" x="810" y="80">✅ done — all v2</text>
+<text class="s m" x="810" y="102">old pods left one by one,</text>
+<text class="s m" x="810" y="122">never below full team</text>
 <g transform="translate(810,140)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 <rect class="dead" height="70" rx="12" width="490" x="420" y="210"></rect>
-<text class="t m" data-en="🪑 old ReplicaSet v1 — scaled to 0, kept on the bench" x="665" y="238">🪑 जुना ReplicaSet v1 — 0 वर, बेंचवर ठेवलेला</text>
-<text class="s m" data-en='kubectl rollout undo = "come back on!" — a 10-second rollback' x="665" y="260">kubectl rollout undo = "परत ये!" — 10 सेकंदांचा rollback</text>
+<text class="t m" x="665" y="238">🪑 old ReplicaSet v1 — scaled to 0, kept on the bench</text>
+<text class="s m" x="665" y="260">kubectl rollout undo = "come back on!" — a 10-second rollback</text>
 <line class="arr" x1="280" x2="416" y1="105" y2="105"></line>
 <line class="arr" x1="650" x2="706" y1="105" y2="105"></line>
 <line class="arr dash" x1="665" x2="665" y1="210" y2="165"></line>
 <g transform="translate(690,188)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md"&gt;Read full lesson 11 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">संपूर्ण धडा 11 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-11-rollouts/lessons/11-rollouts/README.md">Read full lesson 11 →</a></p>
 </section>
 <section class="dsec" id="l12" style="--c:#ea580c">
-<h2 data-en='&lt;span class="ln"&gt;12&lt;/span&gt; 📚 Storage — backpacks vanish, library shelves survive'><span class="ln">12</span> 📚 Storage — दप्तरे नाहीशी होतात, ग्रंथालयाची कपाटे टिकतात</h2>
-<p class="d" data-en="A PVC gives disposable pods a durable shelf; this repo goes one further and rents the library (RDS).">PVC टाकाऊ pods ना टिकाऊ कपाट देते; हा रेपो एक पाऊल पुढे जाऊन ग्रंथालयच भाड्याने घेतो (RDS).</p>
+<h2><span class="ln">12</span> 📚 Storage — backpacks vanish, library shelves survive</h2>
+<p class="d">A PVC gives disposable pods a durable shelf; this repo goes one further and rents the library (RDS).</p>
 <svg aria-label="A dying pod's claim survives; a new pod using the same claim finds the same data; the app pods use external RDS" role="img" viewbox="0 0 940 330">
 <rect class="dead" height="80" rx="12" width="190" x="40" y="50"></rect>
 <text class="t m" x="135" y="82">🪑 postgres pod v1</text>
-<text class="s m" data-en="💥 dies (backpack gone)" x="135" y="104">💥 मरतो (दप्तर गेले)</text>
+<text class="s m" x="135" y="104">💥 dies (backpack gone)</text>
 <rect class="box" height="80" rx="12" width="190" x="40" y="200"></rect>
 <text class="t m" x="135" y="232">🪑 postgres pod v2</text>
-<text class="s m" data-en="new desk, same books" x="135" y="254">नवा बाक, तीच पुस्तके</text>
+<text class="s m" x="135" y="254">new desk, same books</text>
 <rect class="box" height="80" rx="12" width="190" x="330" y="125"></rect>
 <text class="t m" x="425" y="157">📝 PVC</text>
-<text class="s m" data-en='"I claim 10 Gi of shelf"' x="425" y="179">"मला 10 Gi कपाट हवे"</text>
+<text class="s m" x="425" y="179">"I claim 10 Gi of shelf"</text>
 <rect class="box" height="80" rx="12" width="200" x="590" y="125"></rect>
-<text class="t m" data-en="📚 PV = EBS disk" x="690" y="152">📚 PV = EBS डिस्क</text>
-<text class="s m" data-en="outlives every pod" x="690" y="174">प्रत्येक pod पेक्षा जास्त जगते</text>
+<text class="t m" x="690" y="152">📚 PV = EBS disk</text>
+<text class="s m" x="690" y="174">outlives every pod</text>
 <line class="arr dash" x1="230" x2="326" y1="105" y2="150"></line>
 <g transform="translate(278,110)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="230" x2="326" y1="230" y2="180"></line>
 <g transform="translate(278,222)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="same claim → same data" x="278" y="260">तोच claim → तोच डेटा</text>
+<text class="s m" x="278" y="260">same claim → same data</text>
 <line class="arr" x1="520" x2="586" y1="165" y2="165"></line>
 <g transform="translate(553,148)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 <rect class="box" height="80" rx="12" width="290" x="620" y="235"></rect>
-<text class="t m" data-en="🏛️ RDS — the rented library" x="765" y="265">🏛️ RDS — भाड्याचे ग्रंथालय</text>
-<text class="s m" data-en="what THIS repo uses (terraform/rds.tf)" x="765" y="287">हा रेपो जे वापरतो (terraform/rds.tf)</text>
+<text class="t m" x="765" y="265">🏛️ RDS — the rented library</text>
+<text class="s m" x="765" y="287">what THIS repo uses (terraform/rds.tf)</text>
 <g transform="translate(600,275)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
-<text class="s m" data-en="rule of thumb: stateless pods in the cluster, state in managed services outside" x="300" y="305">अंगठ्याचा नियम: stateless pods cluster मध्ये, state बाहेरच्या managed सेवांमध्ये</text>
+<text class="s m" x="300" y="305">rule of thumb: stateless pods in the cluster, state in managed services outside</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md"&gt;Read full lesson 12 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">संपूर्ण धडा 12 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-12-storage/lessons/12-storage/README.md">Read full lesson 12 →</a></p>
 </section>
 <section class="dsec" id="l13" style="--c:#16a34a">
-<h2 data-en='&lt;span class="ln"&gt;13&lt;/span&gt; 🏢 Under the hood — what &lt;code&gt;kubectl apply&lt;/code&gt; really does'><span class="ln">13</span> 🏢 पडद्यामागे — <code>kubectl apply</code> खरोखर काय करते</h2>
-<p class="d" data-en="Five office roles, one register, one endless loop: wish → record → reconcile → run → report.">कार्यालयातील पाच भूमिका, एक रजिस्टर, एक न संपणारा लूप: इच्छा → नोंद → जुळवणी → चालवणे → अहवाल.</p>
+<h2><span class="ln">13</span> 🏢 Under the hood — what <code>kubectl apply</code> really does</h2>
+<p class="d">Five office roles, one register, one endless loop: wish → record → reconcile → run → report.</p>
 <svg aria-label="kubectl talks to the API server which writes to etcd; controllers create pods, the scheduler assigns nodes, kubelet runs containers and reports back" role="img" viewbox="0 0 940 360">
 <rect class="box" height="80" rx="12" width="160" x="30" y="40"></rect>
 <text class="t m" x="110" y="72">🧑 kubectl</text>
-<text class="s m" data-en='"I wish: 2 pods"' x="110" y="94">"माझी इच्छा: 2 pods"</text>
+<text class="s m" x="110" y="94">"I wish: 2 pods"</text>
 <rect class="box" height="80" rx="12" width="190" x="270" y="40"></rect>
 <text class="t m" x="365" y="72">🧑‍💼 API server</text>
-<text class="s m" data-en="the ONLY door" x="365" y="94">एकमेव दार</text>
+<text class="s m" x="365" y="94">the ONLY door</text>
 <rect class="box" height="80" rx="12" width="160" x="540" y="40"></rect>
 <text class="t m" x="620" y="72">📖 etcd</text>
-<text class="s m" data-en="the sacred register" x="620" y="94">पवित्र रजिस्टर</text>
+<text class="s m" x="620" y="94">the sacred register</text>
 <rect class="box" height="80" rx="12" width="190" x="270" y="200"></rect>
 <text class="t m" x="365" y="232">🔍 controllers</text>
-<text class="s m" data-en="wish ≠ reality? fix it" x="365" y="254">इच्छा ≠ वास्तव? दुरुस्त करा</text>
+<text class="s m" x="365" y="254">wish ≠ reality? fix it</text>
 <rect class="box" height="80" rx="12" width="160" x="540" y="200"></rect>
 <text class="t m" x="620" y="232">🗓️ scheduler</text>
-<text class="s m" data-en="picks the best node" x="620" y="254">सर्वोत्तम node निवडतो</text>
+<text class="s m" x="620" y="254">picks the best node</text>
 <rect class="box" height="80" rx="12" width="160" x="750" y="200"></rect>
 <text class="t m" x="830" y="232">🧑‍🏫 kubelet</text>
-<text class="s m" data-en="runs it on the node" x="830" y="254">node वर चालवतो</text>
+<text class="s m" x="830" y="254">runs it on the node</text>
 <line class="arr" x1="190" x2="266" y1="80" y2="80"></line>
 <g transform="translate(228,63)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="460" x2="536" y1="80" y2="80"></line>
 <g transform="translate(498,63)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="wish written down" x="498" y="110">इच्छा नोंदवली</text>
+<text class="s m" x="498" y="110">wish written down</text>
 <line class="arr" x1="365" x2="365" y1="196" y2="124"></line>
 <g transform="translate(348,160)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="sees Deployment →" x="255" y="165">Deployment पाहतो →</text>
-<text class="s m" data-en="creates Pods (unassigned)" x="255" y="183">Pods बनवतो (न नेमलेले)</text>
+<text class="s m" x="255" y="165">sees Deployment →</text>
+<text class="s m" x="255" y="183">creates Pods (unassigned)</text>
 <line class="arr" x1="620" x2="620" y1="196" y2="124"></line>
 <g transform="translate(603,160)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
-<text class="s m" data-en="assigns each pod" x="700" y="165">प्रत्येक pod ला</text>
-<text class="s m" data-en="a node" x="700" y="183">एक node नेमतो</text>
+<text class="s m" x="700" y="165">assigns each pod</text>
+<text class="s m" x="700" y="183">a node</text>
 <line class="arr" x1="750" x2="704" y1="240" y2="240"></line>
 <g transform="translate(727,223)"><circle class="nc" r="11"></circle><text class="nt" dy="4">5</text></g>
 <line class="arr dash" x1="830" x2="464" y1="200" y2="90"></line>
 <g transform="translate(650,140)"><circle class="nc" r="11"></circle><text class="nt" dy="4">6</text></g>
-<text class="s m" data-en='5: kubelet pulls the image 🍱, starts the container, runs the probes 🙋 · 6: "running &amp;amp; ready" reported back → kubectl get pods shows 2/2 🎉' x="470" y="330">5: kubelet इमेज ओढतो 🍱, कंटेनर सुरू करतो, probes चालवतो 🙋 · 6: "running &amp; ready" परत कळवले → kubectl get pods 2/2 दाखवते 🎉</text>
+<text class="s m" x="470" y="330">5: kubelet pulls the image 🍱, starts the container, runs the probes 🙋 · 6: "running &amp; ready" reported back → kubectl get pods shows 2/2 🎉</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md"&gt;Read full lesson 13 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">संपूर्ण धडा 13 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-13-under-the-hood/lessons/13-under-the-hood/README.md">Read full lesson 13 →</a></p>
 </section>
 <section class="dsec" id="l14" style="--c:#16a34a">
-<h2 data-en='&lt;span class="ln"&gt;14&lt;/span&gt; 🤖 Bonus: CI/CD &amp;amp; GitOps — the homework robot and the caretaker robot'><span class="ln">14</span> 🤖 बोनस: CI/CD &amp; GitOps — गृहपाठ रोबोट आणि केअरटेकर रोबोट</h2>
-<p class="d" data-en="CI tests &amp;amp; builds on every push; ArgoCD lives inside the cluster and keeps it matching the plan book (git).">CI प्रत्येक push वर test &amp; build करतो; ArgoCD cluster च्या आत राहतो आणि तो प्लॅन-वहीशी (git) जुळता ठेवतो.</p>
+<h2><span class="ln">14</span> 🤖 Bonus: CI/CD &amp; GitOps — the homework robot and the caretaker robot</h2>
+<p class="d">CI tests &amp; builds on every push; ArgoCD lives inside the cluster and keeps it matching the plan book (git).</p>
 <svg aria-label="git push triggers CI to test, build and store the image; git holds the manifests; ArgoCD pulls from git and syncs and self-heals the cluster" role="img" viewbox="0 0 940 360">
 <rect class="box" height="80" rx="12" width="150" x="30" y="40"></rect>
-<text class="t m" data-en="🧑‍💻 dev" x="105" y="72">🧑‍💻 डेव्हलपर</text>
+<text class="t m" x="105" y="72">🧑‍💻 dev</text>
 <text class="s m" x="105" y="94">git push</text>
 <rect class="box" height="130" rx="14" width="330" x="250" y="40"></rect>
-<text class="t m" data-en="📮 Robot 1 — CI pipeline" x="415" y="68">📮 रोबोट 1 — CI pipeline</text>
-<text class="s m" data-en="✅ test → 🍱 build → 🗄️ push to ECR" x="415" y="95">✅ test → 🍱 build → 🗄️ ECR वर push</text>
-<text class="s m" data-en="→ ✍️ manual approval" x="415" y="117">→ ✍️ हाताने मंजुरी</text>
+<text class="t m" x="415" y="68">📮 Robot 1 — CI pipeline</text>
+<text class="s m" x="415" y="95">✅ test → 🍱 build → 🗄️ push to ECR</text>
+<text class="s m" x="415" y="117">→ ✍️ manual approval</text>
 <rect class="box" height="80" rx="12" width="330" x="250" y="240"></rect>
-<text class="t m" data-en="📖 git repo — the master plan" x="415" y="270">📖 git रेपो — मास्टर प्लॅन</text>
-<text class="s m" data-en="k8s/ manifests = single source of truth" x="415" y="292">k8s/ manifests = सत्याचा एकमेव स्रोत</text>
+<text class="t m" x="415" y="270">📖 git repo — the master plan</text>
+<text class="s m" x="415" y="292">k8s/ manifests = single source of truth</text>
 <rect class="box" height="260" rx="14" width="250" x="660" y="60"></rect>
 <text class="t m" x="785" y="90">🏫 Kubernetes cluster</text>
 <rect class="soft" height="80" rx="10" width="200" x="685" y="110"></rect>
-<text class="t m" data-en="🤖 Robot 2 — ArgoCD" x="785" y="140">🤖 रोबोट 2 — ArgoCD</text>
-<text class="s m" data-en="lives INSIDE, no outside key" x="785" y="162">आत राहतो, बाहेरची किल्ली नाही</text>
+<text class="t m" x="785" y="140">🤖 Robot 2 — ArgoCD</text>
+<text class="s m" x="785" y="162">lives INSIDE, no outside key</text>
 <rect class="soft" height="60" rx="10" width="200" x="685" y="210"></rect>
-<text class="s m" data-en="🪑 school pods" x="785" y="245">🪑 शाळेचे pods</text>
+<text class="s m" x="785" y="245">🪑 school pods</text>
 <line class="arr" x1="180" x2="246" y1="80" y2="80"></line>
 <g transform="translate(213,63)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <line class="arr" x1="415" x2="415" y1="170" y2="236"></line>
 <g transform="translate(398,203)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
-<text class="s m" data-en="CI commits the new image tag" x="300" y="207">CI नवा image tag commit करतो</text>
+<text class="s m" x="300" y="207">CI commits the new image tag</text>
 <line class="arr" marker-end="url(#arw)" x1="685" x2="580" y1="150" y2="270"></line>
 <g transform="translate(630,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="pulls &amp;amp; compares every ~3 min" x="655" y="245">दर ~3 मिनिटांनी ओढतो &amp; तुलना करतो</text>
+<text class="s m" x="655" y="245">pulls &amp; compares every ~3 min</text>
 <line class="arr" x1="785" x2="785" y1="190" y2="206"></line>
 <g transform="translate(810,198)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
-<text class="s m" data-en="4: sync + self-heal — hand-edits get reverted, deploys = git commits, rollback = git revert · the book always wins 📖" x="470" y="345">4: sync + self-heal — हाताने केलेले बदल परत फिरवले जातात, deploy = git commit, rollback = git revert · वही नेहमी जिंकते 📖</text>
+<text class="s m" x="470" y="345">4: sync + self-heal — hand-edits get reverted, deploys = git commits, rollback = git revert · the book always wins 📖</text>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md"&gt;Read full lesson 14 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">संपूर्ण धडा 14 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-14-deploy-gitops/lessons/14-deploy-gitops/README.md">Read full lesson 14 →</a></p>
 </section>
 <section class="dsec" id="l15" style="--c:#0d9488">
-<h2 data-en='&lt;span class="ln"&gt;15&lt;/span&gt; 🏫🏫 Bonus: Multi-AZ &amp;amp; the scaling ladder'><span class="ln">15</span> 🏫🏫 बोनस: Multi-AZ &amp; scaling ची शिडी</h2>
-<p class="d" data-en="Never seat the whole class in one building — and climb the cheapest rung first on exam day.">संपूर्ण वर्ग कधीच एका इमारतीत बसवू नका — आणि परीक्षेच्या दिवशी आधी सर्वात स्वस्त पायरी चढा.</p>
+<h2><span class="ln">15</span> 🏫🏫 Bonus: Multi-AZ &amp; the scaling ladder</h2>
+<p class="d">Never seat the whole class in one building — and climb the cheapest rung first on exam day.</p>
 <svg aria-label="An ALB sends traffic to nodes spread across two availability zones; the scaling ladder: HPA adds pods, cluster autoscaler adds nodes, topology spread crosses buildings, PDB keeps a minimum" role="img" viewbox="0 0 940 330">
 <rect class="box" height="60" rx="12" width="330" x="300" y="30"></rect>
-<text class="t m" data-en="🌍 ALB — stands outside all buildings" x="465" y="55">🌍 ALB — सर्व इमारतींबाहेर उभा</text>
-<text class="s m" data-en="sends visitors wherever is healthy" x="465" y="77">पाहुण्यांना जिथे निरोगी असेल तिथे पाठवतो</text>
+<text class="t m" x="465" y="55">🌍 ALB — stands outside all buildings</text>
+<text class="s m" x="465" y="77">sends visitors wherever is healthy</text>
 <rect class="soft" height="160" rx="12" width="360" x="50" y="130"></rect>
-<text class="t m" data-en="🏫 building A — AZ a" x="230" y="158">🏫 इमारत A — AZ a</text>
+<text class="t m" x="230" y="158">🏫 building A — AZ a</text>
 <rect class="box" height="95" rx="10" width="150" x="75" y="175"></rect>
-<text class="s m" data-en="🖥️ desk" x="150" y="205">🖥️ बाक</text>
+<text class="s m" x="150" y="205">🖥️ desk</text>
 <text class="s m" x="150" y="227">🪑 api-1</text>
 <text class="s m" x="150" y="249">🪑 analytics-1</text>
 <rect class="dead" height="95" rx="10" width="145" x="245" y="175"></rect>
-<text class="s m" data-en="🖥️ new desk" x="317" y="205">🖥️ नवा बाक</text>
-<text class="s m" data-en="added by the" x="317" y="227">autoscaler ने</text>
-<text class="s m" data-en="autoscaler" x="317" y="249">जोडलेला</text>
+<text class="s m" x="317" y="205">🖥️ new desk</text>
+<text class="s m" x="317" y="227">added by the</text>
+<text class="s m" x="317" y="249">autoscaler</text>
 <g transform="translate(245,175)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g>
 <rect class="soft" height="160" rx="12" width="270" x="440" y="130"></rect>
-<text class="t m" data-en="🏫 building B — AZ b" x="575" y="158">🏫 इमारत B — AZ b</text>
+<text class="t m" x="575" y="158">🏫 building B — AZ b</text>
 <rect class="box" height="95" rx="10" width="220" x="465" y="175"></rect>
-<text class="s m" data-en="🖥️ desk" x="575" y="205">🖥️ बाक</text>
+<text class="s m" x="575" y="205">🖥️ desk</text>
 <text class="s m" x="575" y="227">🪑 api-2 · 🪑 analytics-2</text>
 <line class="arr" x1="400" x2="250" y1="90" y2="126"></line>
 <line class="arr" x1="530" x2="580" y1="90" y2="126"></line>
 <line class="arr dash" x1="230" x2="560" y1="295" y2="295"></line>
 <g transform="translate(395,295)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
-<text class="s m" data-en="topology spread: copies across buildings — one fire ≠ down" x="395" y="322">topology spread: प्रती इमारतींमध्ये विभागलेल्या — एक आग ≠ सगळे बंद</text>
+<text class="s m" x="395" y="322">topology spread: copies across buildings — one fire ≠ down</text>
 <g transform="translate(150,160)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g>
 <rect class="soft" height="200" rx="12" width="180" x="740" y="110"></rect>
-<text class="t m" data-en="🪜 the ladder" x="830" y="140">🪜 शिडी</text>
-<text class="s m" data-en="1 HPA: more pods — seconds" x="830" y="168">1 HPA: जास्त pods — सेकंद</text>
-<text class="s m" data-en="2 autoscaler: more desks — minutes" x="830" y="192">2 autoscaler: जास्त बाक — मिनिटे</text>
-<text class="s m" data-en="3 spread: across buildings" x="830" y="216">3 spread: इमारतींमध्ये</text>
-<text class="s m" data-en="4 PDB: never all away at once" x="830" y="240">4 PDB: सगळे एकदम कधीच दूर नाहीत</text>
-<text class="s m" data-en="Pending pods = kids standing —" x="830" y="272">Pending pods = उभी मुले —</text>
-<text class="s m" data-en="the autoscaler's signal" x="830" y="292">autoscaler चा इशारा</text>
+<text class="t m" x="830" y="140">🪜 the ladder</text>
+<text class="s m" x="830" y="168">1 HPA: more pods — seconds</text>
+<text class="s m" x="830" y="192">2 autoscaler: more desks — minutes</text>
+<text class="s m" x="830" y="216">3 spread: across buildings</text>
+<text class="s m" x="830" y="240">4 PDB: never all away at once</text>
+<text class="s m" x="830" y="272">Pending pods = kids standing —</text>
+<text class="s m" x="830" y="292">the autoscaler's signal</text>
 <g transform="translate(740,110)"><circle class="nc" r="11"></circle><text class="nt" dy="4">4</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md"&gt;Read full lesson 15 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">संपूर्ण धडा 15 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-15-multi-az-scaling/lessons/15-multi-az-scaling/README.md">Read full lesson 15 →</a></p>
 </section>
 <!-- 16 -->
 <section class="dsec" id="l16" style="--c:#be123c">
-<h2 data-en="&lt;span class=&quot;ln&quot;&gt;16&lt;/span&gt; 🩺 Debugging — the nurse's triage chart"><span class="ln">16</span> 🩺 Debugging — नर्सचा triage तक्ता</h2>
-<p class="d" data-en="Whatever walks in: describe first, Events always, logs --previous for crash loops.">जो कोणी आत येईल: आधी describe, Events नेहमी, crash loop साठी logs --previous.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="80" rx="12" width="170" x="40" y="110"></rect><text class="t m" data-en="🤒 sick pod" x="125" y="145">🤒 आजारी pod</text><text class="s m" data-en="something is wrong" x="125" y="170">काहीतरी बिघडले आहे</text><rect class="box" height="100" rx="12" width="220" x="280" y="100"></rect><text class="t m" data-en="🩺 the nurse asks:" x="390" y="135">🩺 नर्स विचारते:</text><text class="s m" x="390" y="160">1 describe → EVENTS</text><text class="s m" x="390" y="182">2 logs --previous · 3 exec</text><line class="arr" x1="210" x2="276" y1="150" y2="150"></line><g transform="translate(243,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><rect class="soft" height="55" rx="10" width="330" x="580" y="30"></rect><text class="s m" data-en="Pending 🪑 — no desk fits: requests? taints?" x="745" y="52">Pending 🪑 — कोणताच बाक बसत नाही: requests? taints?</text><text class="s m" data-en="cluster full? (L08 · L15 · L20)" x="745" y="74">cluster भरला? (L08 · L15 · L20)</text><rect class="soft" height="55" rx="10" width="330" x="580" y="95"></rect><text class="s m" data-en="ImagePullBackOff 🍱 — wrong label, missing" x="745" y="117">ImagePullBackOff 🍱 — चुकीचे label, tag</text><text class="s m" data-en="tag, or no registry permission (AWS L05)" x="745" y="139">नाही, किंवा registry परवानगी नाही (AWS L05)</text><rect class="soft" height="55" rx="10" width="330" x="580" y="160"></rect><text class="s m" data-en="CrashLoopBackOff 💥 — starts, dies, repeats:" x="745" y="182">CrashLoopBackOff 💥 — सुरू होतो, मरतो, पुन्हा:</text><text class="s m" data-en="logs --previous first, then config (L06)" x="745" y="204">आधी logs --previous, मग config (L06)</text><rect class="soft" height="55" rx="10" width="330" x="580" y="225"></rect><text class="s m" data-en="OOMKilled 🫃 / Service silent ☎️ — limit hit," x="745" y="247">OOMKilled 🫃 / Service गप्प ☎️ — limit ओलांडली,</text><text class="s m" data-en="or selector ≠ labels: get endpointslices (L04)" x="745" y="269">किंवा selector ≠ labels: get endpointslices (L04)</text><line class="arr" x1="500" x2="576" y1="150" y2="150"></line><g transform="translate(538,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" data-en="match the symptom" x="538" y="180">लक्षण जुळवा</text><text class="s m" data-en="the drill never changes:" x="300" y="250">सराव कधीच बदलत नाही:</text><text class="s m" x="300" y="272">describe → logs → events → exec</text><g transform="translate(160,261)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">16</span> 🩺 Debugging — the nurse's triage chart</h2>
+<p class="d">Whatever walks in: describe first, Events always, logs --previous for crash loops.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="80" rx="12" width="170" x="40" y="110"></rect><text class="t m" x="125" y="145">🤒 sick pod</text><text class="s m" x="125" y="170">something is wrong</text><rect class="box" height="100" rx="12" width="220" x="280" y="100"></rect><text class="t m" x="390" y="135">🩺 the nurse asks:</text><text class="s m" x="390" y="160">1 describe → EVENTS</text><text class="s m" x="390" y="182">2 logs --previous · 3 exec</text><line class="arr" x1="210" x2="276" y1="150" y2="150"></line><g transform="translate(243,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><rect class="soft" height="55" rx="10" width="330" x="580" y="30"></rect><text class="s m" x="745" y="52">Pending 🪑 — no desk fits: requests? taints?</text><text class="s m" x="745" y="74">cluster full? (L08 · L15 · L20)</text><rect class="soft" height="55" rx="10" width="330" x="580" y="95"></rect><text class="s m" x="745" y="117">ImagePullBackOff 🍱 — wrong label, missing</text><text class="s m" x="745" y="139">tag, or no registry permission (AWS L05)</text><rect class="soft" height="55" rx="10" width="330" x="580" y="160"></rect><text class="s m" x="745" y="182">CrashLoopBackOff 💥 — starts, dies, repeats:</text><text class="s m" x="745" y="204">logs --previous first, then config (L06)</text><rect class="soft" height="55" rx="10" width="330" x="580" y="225"></rect><text class="s m" x="745" y="247">OOMKilled 🫃 / Service silent ☎️ — limit hit,</text><text class="s m" x="745" y="269">or selector ≠ labels: get endpointslices (L04)</text><line class="arr" x1="500" x2="576" y1="150" y2="150"></line><g transform="translate(538,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" x="538" y="180">match the symptom</text><text class="s m" x="300" y="250">the drill never changes:</text><text class="s m" x="300" y="272">describe → logs → events → exec</text><g transform="translate(160,261)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md"&gt;Read full lesson 16 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">संपूर्ण धडा 16 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-16-debugging/lessons/16-debugging/README.md">Read full lesson 16 →</a></p>
 </section>
 <!-- 17 -->
 <section class="dsec" id="l17" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;17&lt;/span&gt; 🪪 RBAC — hall passes'><span class="ln">17</span> 🪪 RBAC — हॉल पास</h2>
-<p class="d" data-en="Roles are passes, bindings hand them over, ServiceAccounts are the robots' cards.">Roles म्हणजे पास, bindings ते सोपवतात, ServiceAccounts म्हणजे रोबोटची ओळखपत्रे.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="100" rx="12" width="220" x="40" y="100"></rect><text class="t m" data-en="👥 who" x="150" y="135">👥 कोण</text><text class="s m" data-en="person · group ·" x="150" y="160">व्यक्ती · गट ·</text><text class="s m" data-en="🤖 ServiceAccount (pod card)" x="150" y="182">🤖 ServiceAccount (pod चे कार्ड)</text><rect class="box" height="100" rx="12" width="200" x="330" y="100"></rect><text class="t m" x="430" y="135">🔗 RoleBinding</text><text class="s m" data-en="hands the pass over" x="430" y="160">पास सोपवतो</text><rect class="box" height="90" rx="12" width="310" x="600" y="40"></rect><text class="t m" data-en="🪪 Role — one room" x="755" y="72">🪪 Role — एक खोली</text><text class="s m" data-en="get/list pods in school" x="755" y="96">school मध्ये get/list pods</text><rect class="box" height="90" rx="12" width="310" x="600" y="160"></rect><text class="t m" data-en="🏫 ClusterRole — whole building" x="755" y="192">🏫 ClusterRole — संपूर्ण इमारत</text><text class="s m" x="755" y="216">view · edit · admin · cluster-admin 🗝️</text><line class="arr" x1="260" x2="326" y1="150" y2="150"></line><g transform="translate(293,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="530" x2="596" y1="130" y2="90"></line><line class="arr" x1="530" x2="596" y1="170" y2="200"></line><g transform="translate(563,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" data-en="the API server checks the pass on EVERY request — no pass, no entry · test: kubectl auth can-i --as=…" x="475" y="275">API server प्रत्येक विनंतीवर पास तपासतो — पास नाही, प्रवेश नाही · तपासा: kubectl auth can-i --as=…</text><g transform="translate(105,275)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">17</span> 🪪 RBAC — hall passes</h2>
+<p class="d">Roles are passes, bindings hand them over, ServiceAccounts are the robots' cards.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="100" rx="12" width="220" x="40" y="100"></rect><text class="t m" x="150" y="135">👥 who</text><text class="s m" x="150" y="160">person · group ·</text><text class="s m" x="150" y="182">🤖 ServiceAccount (pod card)</text><rect class="box" height="100" rx="12" width="200" x="330" y="100"></rect><text class="t m" x="430" y="135">🔗 RoleBinding</text><text class="s m" x="430" y="160">hands the pass over</text><rect class="box" height="90" rx="12" width="310" x="600" y="40"></rect><text class="t m" x="755" y="72">🪪 Role — one room</text><text class="s m" x="755" y="96">get/list pods in school</text><rect class="box" height="90" rx="12" width="310" x="600" y="160"></rect><text class="t m" x="755" y="192">🏫 ClusterRole — whole building</text><text class="s m" x="755" y="216">view · edit · admin · cluster-admin 🗝️</text><line class="arr" x1="260" x2="326" y1="150" y2="150"></line><g transform="translate(293,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="530" x2="596" y1="130" y2="90"></line><line class="arr" x1="530" x2="596" y1="170" y2="200"></line><g transform="translate(563,133)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" x="475" y="275">the API server checks the pass on EVERY request — no pass, no entry · test: kubectl auth can-i --as=…</text><g transform="translate(105,275)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md"&gt;Read full lesson 17 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">संपूर्ण धडा 17 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-17-rbac/lessons/17-rbac/README.md">Read full lesson 17 →</a></p>
 </section>
 <!-- 18 -->
 <section class="dsec" id="l18" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;18&lt;/span&gt; ⏰ Jobs &amp;amp; CronJobs — homework and the bell'><span class="ln">18</span> ⏰ Jobs &amp; CronJobs — गृहपाठ आणि घंटा</h2>
-<p class="d" data-en="The bell creates homework; homework creates a kid; the kid finishes and that's the point.">घंटा गृहपाठ तयार करते; गृहपाठ एक मूल तयार करतो; मूल पूर्ण करते आणि तोच मुद्दा.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="230" x="40" y="100"></rect><text class="t m" x="155" y="135">🔔 CronJob</text><text class="s m" x="155" y="160">schedule: 0 2 * * *</text><text class="s m" data-en="suspend: true = off-switch" x="155" y="182">suspend: true = बंद-बटण</text><rect class="box" height="110" rx="12" width="200" x="350" y="100"></rect><text class="t m" x="450" y="135">📝 Job</text><text class="s m" data-en="tonight's homework" x="450" y="160">आजचा गृहपाठ</text><text class="s m" data-en="backoffLimit: 2 retries" x="450" y="182">backoffLimit: 2 पुन्हा-प्रयत्न</text><rect class="box" height="110" rx="12" width="180" x="630" y="100"></rect><text class="t m" x="720" y="135">🪑 pod</text><text class="s m" x="720" y="160">pg_dump → upload</text><text class="s m" data-en="then EXITS 0" x="720" y="182">मग EXIT 0</text><line class="arr" x1="270" x2="346" y1="155" y2="155"></line><g transform="translate(308,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><text class="s m" data-en="on schedule" x="308" y="185">वेळापत्रकानुसार</text><line class="arr" x1="550" x2="626" y1="155" y2="155"></line><g transform="translate(588,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="45" rx="10" width="760" x="90" y="240"></rect><text class="s m" data-en="✅ Completed — kept for autopsy, tidied by history limits 🧹 · fire one now: kubectl create job --from=cronjob/school-db-backup" x="470" y="268">✅ Completed — तपासणीसाठी ठेवलेला, history limits ने आवरलेला 🧹 · आत्ता एक चालवा: kubectl create job --from=cronjob/school-db-backup</text><g transform="translate(90,240)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">18</span> ⏰ Jobs &amp; CronJobs — homework and the bell</h2>
+<p class="d">The bell creates homework; homework creates a kid; the kid finishes and that's the point.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="230" x="40" y="100"></rect><text class="t m" x="155" y="135">🔔 CronJob</text><text class="s m" x="155" y="160">schedule: 0 2 * * *</text><text class="s m" x="155" y="182">suspend: true = off-switch</text><rect class="box" height="110" rx="12" width="200" x="350" y="100"></rect><text class="t m" x="450" y="135">📝 Job</text><text class="s m" x="450" y="160">tonight's homework</text><text class="s m" x="450" y="182">backoffLimit: 2 retries</text><rect class="box" height="110" rx="12" width="180" x="630" y="100"></rect><text class="t m" x="720" y="135">🪑 pod</text><text class="s m" x="720" y="160">pg_dump → upload</text><text class="s m" x="720" y="182">then EXITS 0</text><line class="arr" x1="270" x2="346" y1="155" y2="155"></line><g transform="translate(308,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><text class="s m" x="308" y="185">on schedule</text><line class="arr" x1="550" x2="626" y1="155" y2="155"></line><g transform="translate(588,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="45" rx="10" width="760" x="90" y="240"></rect><text class="s m" x="470" y="268">✅ Completed — kept for autopsy, tidied by history limits 🧹 · fire one now: kubectl create job --from=cronjob/school-db-backup</text><g transform="translate(90,240)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md"&gt;Read full lesson 18 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">संपूर्ण धडा 18 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-18-jobs-cronjobs/lessons/18-jobs-cronjobs/README.md">Read full lesson 18 →</a></p>
 </section>
 <!-- 19 -->
 <section class="dsec" id="l19" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;19&lt;/span&gt; 🚫📝 NetworkPolicies — passing-notes rules'><span class="ln">19</span> 🚫📝 NetworkPolicies — चिठ्ठ्या पाठवण्याचे नियम</h2>
-<p class="d" data-en="Default-deny first, then exactly the conversations the app needs.">आधी default-deny, मग ॲपला लागणारी नेमकी संभाषणे.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="dead" height="90" rx="12" width="250" x="40" y="60"></rect><text class="t m" x="165" y="95">😳 default</text><text class="s m" data-en="every pod whispers to" x="165" y="120">प्रत्येक pod कुजबुजतो</text><text class="s m" data-en="every pod — even the DB" x="165" y="142">प्रत्येक pod शी — DB शीही</text><rect class="box" height="80" rx="12" width="250" x="360" y="40"></rect><text class="t m" x="485" y="70">1 default-deny</text><text class="s m" data-en="no notes at all (selects every pod)" x="485" y="94">चिठ्ठ्या अजिबात नाहीत (प्रत्येक pod निवडतो)</text><rect class="box" height="80" rx="12" width="250" x="360" y="135"></rect><text class="t m" data-en="2 allow exactly what's needed" x="485" y="165">2 नेमके जे हवे तेवढेच allow</text><text class="s m" data-en="analytics → api :3000 · gate → apps" x="485" y="189">analytics → api :3000 · गेट → ॲप्स</text><line class="arr" x1="290" x2="356" y1="105" y2="80"></line><line class="arr" x1="290" x2="356" y1="105" y2="175"></line><g transform="translate(323,88)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><rect class="box" height="110" rx="12" width="230" x="680" y="80"></rect><text class="t m" data-en="🚫 anything else" x="795" y="115">🚫 बाकी काहीही</text><text class="s m" data-en="note intercepted —" x="795" y="140">चिठ्ठी पकडली —</text><text class="s m" data-en="dropped silently" x="795" y="162">गुपचूप टाकून दिली</text><line class="arr" x1="610" x2="676" y1="130" y2="130"></line><g transform="translate(643,113)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" data-en="⚠️ needs a CNI that enforces policies (Calico / VPC CNI switch) — no enforcer = rules silently ignored: always TEST" x="475" y="265">⚠️ policies पाळणारा CNI हवा (Calico / VPC CNI switch) — पाळणारा नाही = नियम गुपचूप दुर्लक्षित: नेहमी तपासा</text><g transform="translate(105,265)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">19</span> 🚫📝 NetworkPolicies — passing-notes rules</h2>
+<p class="d">Default-deny first, then exactly the conversations the app needs.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="dead" height="90" rx="12" width="250" x="40" y="60"></rect><text class="t m" x="165" y="95">😳 default</text><text class="s m" x="165" y="120">every pod whispers to</text><text class="s m" x="165" y="142">every pod — even the DB</text><rect class="box" height="80" rx="12" width="250" x="360" y="40"></rect><text class="t m" x="485" y="70">1 default-deny</text><text class="s m" x="485" y="94">no notes at all (selects every pod)</text><rect class="box" height="80" rx="12" width="250" x="360" y="135"></rect><text class="t m" x="485" y="165">2 allow exactly what's needed</text><text class="s m" x="485" y="189">analytics → api :3000 · gate → apps</text><line class="arr" x1="290" x2="356" y1="105" y2="80"></line><line class="arr" x1="290" x2="356" y1="105" y2="175"></line><g transform="translate(323,88)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><rect class="box" height="110" rx="12" width="230" x="680" y="80"></rect><text class="t m" x="795" y="115">🚫 anything else</text><text class="s m" x="795" y="140">note intercepted —</text><text class="s m" x="795" y="162">dropped silently</text><line class="arr" x1="610" x2="676" y1="130" y2="130"></line><g transform="translate(643,113)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" x="475" y="265">⚠️ needs a CNI that enforces policies (Calico / VPC CNI switch) — no enforcer = rules silently ignored: always TEST</text><g transform="translate(105,265)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md"&gt;Read full lesson 19 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">संपूर्ण धडा 19 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-19-network-policies/lessons/19-network-policies/README.md">Read full lesson 19 →</a></p>
 </section>
 <!-- 20 -->
 <section class="dsec" id="l20" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;20&lt;/span&gt; 🎫 Taints &amp;amp; affinity — assigned seating'><span class="ln">20</span> 🎫 Taints &amp; affinity — ठरलेली बैठक</h2>
-<p class="d" data-en="Signs on desks push away; chits permit; wishes attract; anti-affinity separates twins.">बाकांवरील पाट्या दूर ढकलतात; चिठ्ठ्या परवानगी देतात; इच्छा आकर्षित करतात; anti-affinity जुळ्यांना वेगळे करते.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="100" rx="12" width="260" x="40" y="50"></rect><text class="t m" data-en="💎 GPU desk" x="170" y="85">💎 GPU बाक</text><text class="s m" x="170" y="110">taint: gpu=true:NoSchedule</text><text class="s m" data-en="the sign that repels" x="170" y="132">दूर ढकलणारी पाटी</text><rect class="box" height="90" rx="12" width="260" x="40" y="180"></rect><text class="t m" data-en="🖥️ normal desks" x="170" y="212">🖥️ साधे बाक</text><text class="s m" data-en="no signs — anyone sits" x="170" y="236">पाट्या नाहीत — कोणीही बसतो</text><rect class="box" height="100" rx="12" width="240" x="420" y="50"></rect><text class="t m" x="540" y="85">🤖 ML pod</text><text class="s m" x="540" y="110">toleration 🎫 + nodeAffinity:</text><text class="s m" data-en="allowed AND attracted" x="540" y="132">परवानगी आणि आकर्षण दोन्ही</text><rect class="box" height="90" rx="12" width="240" x="420" y="180"></rect><text class="t m" data-en="🪑 ordinary pod" x="540" y="212">🪑 सामान्य pod</text><text class="s m" data-en="no chit → repelled ❌" x="540" y="236">चिठ्ठी नाही → दूर ढकलला ❌</text><line class="arr" x1="420" x2="304" y1="100" y2="100"></line><g transform="translate(362,83)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="420" x2="304" y1="225" y2="225"></line><g transform="translate(362,208)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="130" rx="12" width="190" x="720" y="90"></rect><text class="s m" x="815" y="120">👯 anti-affinity:</text><text class="s m" data-en="never both twins" x="815" y="144">दोन्ही जुळे कधीच</text><text class="s m" data-en="on one desk —" x="815" y="166">एका बाकावर नाहीत —</text><text class="s m" data-en="HA at desk level" x="815" y="188">बाकाच्या पातळीवर HA</text><g transform="translate(720,90)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">20</span> 🎫 Taints &amp; affinity — assigned seating</h2>
+<p class="d">Signs on desks push away; chits permit; wishes attract; anti-affinity separates twins.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="100" rx="12" width="260" x="40" y="50"></rect><text class="t m" x="170" y="85">💎 GPU desk</text><text class="s m" x="170" y="110">taint: gpu=true:NoSchedule</text><text class="s m" x="170" y="132">the sign that repels</text><rect class="box" height="90" rx="12" width="260" x="40" y="180"></rect><text class="t m" x="170" y="212">🖥️ normal desks</text><text class="s m" x="170" y="236">no signs — anyone sits</text><rect class="box" height="100" rx="12" width="240" x="420" y="50"></rect><text class="t m" x="540" y="85">🤖 ML pod</text><text class="s m" x="540" y="110">toleration 🎫 + nodeAffinity:</text><text class="s m" x="540" y="132">allowed AND attracted</text><rect class="box" height="90" rx="12" width="240" x="420" y="180"></rect><text class="t m" x="540" y="212">🪑 ordinary pod</text><text class="s m" x="540" y="236">no chit → repelled ❌</text><line class="arr" x1="420" x2="304" y1="100" y2="100"></line><g transform="translate(362,83)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="420" x2="304" y1="225" y2="225"></line><g transform="translate(362,208)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="130" rx="12" width="190" x="720" y="90"></rect><text class="s m" x="815" y="120">👯 anti-affinity:</text><text class="s m" x="815" y="144">never both twins</text><text class="s m" x="815" y="166">on one desk —</text><text class="s m" x="815" y="188">HA at desk level</text><g transform="translate(720,90)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md"&gt;Read full lesson 20 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">संपूर्ण धडा 20 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-20-taints-affinity/lessons/20-taints-affinity/README.md">Read full lesson 20 →</a></p>
 </section>
 <!-- 21 -->
 <section class="dsec" id="l21" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;21&lt;/span&gt; 🧯 DaemonSets — one on every floor'><span class="ln">21</span> 🧯 DaemonSets — प्रत्येक मजल्यावर एक</h2>
-<p class="d" data-en="No replica count: the node list IS the count. New desk, new extinguisher, automatically.">replica संख्या नाही: nodes ची यादी हीच संख्या. नवा बाक, नवा अग्निशामक, आपोआप.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="230" x="40" y="90"></rect><text class="t m" x="155" y="125">🧯 DaemonSet</text><text class="s m" data-en="one per desk, always —" x="155" y="150">प्रत्येक बाकावर एक, नेहमी —</text><text class="s m" data-en="no replica count: nodes ARE it" x="155" y="172">replica संख्या नाही: nodes च ती आहेत</text><rect class="soft" height="90" rx="12" width="180" x="340" y="40"></rect><text class="s m" data-en="🖥️ desk 1" x="430" y="70">🖥️ बाक 1</text><text class="s m" data-en="🪑 apps + 🧯" x="430" y="94">🪑 ॲप्स + 🧯</text><rect class="soft" height="90" rx="12" width="180" x="340" y="150"></rect><text class="s m" data-en="🖥️ desk 2" x="430" y="180">🖥️ बाक 2</text><text class="s m" data-en="🪑 apps + 🧯" x="430" y="204">🪑 ॲप्स + 🧯</text><rect class="dead" height="100" rx="12" width="200" x="560" y="90"></rect><text class="s m" data-en="🖥️ NEW desk" x="660" y="120">🖥️ नवा बाक</text><text class="s m" x="660" y="144">(autoscaler, L15)</text><text class="s m" data-en="🧯 appears by itself" x="660" y="166">🧯 स्वतःहून येतो</text><line class="arr" x1="270" x2="336" y1="120" y2="85"></line><line class="arr" x1="270" x2="336" y1="160" y2="190"></line><g transform="translate(303,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr dash" x1="520" x2="556" y1="140" y2="140"></line><g transform="translate(538,123)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" data-en="you already run them: kube-proxy (L04's routing!) and the CNI live in kube-system as DaemonSets · log collectors next (L26)" x="470" y="265">तुम्ही ते आधीच चालवता: kube-proxy (L04 चे routing!) आणि CNI हे kube-system मध्ये DaemonSets म्हणून राहतात · पुढे log गोळा करणारे (L26)</text><g transform="translate(105,265)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">21</span> 🧯 DaemonSets — one on every floor</h2>
+<p class="d">No replica count: the node list IS the count. New desk, new extinguisher, automatically.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="230" x="40" y="90"></rect><text class="t m" x="155" y="125">🧯 DaemonSet</text><text class="s m" x="155" y="150">one per desk, always —</text><text class="s m" x="155" y="172">no replica count: nodes ARE it</text><rect class="soft" height="90" rx="12" width="180" x="340" y="40"></rect><text class="s m" x="430" y="70">🖥️ desk 1</text><text class="s m" x="430" y="94">🪑 apps + 🧯</text><rect class="soft" height="90" rx="12" width="180" x="340" y="150"></rect><text class="s m" x="430" y="180">🖥️ desk 2</text><text class="s m" x="430" y="204">🪑 apps + 🧯</text><rect class="dead" height="100" rx="12" width="200" x="560" y="90"></rect><text class="s m" x="660" y="120">🖥️ NEW desk</text><text class="s m" x="660" y="144">(autoscaler, L15)</text><text class="s m" x="660" y="166">🧯 appears by itself</text><line class="arr" x1="270" x2="336" y1="120" y2="85"></line><line class="arr" x1="270" x2="336" y1="160" y2="190"></line><g transform="translate(303,138)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr dash" x1="520" x2="556" y1="140" y2="140"></line><g transform="translate(538,123)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" x="470" y="265">you already run them: kube-proxy (L04's routing!) and the CNI live in kube-system as DaemonSets · log collectors next (L26)</text><g transform="translate(105,265)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md"&gt;Read full lesson 21 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">संपूर्ण धडा 21 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-21-daemonsets/lessons/21-daemonsets/README.md">Read full lesson 21 →</a></p>
 </section>
 <!-- 22 -->
 <section class="dsec" id="l22" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;22&lt;/span&gt; 🏷️ StatefulSets — desks with name plates'><span class="ln">22</span> 🏷️ StatefulSets — नावाच्या पाट्या असलेले बाक</h2>
-<p class="d" data-en="Sticky name, sticky drawer, ordered arrival — the whole difference from a Deployment.">चिकट नाव, चिकट ड्रॉवर, क्रमाने येणे — Deployment पासूनचा संपूर्ण फरक.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="240" x="40" y="90"></rect><text class="t m" x="160" y="125">🏷️ StatefulSet</text><text class="s m" data-en="named, ordered kids:" x="160" y="150">नावे असलेली, क्रमाने मुले:</text><text class="s m" data-en="postgres-0, then -1, then -2" x="160" y="172">postgres-0, मग -1, मग -2</text><rect class="box" height="110" rx="12" width="220" x="360" y="90"></rect><text class="t m" x="470" y="125">🪑 postgres-0</text><text class="s m" data-en="dies → replacement has" x="470" y="150">मरतो → बदलीला</text><text class="s m" data-en="the SAME name" x="470" y="172">तेच नाव</text><rect class="box" height="110" rx="12" width="240" x="660" y="90"></rect><text class="t m" x="780" y="125">🗄️ PVC data-postgres-0</text><text class="s m" data-en="ITS OWN drawer — survives" x="780" y="150">स्वतःचा ड्रॉवर — pod पेक्षा</text><text class="s m" data-en="the pod, always reattaches" x="780" y="172">जास्त जगतो, नेहमी पुन्हा जोडतो</text><line class="arr" x1="280" x2="356" y1="145" y2="145"></line><g transform="translate(318,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="580" x2="656" y1="145" y2="145"></line><g transform="translate(618,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="50" rx="10" width="760" x="90" y="235"></rect><text class="s m" data-en="☎️ headless Service: reach postgres-0 BY NAME, no load-balancing · HA needs an operator (L25) —" x="470" y="258">☎️ headless Service: postgres-0 ला नावाने गाठा, लोड-बॅलन्सिंग नाही · HA ला operator लागतो (L25) —</text><text class="s m" data-en="production stance unchanged: rent the library (RDS, L12)" x="470" y="278">production भूमिका तीच: ग्रंथालय भाड्याने घ्या (RDS, L12)</text><g transform="translate(90,235)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">22</span> 🏷️ StatefulSets — desks with name plates</h2>
+<p class="d">Sticky name, sticky drawer, ordered arrival — the whole difference from a Deployment.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="240" x="40" y="90"></rect><text class="t m" x="160" y="125">🏷️ StatefulSet</text><text class="s m" x="160" y="150">named, ordered kids:</text><text class="s m" x="160" y="172">postgres-0, then -1, then -2</text><rect class="box" height="110" rx="12" width="220" x="360" y="90"></rect><text class="t m" x="470" y="125">🪑 postgres-0</text><text class="s m" x="470" y="150">dies → replacement has</text><text class="s m" x="470" y="172">the SAME name</text><rect class="box" height="110" rx="12" width="240" x="660" y="90"></rect><text class="t m" x="780" y="125">🗄️ PVC data-postgres-0</text><text class="s m" x="780" y="150">ITS OWN drawer — survives</text><text class="s m" x="780" y="172">the pod, always reattaches</text><line class="arr" x1="280" x2="356" y1="145" y2="145"></line><g transform="translate(318,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="580" x2="656" y1="145" y2="145"></line><g transform="translate(618,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="50" rx="10" width="760" x="90" y="235"></rect><text class="s m" x="470" y="258">☎️ headless Service: reach postgres-0 BY NAME, no load-balancing · HA needs an operator (L25) —</text><text class="s m" x="470" y="278">production stance unchanged: rent the library (RDS, L12)</text><g transform="translate(90,235)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md"&gt;Read full lesson 22 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">संपूर्ण धडा 22 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-22-statefulsets/lessons/22-statefulsets/README.md">Read full lesson 22 →</a></p>
 </section>
 <!-- 23 -->
 <section class="dsec" id="l23" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;23&lt;/span&gt; 🍽️ QoS &amp;amp; evictions — who leaves first'><span class="ln">23</span> 🍽️ QoS &amp; evictions — कोण आधी उठतो</h2>
-<p class="d" data-en="BestEffort, then over-promise Burstable, then Guaranteed — your requests ARE your ranking.">BestEffort, मग जास्त-वचन देणारे Burstable, मग Guaranteed — तुमचे requests हीच तुमची क्रमवारी.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="250" x="40" y="90"></rect><text class="t m" data-en="🖥️ desk under pressure" x="165" y="125">🖥️ दबावाखालचा बाक</text><text class="s m" data-en="memory running out —" x="165" y="150">memory संपत आली —</text><text class="s m" data-en="kubelet must free space" x="165" y="172">kubelet ला जागा मोकळी करावी लागते</text><rect class="dead" height="70" rx="12" width="250" x="380" y="30"></rect><text class="s m" data-en="🥉 BestEffort — no requests at all" x="505" y="58">🥉 BestEffort — requests अजिबात नाहीत</text><text class="s m" data-en="EVICTED FIRST" x="505" y="80">सर्वात आधी काढला</text><rect class="soft" height="70" rx="12" width="250" x="380" y="115"></rect><text class="s m" x="505" y="143">🥈 Burstable — requests &lt; limits</text><text class="s m" data-en="next (our pods live here)" x="505" y="165">पुढचा (आपले pods इथे राहतात)</text><rect class="box" height="70" rx="12" width="250" x="380" y="200"></rect><text class="s m" x="505" y="228">🥇 Guaranteed — requests == limits</text><text class="s m" data-en="evicted LAST" x="505" y="250">सर्वात शेवटी काढला</text><line class="arr" x1="290" x2="376" y1="120" y2="65"></line><g transform="translate(333,95)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="290" x2="376" y1="145" y2="150"></line><g transform="translate(333,168)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><line class="arr dash" x1="290" x2="376" y1="180" y2="235"></line><rect class="soft" height="90" rx="12" width="210" x="700" y="115"></rect><text class="s m" x="805" y="145">👮 PriorityClass:</text><text class="s m" data-en="system staff basically" x="805" y="167">सिस्टमचा स्टाफ जवळपास</text><text class="s m" data-en="never leaves" x="805" y="189">कधीच जात नाही</text><g transform="translate(700,115)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">23</span> 🍽️ QoS &amp; evictions — who leaves first</h2>
+<p class="d">BestEffort, then over-promise Burstable, then Guaranteed — your requests ARE your ranking.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="250" x="40" y="90"></rect><text class="t m" x="165" y="125">🖥️ desk under pressure</text><text class="s m" x="165" y="150">memory running out —</text><text class="s m" x="165" y="172">kubelet must free space</text><rect class="dead" height="70" rx="12" width="250" x="380" y="30"></rect><text class="s m" x="505" y="58">🥉 BestEffort — no requests at all</text><text class="s m" x="505" y="80">EVICTED FIRST</text><rect class="soft" height="70" rx="12" width="250" x="380" y="115"></rect><text class="s m" x="505" y="143">🥈 Burstable — requests &lt; limits</text><text class="s m" x="505" y="165">next (our pods live here)</text><rect class="box" height="70" rx="12" width="250" x="380" y="200"></rect><text class="s m" x="505" y="228">🥇 Guaranteed — requests == limits</text><text class="s m" x="505" y="250">evicted LAST</text><line class="arr" x1="290" x2="376" y1="120" y2="65"></line><g transform="translate(333,95)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="290" x2="376" y1="145" y2="150"></line><g transform="translate(333,168)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><line class="arr dash" x1="290" x2="376" y1="180" y2="235"></line><rect class="soft" height="90" rx="12" width="210" x="700" y="115"></rect><text class="s m" x="805" y="145">👮 PriorityClass:</text><text class="s m" x="805" y="167">system staff basically</text><text class="s m" x="805" y="189">never leaves</text><g transform="translate(700,115)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md"&gt;Read full lesson 23 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">संपूर्ण धडा 23 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-23-qos-evictions/lessons/23-qos-evictions/README.md">Read full lesson 23 →</a></p>
 </section>
 <!-- 24 -->
 <section class="dsec" id="l24" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;24&lt;/span&gt; 🏗️ Cluster upgrades — renovating while open'><span class="ln">24</span> 🏗️ Cluster अपग्रेड — शाळा चालू ठेवून नूतनीकरण</h2>
-<p class="d" data-en="Office first, then desk by desk: cordon, drain (PDBs on guard), replace, uncordon.">आधी कार्यालय, मग बाकामागून बाक: cordon, drain (PDB पहाऱ्यावर), बदला, uncordon.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="230" x="40" y="90"></rect><text class="t m" data-en="🏢 1 office first" x="155" y="125">🏢 1 आधी कार्यालय</text><text class="s m" x="155" y="150">EKS control plane —</text><text class="s m" data-en="one Terraform change" x="155" y="172">एक Terraform बदल</text><rect class="box" height="70" rx="10" width="160" x="340" y="40"></rect><text class="s m" x="420" y="68">🚧 cordon</text><text class="s m" data-en="no new kids" x="420" y="90">नवी मुले नाहीत</text><rect class="box" height="70" rx="10" width="160" x="340" y="125"></rect><text class="s m" x="420" y="153">🚚 drain</text><text class="s m" data-en="PDB guards 🍽️" x="420" y="175">PDB पहारा देतो 🍽️</text><rect class="box" height="70" rx="10" width="160" x="340" y="210"></rect><text class="s m" data-en="🖥️ replace desk" x="420" y="238">🖥️ बाक बदला</text><text class="s m" data-en="fresh EC2 + kubelet" x="420" y="260">नवा EC2 + kubelet</text><line class="arr" x1="270" x2="336" y1="145" y2="75"></line><g transform="translate(303,105)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="420" x2="420" y1="110" y2="121"></line><line class="arr" x1="420" x2="420" y1="195" y2="206"></line><rect class="box" height="70" rx="10" width="150" x="570" y="125"></rect><text class="s m" x="645" y="153">✅ uncordon</text><text class="s m" data-en="next classroom" x="645" y="175">पुढचा वर्ग</text><line class="arr" x1="500" x2="566" y1="245" y2="175"></line><g transform="translate(533,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="140" rx="12" width="150" x="760" y="90"></rect><text class="s m" data-en="📶 skew rule:" x="835" y="120">📶 skew नियम:</text><text class="s m" data-en="desks may trail" x="835" y="142">बाक कार्यालयाच्या</text><text class="s m" data-en="the office," x="835" y="164">मागे राहू शकतात,</text><text class="s m" data-en="never lead ·" x="835" y="186">पुढे कधीच नाही ·</text><text class="s m" data-en="one minor at a time" x="835" y="208">एका वेळी एक minor</text><g transform="translate(760,90)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">24</span> 🏗️ Cluster upgrades — renovating while open</h2>
+<p class="d">Office first, then desk by desk: cordon, drain (PDBs on guard), replace, uncordon.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="230" x="40" y="90"></rect><text class="t m" x="155" y="125">🏢 1 office first</text><text class="s m" x="155" y="150">EKS control plane —</text><text class="s m" x="155" y="172">one Terraform change</text><rect class="box" height="70" rx="10" width="160" x="340" y="40"></rect><text class="s m" x="420" y="68">🚧 cordon</text><text class="s m" x="420" y="90">no new kids</text><rect class="box" height="70" rx="10" width="160" x="340" y="125"></rect><text class="s m" x="420" y="153">🚚 drain</text><text class="s m" x="420" y="175">PDB guards 🍽️</text><rect class="box" height="70" rx="10" width="160" x="340" y="210"></rect><text class="s m" x="420" y="238">🖥️ replace desk</text><text class="s m" x="420" y="260">fresh EC2 + kubelet</text><line class="arr" x1="270" x2="336" y1="145" y2="75"></line><g transform="translate(303,105)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="420" x2="420" y1="110" y2="121"></line><line class="arr" x1="420" x2="420" y1="195" y2="206"></line><rect class="box" height="70" rx="10" width="150" x="570" y="125"></rect><text class="s m" x="645" y="153">✅ uncordon</text><text class="s m" x="645" y="175">next classroom</text><line class="arr" x1="500" x2="566" y1="245" y2="175"></line><g transform="translate(533,215)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="140" rx="12" width="150" x="760" y="90"></rect><text class="s m" x="835" y="120">📶 skew rule:</text><text class="s m" x="835" y="142">desks may trail</text><text class="s m" x="835" y="164">the office,</text><text class="s m" x="835" y="186">never lead ·</text><text class="s m" x="835" y="208">one minor at a time</text><g transform="translate(760,90)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md"&gt;Read full lesson 24 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">संपूर्ण धडा 24 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-24-cluster-upgrades/lessons/24-cluster-upgrades/README.md">Read full lesson 24 →</a></p>
 </section>
 <!-- 25 -->
 <section class="dsec" id="l25" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;25&lt;/span&gt; 🤖 CRDs &amp;amp; operators — new words for the office'><span class="ln">25</span> 🤖 CRDs &amp; operators — कार्यालयासाठी नवे शब्द</h2>
-<p class="d" data-en="A word in the register plus a robot who makes it true — ArgoCD demystified.">रजिस्टरमधला एक शब्द आणि तो खरा करणारा रोबोट — ArgoCD चे रहस्य उलगडले.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="250" x="40" y="90"></rect><text class="t m" x="165" y="125">📖 CRD</text><text class="s m" data-en="teach the office a new word:" x="165" y="150">कार्यालयाला नवा शब्द शिकवा:</text><text class="s m" data-en="kind: BackupPlan + grammar" x="165" y="172">kind: BackupPlan + व्याकरण</text><rect class="box" height="110" rx="12" width="220" x="370" y="90"></rect><text class="t m" data-en="🏢 office / etcd" x="480" y="125">🏢 कार्यालय / etcd</text><text class="s m" data-en="stores your wishes —" x="480" y="150">तुमच्या इच्छा साठवते —</text><text class="s m" data-en="kubectl &amp;amp; RBAC just work" x="480" y="172">kubectl &amp; RBAC आपोआप चालतात</text><rect class="box" height="110" rx="12" width="240" x="670" y="90"></rect><text class="t m" x="790" y="125">🤖 controller</text><text class="s m" data-en="watches the word, reconciles" x="790" y="150">शब्दावर लक्ष ठेवतो, जुळवतो</text><text class="s m" data-en="forever — L03's loop, your noun" x="790" y="172">कायम — L03 चा लूप, तुमचे नाम</text><line class="arr" x1="290" x2="366" y1="145" y2="145"></line><g transform="translate(328,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr dash" x1="670" x2="594" y1="145" y2="145"></line><g transform="translate(632,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="50" rx="10" width="760" x="90" y="235"></rect><text class="s m" data-en="CRD + controller + expertise = an OPERATOR · you've used them all along: ArgoCD's Application," x="470" y="258">CRD + controller + कौशल्य = OPERATOR · तुम्ही ते आधीपासून वापरता: ArgoCD चे Application,</text><text class="s m" data-en="cert-manager's Certificate, CloudNativePG's Cluster — words plus robots 🤯" x="470" y="278">cert-manager चे Certificate, CloudNativePG चे Cluster — शब्द आणि रोबोट 🤯</text><g transform="translate(90,235)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">25</span> 🤖 CRDs &amp; operators — new words for the office</h2>
+<p class="d">A word in the register plus a robot who makes it true — ArgoCD demystified.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="110" rx="12" width="250" x="40" y="90"></rect><text class="t m" x="165" y="125">📖 CRD</text><text class="s m" x="165" y="150">teach the office a new word:</text><text class="s m" x="165" y="172">kind: BackupPlan + grammar</text><rect class="box" height="110" rx="12" width="220" x="370" y="90"></rect><text class="t m" x="480" y="125">🏢 office / etcd</text><text class="s m" x="480" y="150">stores your wishes —</text><text class="s m" x="480" y="172">kubectl &amp; RBAC just work</text><rect class="box" height="110" rx="12" width="240" x="670" y="90"></rect><text class="t m" x="790" y="125">🤖 controller</text><text class="s m" x="790" y="150">watches the word, reconciles</text><text class="s m" x="790" y="172">forever — L03's loop, your noun</text><line class="arr" x1="290" x2="366" y1="145" y2="145"></line><g transform="translate(328,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr dash" x1="670" x2="594" y1="145" y2="145"></line><g transform="translate(632,128)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><rect class="soft" height="50" rx="10" width="760" x="90" y="235"></rect><text class="s m" x="470" y="258">CRD + controller + expertise = an OPERATOR · you've used them all along: ArgoCD's Application,</text><text class="s m" x="470" y="278">cert-manager's Certificate, CloudNativePG's Cluster — words plus robots 🤯</text><g transform="translate(90,235)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md"&gt;Read full lesson 25 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">संपूर्ण धडा 25 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-25-crds-operators/lessons/25-crds-operators/README.md">Read full lesson 25 →</a></p>
 </section>
 <!-- 26 -->
 <section class="dsec" id="l26" style="--c:#be123c">
-<h2 data-en='&lt;span class="ln"&gt;26&lt;/span&gt; 📈 Observability — eyes on everything'><span class="ln">26</span> 📈 Observability — सगळ्यावर नजर</h2>
-<p class="d" data-en="Report cards (metrics), diaries (logs), alarm bells (alerts) — and one screen for all of it.">प्रगतिपुस्तके (metrics), डायऱ्या (logs), धोक्याच्या घंटा (alerts) — आणि सगळ्यासाठी एकच स्क्रीन.</p>
-<svg role="img" viewbox="0 0 940 300"><rect class="box" height="90" rx="12" width="240" x="40" y="40"></rect><text class="t m" data-en="🪑 pods expose /metrics" x="160" y="72">🪑 pods /metrics उघड करतात</text><text class="s m" data-en="numbers on every door" x="160" y="96">प्रत्येक दारावर आकडे</text><rect class="box" height="90" rx="12" width="240" x="40" y="160"></rect><text class="t m" data-en="🧯 log collector" x="160" y="192">🧯 log गोळा करणारा</text><text class="s m" data-en="DaemonSet (L21) ships diaries" x="160" y="216">DaemonSet (L21) डायऱ्या पाठवतो</text><rect class="box" height="90" rx="12" width="220" x="370" y="40"></rect><text class="t m" x="480" y="72">📊 Prometheus</text><text class="s m" data-en="scrapes + keeps history" x="480" y="96">गोळा करतो + इतिहास ठेवतो</text><rect class="box" height="90" rx="12" width="220" x="370" y="160"></rect><text class="t m" data-en="📜 log store" x="480" y="192">📜 log साठा</text><text class="s m" data-en="diaries outlive desks" x="480" y="216">डायऱ्या बाकांपेक्षा जास्त जगतात</text><rect class="box" height="90" rx="12" width="230" x="680" y="40"></rect><text class="t m" x="795" y="72">📺 Grafana</text><text class="s m" data-en="one screen: metrics + logs" x="795" y="96">एक स्क्रीन: metrics + logs</text><rect class="box" height="90" rx="12" width="230" x="680" y="160"></rect><text class="t m" x="795" y="192">🔔 Alertmanager</text><text class="s m" data-en="rules ring the on-call phone" x="795" y="216">नियम on-call फोन वाजवतात</text><line class="arr" x1="280" x2="366" y1="85" y2="85"></line><g transform="translate(323,68)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="280" x2="366" y1="205" y2="205"></line><line class="arr" x1="590" x2="676" y1="85" y2="85"></line><line class="arr dash" x1="590" x2="676" y1="190" y2="100"></line><line class="arr" x1="590" x2="676" y1="110" y2="190"></line><g transform="translate(633,148)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" data-en="start with: is it up · is it erroring · is it slow · is the cluster healthy — four questions, one dashboard" x="475" y="285">सुरुवात इथून: चालू आहे का · errors येतात का · हळू आहे का · cluster निरोगी आहे का — चार प्रश्न, एक डॅशबोर्ड</text><g transform="translate(105,285)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
+<h2><span class="ln">26</span> 📈 Observability — eyes on everything</h2>
+<p class="d">Report cards (metrics), diaries (logs), alarm bells (alerts) — and one screen for all of it.</p>
+<svg role="img" viewbox="0 0 940 300"><rect class="box" height="90" rx="12" width="240" x="40" y="40"></rect><text class="t m" x="160" y="72">🪑 pods expose /metrics</text><text class="s m" x="160" y="96">numbers on every door</text><rect class="box" height="90" rx="12" width="240" x="40" y="160"></rect><text class="t m" x="160" y="192">🧯 log collector</text><text class="s m" x="160" y="216">DaemonSet (L21) ships diaries</text><rect class="box" height="90" rx="12" width="220" x="370" y="40"></rect><text class="t m" x="480" y="72">📊 Prometheus</text><text class="s m" x="480" y="96">scrapes + keeps history</text><rect class="box" height="90" rx="12" width="220" x="370" y="160"></rect><text class="t m" x="480" y="192">📜 log store</text><text class="s m" x="480" y="216">diaries outlive desks</text><rect class="box" height="90" rx="12" width="230" x="680" y="40"></rect><text class="t m" x="795" y="72">📺 Grafana</text><text class="s m" x="795" y="96">one screen: metrics + logs</text><rect class="box" height="90" rx="12" width="230" x="680" y="160"></rect><text class="t m" x="795" y="192">🔔 Alertmanager</text><text class="s m" x="795" y="216">rules ring the on-call phone</text><line class="arr" x1="280" x2="366" y1="85" y2="85"></line><g transform="translate(323,68)"><circle class="nc" r="11"></circle><text class="nt" dy="4">1</text></g><line class="arr" x1="280" x2="366" y1="205" y2="205"></line><line class="arr" x1="590" x2="676" y1="85" y2="85"></line><line class="arr dash" x1="590" x2="676" y1="190" y2="100"></line><line class="arr" x1="590" x2="676" y1="110" y2="190"></line><g transform="translate(633,148)"><circle class="nc" r="11"></circle><text class="nt" dy="4">2</text></g><text class="s m" x="475" y="285">start with: is it up · is it erroring · is it slow · is the cluster healthy — four questions, one dashboard</text><g transform="translate(105,285)"><circle class="nc" r="11"></circle><text class="nt" dy="4">3</text></g>
 </svg>
-<p class="foot" data-en='&lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md"&gt;Read full lesson 26 →&lt;/a&gt;'><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">संपूर्ण धडा 26 वाचा →</a></p>
+<p class="foot"><a href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-26-observability/lessons/26-observability/README.md">Read full lesson 26 →</a></p>
 </section>
-<a class="btn" data-en="Start Lesson 01 →" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">धडा 01 सुरू करा →</a>
-<a class="btn alt" data-en="🗓️ Study plan (9 weeks)" href="study-plan.html">🗓️ अभ्यास योजना (9 आठवडे)</a>
-<a class="btn alt" data-en="📐 All 26 lesson diagrams" href="lesson-diagrams.html">📐 सर्व 26 धड्यांच्या आकृत्या</a>
-<a class="btn alt" data-en="🧪 Quiz" href="quiz.html">🧪 प्रश्नमंजुषा</a>
-<a class="btn alt" data-en="⏮️ Before &amp;amp; trade-offs" href="before-and-tradeoffs.html">⏮️ आधी काय होते &amp; फायदे-तोटे</a>
-<a class="btn alt" data-en="Check my foundations first" href="before-you-start.html">आधी माझा पाया तपासा</a>
-<a class="btn alt" data-en="🍱 Course 1: Docker &amp;amp; ECR" href="https://baluraut.github.io/learn-docker-school/">🍱 कोर्स 1: Docker &amp; ECR</a>
-<a class="btn alt" data-en="🤖 Course 3: ArgoCD" href="https://baluraut.github.io/learn-argocd-school/">🤖 कोर्स 3: ArgoCD</a>
-<footer data-en='
+<a class="btn" href="https://github.com/BaluRaut/learn-kubernetes-school/blob/lesson-01-containers/lessons/01-containers/README.md">Start Lesson 01 →</a>
+<a class="btn alt" href="study-plan.html">🗓️ Study plan (9 weeks)</a>
+<a class="btn alt" href="lesson-diagrams.html">📐 All 26 lesson diagrams</a>
+<a class="btn alt" href="quiz.html">🧪 Quiz</a>
+<a class="btn alt" href="before-and-tradeoffs.html">⏮️ Before &amp; trade-offs</a>
+<a class="btn alt" href="before-you-start.html">Check my foundations first</a>
+<a class="btn alt" href="https://baluraut.github.io/learn-docker-school/">🍱 Course 1: Docker &amp; ECR</a>
+<a class="btn alt" href="https://baluraut.github.io/learn-argocd-school/">🤖 Course 3: ArgoCD</a>
+<footer>
     School Platform learning monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI · ArgoCD ·
-    &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school"&gt;github.com/BaluRaut/learn-kubernetes-school&lt;/a&gt;
+    <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a>
    ·
-  &lt;a href="https://baluraut.github.io/school/"&gt;🏫 all schools&lt;/a&gt;
+  <a href="https://baluraut.github.io/school/">🏫 all schools</a>
  ·
-  &lt;a href="https://github.com/BaluRaut/learn-kubernetes-school/issues"&gt;🐛 found a mistake?&lt;/a&gt;
-'>School Platform शिकण्याचा monorepo · Docker · Kubernetes · Terraform · AWS · CircleCI · ArgoCD · <a href="https://github.com/BaluRaut/learn-kubernetes-school">github.com/BaluRaut/learn-kubernetes-school</a> · <a href="https://baluraut.github.io/school/">🏫 सर्व शाळा</a> · <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 चूक सापडली?</a></footer>
+  <a href="https://github.com/BaluRaut/learn-kubernetes-school/issues">🐛 found a mistake?</a>
+</footer>
 </div>
-
-<script id="i18n-js">
-function schoolSetLang(l){
-  try{localStorage.setItem('school-lang',l)}catch(e){}
-  document.documentElement.setAttribute('lang',l);
-  document.querySelectorAll('[data-en]').forEach(function(el){
-    if(!el.hasAttribute('data-mr')) el.setAttribute('data-mr', el.innerHTML);
-    el.innerHTML = (l==='en') ? el.getAttribute('data-en') : el.getAttribute('data-mr');
-  });
-  document.querySelectorAll('[data-en-ph]').forEach(function(el){
-    if(!el.hasAttribute('data-mr-ph')) el.setAttribute('data-mr-ph', el.getAttribute('placeholder'));
-    el.setAttribute('placeholder', (l==='en') ? el.getAttribute('data-en-ph') : el.getAttribute('data-mr-ph'));
-  });
-  var p=document.getElementById('lang-pick'); if(p) p.value=l;
-}
-(function(){ var l='mr'; try{ l=localStorage.getItem('school-lang')||'mr'; }catch(e){}
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){schoolSetLang(l)}); else schoolSetLang(l); })();
-</script></body>
+</body>
 </html>

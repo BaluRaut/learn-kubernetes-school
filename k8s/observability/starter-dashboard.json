@@ -1,0 +1,19 @@
+{
+  "title": "School Platform — starter (4 questions)",
+  "uid": "school-starter",
+  "schemaVersion": 39,
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    { "id": 1, "type": "stat", "title": "Is it up? — ready pods (school namespace)", "gridPos": {"x":0,"y":0,"w":6,"h":6},
+      "targets": [{ "expr": "sum(kube_pod_status_ready{namespace=\"school\",condition=\"true\"})", "refId": "A" }] },
+    { "id": 2, "type": "timeseries", "title": "Is it erroring? — 5xx rate per service", "gridPos": {"x":6,"y":0,"w":18,"h":6},
+      "targets": [{ "expr": "sum by (service) (rate(http_requests_total{namespace=\"school\",status=~\"5..\"}[5m]))", "refId": "A" }] },
+    { "id": 3, "type": "timeseries", "title": "Is it slow? — p95 latency (s)", "gridPos": {"x":0,"y":6,"w":12,"h":8},
+      "targets": [{ "expr": "histogram_quantile(0.95, sum by (le, service) (rate(http_request_duration_seconds_bucket{namespace=\"school\"}[5m])))", "refId": "A" }] },
+    { "id": 4, "type": "timeseries", "title": "Is the cluster healthy? — node CPU %, pending pods", "gridPos": {"x":12,"y":6,"w":12,"h":8},
+      "targets": [
+        { "expr": "100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])))", "refId": "A", "legendFormat": "cpu% {{instance}}" },
+        { "expr": "sum(kube_pod_status_phase{phase=\"Pending\"})", "refId": "B", "legendFormat": "pending pods" } ] }
+  ],
+  "__note": "Lesson 26's four questions as four panels. Import via Grafana → Dashboards → New → Import. Metric names assume the kube-prometheus-stack (kube-state-metrics + node-exporter) and an app exposing http_requests_total / http_request_duration_seconds_bucket — rename to match your app's /metrics."
+}
