@@ -105,6 +105,25 @@ kubectl -n school get pod greedy -w        # → OOMKilled 💀 (Ctrl+C, then cl
 kubectl -n school delete pod greedy
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl top pods` · `kubectl describe node (Allocated resources)`
+
+🔗 **Builds on:** 🪪 AWS L08 (types & sizes — the plate you reserve)
+
+## ✅ Verify — what you should see
+
+`kubectl top pods` shows usage; push memory past the limit → the pod is `OOMKilled` and restarted; push CPU → it slows, never dies.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- no requests at all — BestEffort, first to be evicted (L23)
+- limits far above requests — over-commit that OOMKills the neighbour
+
 ## ⏭️ Next
 
 Requests are the yardstick for the coolest trick yet: pods that **multiply on
