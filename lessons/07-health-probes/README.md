@@ -98,6 +98,25 @@ kubectl -n school exec deploy/school-api -- sh -c 'kill 1'
 kubectl -n school get pods       # RESTARTS just went up by 1 🎉
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl describe pod (Events)` · `kubectl get pods -w`
+
+🔗 **Builds on:** 🪪 AWS L15 (ALB health check = readiness)
+
+## ✅ Verify — what you should see
+
+break `/readyz` → the pod stays Running but leaves the Service's endpoints; break `/healthz` → `RESTARTS` increments.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- one probe doing both jobs — readiness gates traffic, liveness restarts
+- a liveness probe on a slow-starting app with no `initialDelaySeconds`/startup probe → restart loop
+
 ## ⏭️ Next
 
 Healthy pods, great — but how much CPU and memory may each one eat?
