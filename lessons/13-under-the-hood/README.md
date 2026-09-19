@@ -105,6 +105,25 @@ kubectl -n school get events -w
 # → watch: killing → SuccessfulCreate → Scheduled → Pulled → Started. The whole office, on record.
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get events` · `kubectl get componentstatuses` · `kubectl api-resources`
+
+🔗 **Builds on:** 🪪 AWS L13 (the campus these offices stand in)
+
+## ✅ Verify — what you should see
+
+`kubectl get events --sort-by=.lastTimestamp -n school` shows Scheduled → Pulled → Created → Started for a new pod, in that order.
+
+## 🧹 Clean up
+
+nothing — you only read
+
+## ⚠️ Common mistakes
+
+- thinking kubectl talks to nodes — it only ever talks to the API server
+- forgetting etcd IS the cluster — back it up (L18)
+
 ## 🎓 You made it!
 
 You now know: containers → pods → deployments → services → namespaces →

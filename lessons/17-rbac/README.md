@@ -88,6 +88,25 @@ kubectl -n school delete rolebinding report-bot-reads
 kubectl -n school delete role pod-reader && kubectl -n school delete sa report-bot
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl auth can-i` · `kubectl get role,rolebinding,sa`
+
+🔗 **Builds on:** 🪪 AWS L03–L04 (policies & roles — the same idea)
+
+## ✅ Verify — what you should see
+
+`kubectl auth can-i get pods --as=system:serviceaccount:school:reader` says yes; `--as=… delete` says no.
+
+## 🧹 Clean up
+
+`kubectl delete rolebinding,role …` you created
+
+## ⚠️ Common mistakes
+
+- binding `cluster-admin` to a robot 'temporarily'
+- a Role in the wrong namespace — passes are per room
+
 ## ⏭️ Next
 
 Work that runs once and work that runs on a schedule — including the

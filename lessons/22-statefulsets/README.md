@@ -90,6 +90,25 @@ kubectl delete -f k8s/postgres-statefulset.yaml
 kubectl -n school delete pvc data-postgres-0
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get sts,pvc` · `kubectl get pods -l app=postgres`
+
+🔗 **Builds on:** 🪪 AWS L17 (RDS — rent the record office instead)
+
+## ✅ Verify — what you should see
+
+delete `postgres-0` → the replacement is named `postgres-0` again and reattaches `data-postgres-0` with the rows intact.
+
+## 🧹 Clean up
+
+`kubectl delete sts postgres` keeps the PVCs — delete them explicitly if you want the data gone
+
+## ⚠️ Common mistakes
+
+- a StatefulSet for a stateless app — you just made rollouts slower
+- expecting HA from a single-replica StatefulSet — that needs an operator or RDS
+
 ## ⏭️ Next
 
 When a desk runs out of lunch, who gets asked to leave first? **QoS

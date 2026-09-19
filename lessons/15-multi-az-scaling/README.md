@@ -1,6 +1,6 @@
-# 🏫🏫 Lesson 15 (bonus) — Multi-AZ & the scaling ladder
+# 🏫🏫 Lesson 15 — Multi-AZ & the scaling ladder
 
-**📍 You are here:** Bonus lesson **15** · Previous: `lesson-14-deploy-gitops` · Next: `lesson-16-debugging` — Part 3 begins!
+**📍 You are here:** Lesson **15** of 26 — Part 2 ends here · Previous: `lesson-14-deploy-gitops` · Next: `lesson-16-debugging` — Part 3 begins!
 
 ---
 
@@ -113,6 +113,25 @@ kubectl -n school scale deployment school-api --replicas=2   # calm down
 kubectl -n school create pdb school-api --selector=app=school-api --min-available=1
 kubectl -n school get pdb    # ALLOWED DISRUPTIONS: 1 — never both at once 🎉
 ```
+
+## 🔧 kubectl for this lesson
+
+`kubectl get nodes -L topology.kubernetes.io/zone` · `kubectl get pdb`
+
+🔗 **Builds on:** 🪪 AWS L07 (AZs are buildings) · L12 (ASG)
+
+## ✅ Verify — what you should see
+
+`kubectl get pods -o wide` shows copies on different nodes/zones; ask for more pods than fit → `Pending` until the autoscaler adds a desk (EKS) — on minikube they stay Pending.
+
+## 🧹 Clean up
+
+scale back down; on EKS destroy the extra nodes/cluster same day
+
+## ⚠️ Common mistakes
+
+- one AZ 'for now'
+- PDB with `minAvailable` = replicas — a drain can never finish
 
 ## 🎓 The campus is complete
 

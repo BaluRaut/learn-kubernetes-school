@@ -104,6 +104,25 @@ kubectl -n school get ds,pods -o wide | grep floor
 kubectl -n school delete ds floor-watch
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get ds -A` · `kubectl rollout status ds/…`
+
+🔗 **Builds on:** 🪪 AWS L18 (the CloudWatch agent on every desk)
+
+## ✅ Verify — what you should see
+
+`kubectl get ds` shows DESIRED = number of nodes; add a node → a new pod appears by itself.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- a DaemonSet for an app that should scale by load — that's a Deployment
+- forgetting tolerations — DaemonSets need them to land on tainted nodes
+
 ## ⏭️ Next
 
 Pods with NAMES and their own drawers — running a database inside the

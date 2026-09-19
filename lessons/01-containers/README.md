@@ -98,6 +98,25 @@ curl http://localhost:3000/healthz
 docker compose up
 ```
 
+## 🔧 kubectl for this lesson
+
+`docker build` · `docker run` · `docker logs`
+
+🔗 **Builds on:** 🍱 Docker school L01–L04 (images, run, ports)
+
+## ✅ Verify — what you should see
+
+`docker run -p 3000:3000 school-api:v1` answers on `curl localhost:3000/health`.
+
+## 🧹 Clean up
+
+`docker rm -f` the container — images cost disk only
+
+## ⚠️ Common mistakes
+
+- thinking the container is a VM — it shares the host kernel (Docker school L01)
+- running the image without `-p` and wondering why localhost is silent
+
 ## ⏭️ Next
 
 A container never runs "naked" in Kubernetes — it always rides inside a **Pod**.

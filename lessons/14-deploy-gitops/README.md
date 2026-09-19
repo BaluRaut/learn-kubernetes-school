@@ -1,6 +1,6 @@
-# 🤖 Lesson 14 (bonus) — Deploy: CI/CD & GitOps with ArgoCD
+# 🤖 Lesson 14 — Deploy: CI/CD & GitOps with ArgoCD (an introduction)
 
-**📍 You are here:** Bonus lesson **14** · Previous: `lesson-13-under-the-hood` · Next bonus: `lesson-15-multi-az-scaling`
+**📍 You are here:** Lesson **14** of 26 — Part 2 (shipping & scaling) begins · Previous: `lesson-13-under-the-hood` · Next: `lesson-15-multi-az-scaling`
 
 ---
 
@@ -151,6 +151,25 @@ kubectl apply -f lessons/14-deploy-gitops/argocd-app.yaml
 kubectl -n school scale deployment school-api --replicas=5
 kubectl -n school get pods -w    # the caretaker puts it back to 3. The book wins. 🤖
 ```
+
+## 🔧 kubectl for this lesson
+
+`kubectl get applications -n argocd` · `argocd app sync`
+
+🔗 **Builds on:** 🍱 Docker L12 (CI builds & pushes) · 🤖 ArgoCD school (all 12 lessons)
+
+## ✅ Verify — what you should see
+
+push a manifest change → ArgoCD shows OutOfSync then Synced; `kubectl scale` by hand → it snaps back.
+
+## 🧹 Clean up
+
+`kubectl delete namespace argocd` when done locally
+
+## ⚠️ Common mistakes
+
+- expecting this lesson to teach all of ArgoCD — it is intentionally introductory; the ArgoCD school goes deep
+- CI applying manifests AND ArgoCD syncing them — two robots fighting
 
 ## 🎓 The end — for real this time
 
