@@ -89,6 +89,25 @@ kubectl -n school get cronjob school-db-backup     # SUSPEND: True
 kubectl -n school create job backup-now --from=cronjob/school-db-backup
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get cronjob,job` · `kubectl create job --from=`
+
+🔗 **Builds on:** 🪪 AWS L14 (S3 backups) · L19 (the bell → Lambda)
+
+## ✅ Verify — what you should see
+
+`kubectl create job --from=cronjob/school-db-backup now` → the job pod runs `pg_dump`, uploads, and shows `Completed`.
+
+## 🧹 Clean up
+
+`kubectl delete job now`; keep the CronJob (suspend: true if unsure)
+
+## ⚠️ Common mistakes
+
+- a Job with no `backoffLimit` retrying forever
+- a backup CronJob nobody has ever restored from — test the restore (AWS L17)
+
 ## ⏭️ Next
 
 Right now every pod can whisper to every other pod — even to the

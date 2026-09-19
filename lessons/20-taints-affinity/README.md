@@ -99,6 +99,25 @@ kubectl taint node $NODE wetpaint=true:NoSchedule-
 kubectl -n school delete pod nochit haschit
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl taint` · `kubectl describe node (Taints)` · `kubectl get pods -o wide`
+
+🔗 **Builds on:** 🪪 AWS L08 (instance types — the GPU desk)
+
+## ✅ Verify — what you should see
+
+the ordinary pod stays `Pending` on the tainted node; the pod with the toleration + affinity lands on it.
+
+## 🧹 Clean up
+
+`kubectl taint nodes NODE gpu-` (minus removes)
+
+## ⚠️ Common mistakes
+
+- tainting every node and wondering why nothing schedules
+- required anti-affinity with more replicas than nodes — Pending forever
+
 ## ⏭️ Next
 
 Some helpers must sit on EVERY floor, no exceptions — log collectors,
