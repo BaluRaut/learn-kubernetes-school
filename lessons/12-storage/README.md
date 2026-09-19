@@ -118,6 +118,25 @@ kubectl -n school logs scribe2               # → "my homework" 🎉
 kubectl -n school delete pod scribe2 && kubectl -n school delete pvc shelf
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get pv,pvc` · `kubectl describe pvc`
+
+🔗 **Builds on:** 🪪 AWS L11 (EBS) · L14 (S3) · L17 (RDS)
+
+## ✅ Verify — what you should see
+
+kill the postgres pod → the new pod finds the same rows on the same PVC.
+
+## 🧹 Clean up
+
+`kubectl delete pvc` if you want the data gone (a PVC outlives the pod on purpose)
+
+## ⚠️ Common mistakes
+
+- storing state in the container filesystem (a backpack)
+- running production databases in-cluster without an operator — rent RDS (AWS L17)
+
 ## ⏭️ Next
 
 Final lesson: open the school office door and meet the machinery that made ALL

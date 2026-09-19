@@ -107,6 +107,25 @@ kubectl -n school rollout undo deployment/school-api
 kubectl -n school rollout history deployment/school-api  # the team sheet history
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl rollout status/history/undo` · `kubectl set image`
+
+🔗 **Builds on:** 🤖 ArgoCD school L10 (rollback = git revert)
+
+## ✅ Verify — what you should see
+
+`kubectl rollout status` shows pods replaced one at a time; a broken image never receives traffic; `kubectl rollout undo` restores in seconds.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- `maxUnavailable` too high — you took the team off the field
+- no readiness probe — the rollout 'succeeds' onto a broken app
+
 ## ⏭️ Next
 
 Pods are disposable — so what happens to data that must **survive**?

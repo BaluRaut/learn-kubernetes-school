@@ -100,6 +100,25 @@ kubectl -n school get hpa,pods -w
 # Ctrl+C the rain pod, then watch it calmly scale back to 2 (~5 min).
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get hpa -w` · `kubectl top pods`
+
+🔗 **Builds on:** 🪪 AWS L12 (ASG) · L18 (alarm → action)
+
+## ✅ Verify — what you should see
+
+under load `kubectl get hpa -w` climbs from 2 toward 5; when quiet it walks back down slowly.
+
+## 🧹 Clean up
+
+`kubectl delete hpa` — and remove the load generator pod
+
+## ⚠️ Common mistakes
+
+- HPA with no resource requests — 'unknown' utilization, no scaling
+- also setting `replicas:` in the Deployment manifest (GitOps and HPA fight)
+
 ## ⏭️ Next
 
 Everything so far is *inside* the school. How does the outside world — parents,
