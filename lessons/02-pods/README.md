@@ -97,6 +97,25 @@ kubectl delete pod hello     # throw the desk away — and notice:
 kubectl get pods             # ...nothing brings it back. That's lesson 03's job.
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get pods` · `kubectl describe pod` · `kubectl logs` · `kubectl exec -it POD -- sh`
+
+🔗 **Builds on:** 🪪 AWS L07 (a node is a rented desk)
+
+## ✅ Verify — what you should see
+
+`kubectl get pods -n school` shows `Running 1/1`; `kubectl get pod POD -o wide` shows its IP.
+
+## 🧹 Clean up
+
+`kubectl delete pod POD` — a bare pod is NOT recreated (that's lesson 03's job)
+
+## ⚠️ Common mistakes
+
+- editing a pod in place — replace, never repair
+- expecting a bare pod to come back after deletion — only a controller recreates it
+
 ## ⏭️ Next
 
 A lone pod that dies **stays dead**. Who keeps the right number of desks alive

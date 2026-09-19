@@ -91,6 +91,25 @@ kubectl -n school delete pod best guar
 #  instead read any prod cluster's story: kubectl get events -A | grep -i evict)
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl get pod -o jsonpath` · `kubectl describe node (Conditions: MemoryPressure)`
+
+🔗 **Builds on:** 🪪 AWS L08 (reserve the plate)
+
+## ✅ Verify — what you should see
+
+`kubectl get pod POD -o jsonpath='{.status.qosClass}'` prints Guaranteed / Burstable / BestEffort; under pressure the BestEffort pod is evicted first.
+
+## 🧹 Clean up
+
+local cluster: `kubectl delete -f k8s/` (or the file you applied) — on EKS, anything left running bills by the hour
+
+## ⚠️ Common mistakes
+
+- important pods with no requests — BestEffort, evicted first
+- a PriorityClass on everything — then nothing is prioritized
+
 ## ⏭️ Next
 
 Renovating classrooms while school stays open: **cluster upgrades** —

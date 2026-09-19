@@ -102,6 +102,25 @@ kubectl -n monitoring port-forward svc/obs-grafana 3001:80 &
 # YOUR cluster: nodes, pods, the works. 📺  Uninstall: helm uninstall obs -n monitoring
 ```
 
+## 🔧 kubectl for this lesson
+
+`kubectl port-forward svc/grafana` · `kubectl get servicemonitors`
+
+🔗 **Builds on:** 🪪 AWS L18 (CloudWatch — the same trio, managed)
+
+## ✅ Verify — what you should see
+
+Grafana shows the four panels from [k8s/observability/starter-dashboard.json](../../k8s/observability/starter-dashboard.json) — up / errors / latency / cluster health — and the alert fires when you kill a pod.
+
+## 🧹 Clean up
+
+`helm uninstall` the monitoring stack locally — on EKS it is nodes and storage billing hourly
+
+## ⚠️ Common mistakes
+
+- dashboards nobody looks at until the outage — wire an alert to a phone
+- alerting on every metric — four questions, then grow
+
 ## 🎓 The whole school, complete
 
 Lunchboxes → desks → monitors → reception → rooms → notice boards →
